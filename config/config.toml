@@ -1,0 +1,12 @@
+[app]
+name = "LMS"
+port = 4001
+env = "local"
+
+[database]
+driver = "mysql"
+name = "capstone"
+address = "192.168.1.64"
+port = 3306
+username = "devmysql"
+password = "devmysql"
