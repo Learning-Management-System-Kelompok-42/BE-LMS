@@ -1,0 +1,29 @@
+package error
+
+import "errors"
+
+var (
+	// InternalServerError is the error code for internal server error
+	ErrInternalServer = errors.New("internal server error")
+
+	// NotFound
+	ErrNotFound         = errors.New("not found")
+	ErrEmployeeNotFound = errors.New("employee not found")
+	ErrAdminNotFound    = errors.New("admin not found")
+	ErrCourseNotFound   = errors.New("course not found")
+	ErrCommentNotFound  = errors.New("comment not found")
+	ErrModuleNotFound   = errors.New("module not found")
+	ErrVideoNotFound    = errors.New("video not found")
+	ErrSlideNotFound    = errors.New("slide not found")
+	ErrQuizNotFound     = errors.New("quiz not found")
+
+	// NotAuthorized
+	ErrNotAuthorized = errors.New("not authorized")
+
+	// Other errors
+	ErrWrongPassword = errors.New("wrong password")
+	ErrWrongEmail    = errors.New("wrong email")
+	ErrEmailExists   = errors.New("email already exists")
+	ErrInvalidToken  = errors.New("invalid token")
+	ErrDataNotFound  = errors.New("data not found")
+)
