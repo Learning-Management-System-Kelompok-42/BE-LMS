@@ -1,4 +1,4 @@
-package error
+package exception
 
 import "errors"
 
@@ -21,9 +21,10 @@ var (
 	ErrNotAuthorized = errors.New("not authorized")
 
 	// Other errors
-	ErrWrongPassword = errors.New("wrong password")
-	ErrWrongEmail    = errors.New("wrong email")
-	ErrEmailExists   = errors.New("email already exists")
-	ErrInvalidToken  = errors.New("invalid token")
-	ErrDataNotFound  = errors.New("data not found")
+	ErrWrongPassword  = errors.New("wrong password")
+	ErrWrongEmail     = errors.New("wrong email")
+	ErrEmailExists    = errors.New("email already exists")
+	ErrInvalidToken   = errors.New("invalid token")
+	ErrDataNotFound   = errors.New("data not found")
+	ErrInvalidRequest = errors.New("invalid request body")
 )
