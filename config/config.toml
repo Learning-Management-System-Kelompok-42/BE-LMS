@@ -1,0 +1,13 @@
+[app]
+name = "LMS"
+port = 4001
+env = "local"
+timeout = 30
+
+[database]
+driver = "mysql"
+name = "capstone"
+address = "localhost"
+port = 3306
+username = "capstone"
+password = "capstone"
