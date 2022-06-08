@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/config"
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/record"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -74,6 +75,26 @@ func NewMySQLConnection(config *config.AppConfig) *gorm.DB {
 
 	db, err := gorm.Open(mysql.Open(uri), &gorm.Config{})
 	if err != nil {
+		panic(err)
+	}
+
+	if err := db.AutoMigrate(
+		&record.Specialization{},
+		&record.Company{},
+		&record.User{},
+		&record.Course{},
+		&record.RequestCourse{},
+		&record.Faq{},
+		&record.UserCourse{},
+		&record.Certificate{},
+		&record.UserModule{},
+		&record.Module{},
+		&record.SpecializationCourse{},
+		&record.Material{},
+		&record.Quiz{},
+		&record.Option{},
+	); err != nil {
+		fmt.Println("error migrate = ", err.Error())
 		panic(err)
 	}
 
