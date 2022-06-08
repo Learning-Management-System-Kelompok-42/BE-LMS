@@ -9,9 +9,10 @@ import (
 
 type AppConfig struct {
 	App struct {
-		Name string `toml:"name"`
-		Port int    `toml:"port"`
-		Env  string `toml:"env"`
+		Name    string `toml:"name"`
+		Port    int    `toml:"port"`
+		Env     string `toml:"env"`
+		Timeout int    `toml:"timeout"`
 	} `toml:"app"`
 	Database struct {
 		Driver   string `toml:"driver"`
