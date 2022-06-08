@@ -2,6 +2,7 @@ package users
 
 import (
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users/spec"
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/encrypt"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-playground/validator/v10"
@@ -71,11 +72,13 @@ func (s *userService) Register(upsertUserSpec spec.UpsertUsersSpec) (id string, 
 
 	newId := uuid.New().String()
 
+	passwordHash := encrypt.HashPassword(upsertUserSpec.Password)
+
 	newUser := NewUser(
 		newId,
 		upsertUserSpec.FullName,
 		upsertUserSpec.Email,
-		upsertUserSpec.Password,
+		passwordHash,
 		upsertUserSpec.Phone,
 		upsertUserSpec.Address,
 		upsertUserSpec.Role,
