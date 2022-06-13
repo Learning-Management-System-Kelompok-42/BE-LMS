@@ -9,7 +9,7 @@ func RepositoryFactory(dbCon *util.DatabaseConnection) domain.CompanyRepository 
 	var companyRepository domain.CompanyRepository
 
 	if dbCon.Driver == util.PostgreSQL {
-		companyRepository = NewCompanyRepository(dbCon.PostgreSQL)
+		companyRepository = NewPostgreSQLRepository(dbCon.PostgreSQL)
 	}
 
 	return companyRepository

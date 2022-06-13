@@ -6,15 +6,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type userRepository struct {
+type postgreSQLRepository struct {
 	db *gorm.DB
 }
 
-func NewUserRepository(db *gorm.DB) users.UserRepository {
-	return &userRepository{db: db}
+func NewPostgreSQLRepository(db *gorm.DB) users.UserRepository {
+	return &postgreSQLRepository{db: db}
 }
 
-func (repo *userRepository) Insert(user users.Domain) (id string, err error) {
+func (repo *postgreSQLRepository) Insert(user users.Domain) (id string, err error) {
 	newUser := FromDomain(user)
 	err = repo.db.Create(&newUser).Error
 
@@ -27,7 +27,7 @@ func (repo *userRepository) Insert(user users.Domain) (id string, err error) {
 	return id, nil
 }
 
-func (repo *userRepository) Update(user users.Domain) (err error) {
+func (repo *postgreSQLRepository) Update(user users.Domain) (err error) {
 	updateUser := FromDomain(user)
 	err = repo.db.Save(&updateUser).Error
 
@@ -38,7 +38,7 @@ func (repo *userRepository) Update(user users.Domain) (err error) {
 	return nil
 }
 
-func (repo *userRepository) GetByID(id string) (user *users.Domain, err error) {
+func (repo *postgreSQLRepository) GetByID(id string) (user *users.Domain, err error) {
 	err = repo.db.Where("Id =? ", id).First(&user).Error
 
 	if err != nil {
@@ -51,7 +51,7 @@ func (repo *userRepository) GetByID(id string) (user *users.Domain, err error) {
 	return user, nil
 }
 
-func (repo *userRepository) Login(email string) (user users.Domain, err error) {
+func (repo *postgreSQLRepository) Login(email string) (user users.Domain, err error) {
 	err = repo.db.Where("email = ?", email).First(&user).Error
 
 	if err != nil {
@@ -64,14 +64,14 @@ func (repo *userRepository) Login(email string) (user users.Domain, err error) {
 	return user, nil
 }
 
-func (repo *userRepository) CheckEmail(email string) error {
+func (repo *postgreSQLRepository) CheckEmail(email string) error {
 	var user User
 	err := repo.db.Where("email = ?", email).First(&user).Error
 
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil
-		}
+		// if err == gorm.ErrRecordNotFound {
+		// 	return nil
+		// }
 		return exception.ErrInternalServer
 	}
 

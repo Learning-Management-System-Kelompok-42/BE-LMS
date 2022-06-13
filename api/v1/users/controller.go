@@ -4,8 +4,10 @@ import (
 	"net/http"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/users/request"
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/users/response"
 	domain "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
+	r "github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/formatter"
 	"github.com/labstack/echo/v4"
 )
 
@@ -31,14 +33,16 @@ func (ctrl *Controller) Register(c echo.Context) error {
 	id, err := ctrl.service.Register(req)
 	if err != nil {
 		if err == exception.ErrInvalidRequest {
-			return c.JSON(http.StatusBadRequest, err.Error())
+			return c.JSON(http.StatusBadRequest, r.BadRequestResponse(err.Error()))
 		} else if err == exception.ErrEmailExists {
-			return c.JSON(http.StatusBadRequest, err.Error())
+			return c.JSON(http.StatusConflict, r.ConflictResponse(err.Error()))
 		}
-		return c.JSON(http.StatusInternalServerError, err.Error())
+		return c.JSON(http.StatusInternalServerError, r.InternalServerErrorResponse(err.Error()))
 	}
 
-	return c.JSON(http.StatusCreated, id)
+	result := response.NewCreateNewUserResponse(id)
+
+	return c.JSON(http.StatusCreated, r.CreateSuccessResponse(result))
 }
 
 func (ctrl *Controller) GetUserByID(c echo.Context) error {
