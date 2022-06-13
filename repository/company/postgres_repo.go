@@ -1,7 +1,9 @@
 package company
 
 import (
-	domain "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/company"
+	"fmt"
+
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/company"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
 	"gorm.io/gorm"
 )
@@ -10,27 +12,29 @@ type postgreSQLRepository struct {
 	db *gorm.DB
 }
 
-func NewPostgreSQLRepository(db *gorm.DB) domain.CompanyRepository {
+func NewPostgreSQLRepository(db *gorm.DB) company.CompanyRepository {
 	return &postgreSQLRepository{
 		db: db,
 	}
 }
 
-func (repo *postgreSQLRepository) Insert(company domain.Domain) (id string, err error) {
-	err = repo.db.Create(&company).Error
+func (repo *postgreSQLRepository) Insert(company company.Domain) (id string, err error) {
+	newCompany := FromDomain(company)
+	err = repo.db.Create(&newCompany).Error
 
 	if err != nil {
 		return "", exception.ErrInternalServer
 	}
 
-	id = company.ID
+	id = newCompany.ID
 
 	return id, nil
 }
 
-func (repo *postgreSQLRepository) CheckEmail(email string) error {
-	var company domain.Domain
-	err := repo.db.Where("email = ?", email).First(&company).Error
+func (repo *postgreSQLRepository) CheckWeb(web string) error {
+	var company Company
+	fmt.Println("web = ", web)
+	err := repo.db.Where("web = ?", web).First(&company).Error
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -39,5 +43,5 @@ func (repo *postgreSQLRepository) CheckEmail(email string) error {
 		return exception.ErrInternalServer
 	}
 
-	return exception.ErrEmailExists
+	return exception.ErrWebExists
 }

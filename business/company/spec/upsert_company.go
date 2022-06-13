@@ -1,10 +1,16 @@
 package spec
 
+import "mime/multipart"
+
 type UpsertCompanySpec struct {
-	Name    string `validate:"required"`
-	Address string `validate:"required"`
-	Web     string `validate:"required"`
-	Email   string `validate:"required,email"`
-	Sector  string `validate:"required"`
-	Logo    string
+	NameCompany    string         `validate:"required"`
+	AddressCompany string         `validate:"required"`
+	Sector         string         `validate:"required"`
+	Website        string         `validate:"required"`
+	Logo           multipart.File `validate:"required"`
+	NameAdmin      string         `validate:"required"`
+	PhoneNumber    string         `validate:"required"`
+	AddressAdmin   string         `validate:"required"`
+	EmailAdmin     string         `validate:"required"`
+	PasswordAdmin  string         `validate:"required"`
 }
