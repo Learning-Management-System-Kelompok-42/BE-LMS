@@ -11,3 +11,10 @@ address = "localhost"
 port = 5432
 username = "devpostgres"
 password = "devpostgres"
+
+[storage]
+test = "test"
+cloudname = "dr8volyui"
+apikey = "828743457647186"
+apisecret = "BcDKFLS8izAM18lgxF-vkFNPxD4"
+uploadfolder = "lms"
