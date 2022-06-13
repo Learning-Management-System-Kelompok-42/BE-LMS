@@ -22,6 +22,13 @@ type AppConfig struct {
 		Username string `toml:"username"`
 		Password string `toml:"password"`
 	} `toml:"database"`
+	Storage struct {
+		CloudName     string `toml:"cloudname"`
+		APIKey        string `toml:"apikey"`
+		APISecret     string `toml:"apisecret"`
+		UploadStorage string `toml:"uploadfolder"`
+		Test          string `toml:"test"`
+	} `toml:"storage"`
 }
 
 var lock = &sync.Mutex{}

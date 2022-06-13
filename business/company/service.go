@@ -3,6 +3,10 @@ package company
 import (
 	"fmt"
 
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users"
+	cloud "github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/cloudinary"
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/encrypt"
+
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/company/spec"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
 	"github.com/go-playground/validator/v10"
@@ -14,7 +18,7 @@ type CompanyRepository interface {
 	Insert(company Domain) (id string, err error)
 
 	// CheckEmail checks if an email is already registered
-	CheckEmail(email string) error
+	CheckWeb(web string) error
 }
 
 type CompanyService interface {
@@ -23,50 +27,76 @@ type CompanyService interface {
 }
 
 type companyService struct {
-	companyRepository CompanyRepository
-	validate          *validator.Validate
+	companyRepo CompanyRepository
+	userRepo    users.UserRepository
+	validate    *validator.Validate
 }
 
-func NewCompanyService(repo CompanyRepository) CompanyService {
+func NewCompanyService(companyRepo CompanyRepository, userRepo users.UserRepository) CompanyService {
 	return &companyService{
-		companyRepository: repo,
-		validate:          validator.New(),
+		companyRepo: companyRepo,
+		userRepo:    userRepo,
+		validate:    validator.New(),
 	}
 }
 
 func (s *companyService) Register(upsertCompanySpec spec.UpsertCompanySpec) (id string, err error) {
+	// Next we will upgrade query into database transactional
 	err = s.validate.Struct(&upsertCompanySpec)
 	if err != nil {
-		return "", exception.ErrInvalidRequest
+		return "", err
 	}
 
-	fmt.Println("error controller = ", &upsertCompanySpec)
+	err = s.companyRepo.CheckWeb(upsertCompanySpec.Website)
+	if err != nil {
+		return "", exception.ErrWebExists
+	}
 
-	newId := uuid.New().String()
+	err = s.userRepo.CheckEmail(upsertCompanySpec.EmailAdmin)
+	if err != nil {
+		return "", exception.ErrEmailExists
+	}
 
+	urlLogo, err := cloud.ImageUploadHelper(upsertCompanySpec.Logo)
+	if err != nil {
+		return "", exception.ErrCantUploadImage
+	}
+	fmt.Print("urlLogo = ", urlLogo)
+
+	idCompany := uuid.New().String()
 	newCompany := NewCompany(
-		newId,
-		upsertCompanySpec.Name,
-		upsertCompanySpec.Address,
-		upsertCompanySpec.Web,
-		upsertCompanySpec.Email,
+		idCompany,
+		upsertCompanySpec.NameCompany,
+		upsertCompanySpec.AddressCompany,
+		upsertCompanySpec.Website,
 		upsertCompanySpec.Sector,
-		upsertCompanySpec.Logo,
+		urlLogo,
 	)
 
-	fmt.Println("new company = ", newCompany)
-
-	email := upsertCompanySpec.Email
-
-	if err := s.companyRepository.CheckEmail(email); err != nil {
-		if err == exception.ErrEmailExists {
-			return "", exception.ErrEmailExists
-		}
-
+	id, err = s.companyRepo.Insert(newCompany)
+	if err != nil {
 		return "", exception.ErrInternalServer
 	}
 
-	id, err = s.companyRepository.Insert(newCompany)
+	idUser := uuid.New().String()
+	role := "admin"
+	specializationID := "SPEC-002"
+	hashPassword := encrypt.HashPassword(upsertCompanySpec.PasswordAdmin)
+
+	newUser := users.NewUser(
+		idUser,
+		idCompany,
+		specializationID,
+		role,
+		upsertCompanySpec.NameAdmin,
+		upsertCompanySpec.EmailAdmin,
+		hashPassword,
+		upsertCompanySpec.PhoneNumber,
+		upsertCompanySpec.AddressAdmin,
+		role,
+	)
+
+	_, err = s.userRepo.Insert(newUser)
 	if err != nil {
 		return "", exception.ErrInternalServer
 	}

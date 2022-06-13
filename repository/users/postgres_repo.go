@@ -69,9 +69,9 @@ func (repo *postgreSQLRepository) CheckEmail(email string) error {
 	err := repo.db.Where("email = ?", email).First(&user).Error
 
 	if err != nil {
-		// if err == gorm.ErrRecordNotFound {
-		// 	return nil
-		// }
+		if err == gorm.ErrRecordNotFound {
+			return nil
+		}
 		return exception.ErrInternalServer
 	}
 

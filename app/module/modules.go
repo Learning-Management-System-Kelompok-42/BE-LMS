@@ -19,7 +19,7 @@ func RegisterModules(dbCon *util.DatabaseConnection) api.Controller {
 
 	//initiate dependency injection for company
 	companyPermitRepo := companyRepo.RepositoryFactory(dbCon)
-	companyPermitService := companyService.NewCompanyService(companyPermitRepo)
+	companyPermitService := companyService.NewCompanyService(companyPermitRepo, userPermitRepo)
 	companyPermitControllerV1 := companyController.NewController(companyPermitService)
 
 	controllers := api.Controller{
