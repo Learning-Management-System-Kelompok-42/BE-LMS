@@ -5,9 +5,9 @@ env = "local"
 timeout = 30
 
 [database]
-driver = "mysql"
-name = "capstone"
+driver = "postgres"
+name = "capstone-test"
 address = "localhost"
-port = 3306
-username = "capstone"
-password = "capstone"
+port = 5432
+username = "devpostgres"
+password = "devpostgres"
