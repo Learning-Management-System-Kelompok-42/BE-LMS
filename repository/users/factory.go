@@ -9,7 +9,7 @@ func RepositoryFactory(dbConnection *util.DatabaseConnection) users.UserReposito
 	var userRepository users.UserRepository
 
 	if dbConnection.Driver == util.PostgreSQL {
-		userRepository = NewUserRepository(dbConnection.PostgreSQL)
+		userRepository = NewPostgreSQLRepository(dbConnection.PostgreSQL)
 	}
 
 	return userRepository
