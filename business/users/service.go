@@ -70,14 +70,16 @@ func (s *userService) Register(upsertUserSpec spec.UpsertUsersSpec) (id string, 
 		return "", exception.ErrInvalidRequest
 	}
 
+	err = s.userRepo.CheckEmail(upsertUserSpec.Email)
+	if err != nil {
+		if err == exception.ErrEmailExists {
+			return "", exception.ErrEmailExists
+		}
+	}
+
 	newId := uuid.New().String()
-<<<<<<< Updated upstream
-=======
 	passwordHash := encrypt.HashPassword(upsertUserSpec.Password)
 	levelAccess := "employee"
->>>>>>> Stashed changes
-
-	passwordHash := encrypt.HashPassword(upsertUserSpec.Password)
 
 	newUser := NewUser(
 		newId,
@@ -91,13 +93,6 @@ func (s *userService) Register(upsertUserSpec spec.UpsertUsersSpec) (id string, 
 		upsertUserSpec.Address,
 		levelAccess,
 	)
-
-	err = s.userRepo.CheckEmail(upsertUserSpec.Email)
-	if err != nil {
-		if err == exception.ErrEmailExists {
-			return "", exception.ErrEmailExists
-		}
-	}
 
 	id, err = s.userRepo.Insert(newUser)
 	if err != nil {

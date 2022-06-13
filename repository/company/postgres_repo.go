@@ -6,17 +6,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type companyRepository struct {
+type postgreSQLRepository struct {
 	db *gorm.DB
 }
 
-func NewCompanyRepository(db *gorm.DB) domain.CompanyRepository {
-	return &companyRepository{
+func NewPostgreSQLRepository(db *gorm.DB) domain.CompanyRepository {
+	return &postgreSQLRepository{
 		db: db,
 	}
 }
 
-func (repo *companyRepository) Insert(company domain.Domain) (id string, err error) {
+func (repo *postgreSQLRepository) Insert(company domain.Domain) (id string, err error) {
 	err = repo.db.Create(&company).Error
 
 	if err != nil {
@@ -28,7 +28,7 @@ func (repo *companyRepository) Insert(company domain.Domain) (id string, err err
 	return id, nil
 }
 
-func (repo *companyRepository) CheckEmail(email string) error {
+func (repo *postgreSQLRepository) CheckEmail(email string) error {
 	var company domain.Domain
 	err := repo.db.Where("email = ?", email).First(&company).Error
 
