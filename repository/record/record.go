@@ -25,20 +25,6 @@ type User struct {
 	DeletedAt        gorm.DeletedAt `gorm:"index"`
 }
 
-type Course struct {
-	ID                    string `gorm:"primaryKey;size:200"`
-	Title                 string
-	Thumbnail             string
-	Description           string
-	SpecializationCourses []SpecializationCourse `gorm:"primaryKey:CourseID"`
-	Certificates          []Certificate          `gorm:"primaryKey:CourseID"`
-	Modules               []Module               `gorm:"primaryKey:CourseID"`
-	UserCourses           []UserCourse           `gorm:"primaryKey:CourseID"`
-	CreatedAt             time.Time
-	UpdatedAt             time.Time
-	DeletedAt             gorm.DeletedAt `gorm:"index"`
-}
-
 type Company struct {
 	ID             string `gorm:"primaryKey,size:200"`
 	Name           string

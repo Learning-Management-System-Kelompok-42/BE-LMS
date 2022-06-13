@@ -11,7 +11,11 @@ import (
 
 type CompanyRepository interface {
 	// Insert creates a new company into database
+<<<<<<< Updated upstream
 	Insert(company Company) (id string, err error)
+=======
+	Insert(company Domain) (id string, err error)
+>>>>>>> Stashed changes
 
 	// CheckEmail checks if an email is already registered
 	CheckEmail(email string) error
