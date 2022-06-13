@@ -22,16 +22,16 @@ type Claims struct {
 
 type UserRepository interface {
 	// Insert creates a new user
-	Insert(user User) (id string, err error)
+	Insert(user Domain) (id string, err error)
 
 	// Update updates an existing user
-	Update(user User) (err error)
+	Update(user Domain) (err error)
 
 	// GetByID returns a user by ID
-	GetByID(id string) (user *User, err error)
+	GetByID(id string) (user *Domain, err error)
 
 	// Login LoginUser logs in a user
-	Login(email, password string) (user User, err error)
+	Login(email string) (user Domain, err error)
 
 	// CheckEmail checks if an email is already registered
 	CheckEmail(email string) error
@@ -42,10 +42,10 @@ type UserService interface {
 	Register(upsertUserSpec spec.UpsertUsersSpec) (id string, err error)
 
 	// UpdateUser updates an existing user
-	UpdateUser(user User, id string) (err error)
+	UpdateUser(user Domain, id string) (err error)
 
 	// GetUserByID returns a user by ID
-	GetUserByID(id string) (*User, error)
+	GetUserByID(id string) (*Domain, error)
 
 	// LoginUser logs in a user
 	LoginUser(upsertLoginSpec spec.UpsertLoginUsersSpec) (Auth, error)
@@ -70,22 +70,26 @@ func (s *userService) Register(upsertUserSpec spec.UpsertUsersSpec) (id string, 
 	}
 
 	newId := uuid.New().String()
+<<<<<<< Updated upstream
+=======
+	passwordHash := encrypt.HashPassword(upsertUserSpec.Password)
+	levelAccess := "employee"
+>>>>>>> Stashed changes
 
 	newUser := NewUser(
 		newId,
+		upsertUserSpec.CompanyID,
+		upsertUserSpec.SpecializationID,
+		upsertUserSpec.Role,
 		upsertUserSpec.FullName,
 		upsertUserSpec.Email,
 		upsertUserSpec.Password,
 		upsertUserSpec.Phone,
 		upsertUserSpec.Address,
-		upsertUserSpec.Role,
-		upsertUserSpec.CompanyID,
-		upsertUserSpec.LevelAccess,
+		levelAccess,
 	)
 
-	email := upsertUserSpec.Email
-
-	err = s.userRepo.CheckEmail(email)
+	err = s.userRepo.CheckEmail(upsertUserSpec.Email)
 	if err != nil {
 		if err == exception.ErrEmailExists {
 			return "", exception.ErrEmailExists
@@ -100,11 +104,11 @@ func (s *userService) Register(upsertUserSpec spec.UpsertUsersSpec) (id string, 
 	return id, nil
 }
 
-func (s *userService) UpdateUser(user User, id string) (err error) {
+func (s *userService) UpdateUser(user Domain, id string) (err error) {
 	return err
 }
 
-func (s *userService) GetUserByID(id string) (*User, error) {
+func (s *userService) GetUserByID(id string) (*Domain, error) {
 	user, err := s.userRepo.GetByID(id)
 	if err != nil {
 		if err == exception.ErrDataNotFound {

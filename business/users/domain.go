@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type User struct {
+type Domain struct {
 	ID               string
 	CompanyID        string
 	Role             string
@@ -20,22 +20,23 @@ type User struct {
 	DeletedAt        time.Time
 }
 
-func NewUser(id, fullName, email, password, phoneNumber, address, role, companyID, levelAccess string) User {
-	return User{
-		ID:          id,
-		CompanyID:   companyID,
-		Role:        role,
-		FullName:    fullName,
-		Email:       email,
-		Password:    password,
-		PhoneNumber: phoneNumber,
-		Address:     address,
-		LevelAccess: levelAccess,
+func NewUser(id, companyID, specializationID, role, fullName, email, password, phoneNumber, address, levelAccess string) Domain {
+	return Domain{
+		ID:               id,
+		CompanyID:        companyID,
+		SpecializationID: specializationID,
+		Role:             role,
+		FullName:         fullName,
+		Email:            email,
+		Password:         password,
+		PhoneNumber:      phoneNumber,
+		Address:          address,
+		LevelAccess:      levelAccess,
 	}
 }
 
-func (old *User) ModifyUser(fullName, phoneNumber, address string) User {
-	return User{
+func (old *Domain) ModifyUser(fullName, phoneNumber, address string) Domain {
+	return Domain{
 		ID:          old.ID,
 		CompanyID:   old.CompanyID,
 		Role:        old.Role,
