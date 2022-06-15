@@ -80,7 +80,7 @@ func (s *companyService) Register(upsertCompanySpec spec.UpsertCompanySpec) (id 
 
 	idUser := uuid.New().String()
 	role := "admin"
-	specializationID := "SPEC-002"
+	specializationID := "SPEC-001"
 	hashPassword := encrypt.HashPassword(upsertCompanySpec.PasswordAdmin)
 
 	newUser := users.NewUser(
