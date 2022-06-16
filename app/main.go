@@ -3,15 +3,16 @@ package main
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"os"
+	"os/signal"
+	"time"
+
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/specialization"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/specializationCourse"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/userCourse"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/userModules"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/users"
-	"net/http"
-	"os"
-	"os/signal"
-	"time"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api"
 	modules "github.com/Learning-Management-System-Kelompok-42/BE-LMS/app/module"
@@ -36,7 +37,7 @@ func main() {
 
 	dbConnection := util.NewConnectionDB(cfg)
 
-	controllers := modules.RegisterModules(dbConnection)
+	controllers := modules.RegisterModules(dbConnection, cfg)
 
 	timeoutContext := time.Duration(cfg.App.Timeout) * time.Second
 
@@ -46,7 +47,7 @@ func main() {
 		return c.JSON(http.StatusOK, "LMS API")
 	})
 
-	api.RegistrationPath(e, controllers)
+	api.RegistrationPath(e, controllers, cfg)
 
 	go func() {
 		address := fmt.Sprintf(":%d", cfg.App.Port)
@@ -73,7 +74,6 @@ func main() {
 }
 
 func init() {
-	fmt.Println("jalan")
 	// Set auto migration db
 	cfg := config.GetConfig()
 	dbConnection := util.NewConnectionDB(cfg)
