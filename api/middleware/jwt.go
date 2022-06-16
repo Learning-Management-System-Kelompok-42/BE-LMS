@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/config"
 	f "github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/formatter"
 
 	"github.com/dgrijalva/jwt-go"
@@ -13,13 +14,13 @@ import (
 
 var jwtSignedMethod = jwt.SigningMethodHS256
 
-func JWTMiddleware() echo.MiddlewareFunc {
+func JWTMiddleware(config *config.AppConfig) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 
-			if strings.Contains(c.Request().URL.Path, "/login") {
-				return next(c)
-			}
+			// if strings.Contains(c.Request().URL.Path, "/login") {
+			// 	return next(c)
+			// }
 
 			signature := strings.Split(c.Request().Header.Get("Authorization"), " ")
 			if len(signature) < 2 {
@@ -31,7 +32,7 @@ func JWTMiddleware() echo.MiddlewareFunc {
 
 			claim := jwt.MapClaims{}
 			token, _ := jwt.ParseWithClaims(signature[1], claim, func(token *jwt.Token) (interface{}, error) {
-				return []byte("Secret_JWT"), nil
+				return []byte(config.App.SecretKey), nil
 			})
 
 			method, ok := token.Method.(*jwt.SigningMethodHMAC)
@@ -62,6 +63,7 @@ func ExtractToken(c echo.Context) (id, levelAccess string, err error) {
 func CheckLevelAccess(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		_, levelAccess, err := ExtractToken(c)
+
 		if err != nil {
 			return c.JSON(http.StatusForbidden, f.ForbiddenResponse("Invalid token"))
 		}

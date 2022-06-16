@@ -51,19 +51,6 @@ func (repo *postgreSQLRepository) GetByID(id string) (user *users.Domain, err er
 	return user, nil
 }
 
-func (repo *postgreSQLRepository) Login(email string) (user users.Domain, err error) {
-	err = repo.db.Where("email = ?", email).First(&user).Error
-
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return user, exception.ErrDataNotFound
-		}
-		return user, exception.ErrInternalServer
-	}
-
-	return user, nil
-}
-
 func (repo *postgreSQLRepository) CheckEmail(email string) error {
 	var user User
 	err := repo.db.Where("email = ?", email).First(&user).Error

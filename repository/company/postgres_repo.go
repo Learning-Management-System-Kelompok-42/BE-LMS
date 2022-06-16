@@ -1,8 +1,6 @@
 package company
 
 import (
-	"fmt"
-
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/company"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
 	"gorm.io/gorm"
@@ -33,7 +31,6 @@ func (repo *postgreSQLRepository) Insert(company company.Domain) (id string, err
 
 func (repo *postgreSQLRepository) CheckWeb(web string) error {
 	var company Company
-	fmt.Println("web = ", web)
 	err := repo.db.Where("web = ?", web).First(&company).Error
 
 	if err != nil {
