@@ -1,7 +1,6 @@
 package specialization
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/specialization/spec"
@@ -13,11 +12,17 @@ import (
 type SpecializationRepository interface {
 	// Insert creates a new specialization into database
 	Insert(specialization Domain) (id string, err error)
+
+	// FindInvitation
+	FindInvitation(invitation string) (specialization Domain, err error)
 }
 
 type SpecializationService interface {
 	// Register creates a new specialization
 	Register(upsertSpecializationSpec spec.UpsertSpecializationSpec) (id string, err error)
+
+	// GetInvitation returns a specialization by invitation
+	GetInvitation(invitation string) (specialization Domain, err error)
 }
 
 type specializationService struct {
@@ -40,7 +45,6 @@ func (s *specializationService) Register(upsertSpecializationSpec spec.UpsertSpe
 
 	link := upsertSpecializationSpec.Invitation
 	separateLink := strings.SplitAfter(link, "invitation/")[1]
-	fmt.Println("separateLink", separateLink)
 
 	newId := uuid.New().String()
 
@@ -56,4 +60,18 @@ func (s *specializationService) Register(upsertSpecializationSpec spec.UpsertSpe
 	}
 
 	return id, nil
+}
+
+func (s *specializationService) GetInvitation(invitation string) (specialization Domain, err error) {
+	link := strings.SplitAfter(invitation, "invitation/")[1]
+
+	specialization, err = s.specializationRepo.FindInvitation(link)
+	if err != nil {
+		if err == exception.ErrNotFound {
+			return specialization, exception.ErrNotFound
+		}
+		return specialization, exception.ErrInternalServer
+	}
+
+	return specialization, nil
 }
