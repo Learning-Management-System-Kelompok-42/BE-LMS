@@ -1,7 +1,6 @@
 package company
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/company/request"
@@ -27,18 +26,15 @@ func (ctrl *Controller) Register(c echo.Context) error {
 
 	file, err := c.FormFile("logo")
 	if err != nil {
-		fmt.Println("error 1")
 		return c.JSON(http.StatusBadRequest, r.BadRequestResponse(err.Error()))
 	}
 
 	formFile, err := file.Open()
 	if err != nil {
-		fmt.Println("error 2")
 		return c.JSON(http.StatusBadRequest, r.BadRequestResponse(err.Error()))
 	}
 
 	if err := c.Bind(createCompanyRequest); err != nil {
-		fmt.Println("error 3")
 		return c.JSON(http.StatusBadRequest, r.BadRequestResponse(err.Error()))
 	}
 
@@ -50,16 +46,13 @@ func (ctrl *Controller) Register(c echo.Context) error {
 
 	if err != nil {
 		if err == exception.ErrInvalidRequest {
-			fmt.Println("error 4")
 			return c.JSON(http.StatusBadRequest, r.BadRequestResponse(err.Error()))
 		} else if err == exception.ErrEmailExists {
-			fmt.Println("error 5")
 			return c.JSON(http.StatusConflict, r.ConflictResponse(err.Error()))
 		} else if err == exception.ErrWebExists {
-			fmt.Println("error 6")
 			return c.JSON(http.StatusConflict, r.ConflictResponse(err.Error()))
 		}
-		fmt.Println("error 7")
+
 		return c.JSON(http.StatusInternalServerError, r.InternalServerErrorResponse(err.Error()))
 	}
 

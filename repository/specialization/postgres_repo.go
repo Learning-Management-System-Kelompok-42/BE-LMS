@@ -26,3 +26,17 @@ func (repo *postgreSQLRepository) Insert(specialization specialization.Domain) (
 
 	return id, nil
 }
+
+func (repo *postgreSQLRepository) FindInvitation(invitation string) (specialization.Domain, error) {
+	var spec Specialization
+
+	err := repo.db.Where("invitation = ?", invitation).First(&spec).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return specialization.Domain{}, exception.ErrNotFound
+		}
+		return specialization.Domain{}, exception.ErrInternalServer
+	}
+
+	return spec.ToDomain(), nil
+}

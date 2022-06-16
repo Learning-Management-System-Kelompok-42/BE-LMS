@@ -31,9 +31,6 @@ type UserRepository interface {
 	// GetByID returns a user by ID
 	GetByID(id string) (user *Domain, err error)
 
-	// Login LoginUser logs in a user
-	Login(email string) (user Domain, err error)
-
 	// CheckEmail checks if an email is already registered
 	CheckEmail(email string) error
 }
@@ -47,9 +44,6 @@ type UserService interface {
 
 	// GetUserByID returns a user by ID
 	GetUserByID(id string) (*Domain, error)
-
-	// LoginUser logs in a user
-	LoginUser(upsertLoginSpec spec.UpsertLoginUsersSpec) (Auth, error)
 }
 
 type userService struct {
@@ -116,9 +110,4 @@ func (s *userService) GetUserByID(id string) (*Domain, error) {
 	}
 
 	return user, nil
-}
-
-func (s *userService) LoginUser(upsertLoginSpec spec.UpsertLoginUsersSpec) (Auth, error) {
-	var err error
-	return Auth{}, err
 }

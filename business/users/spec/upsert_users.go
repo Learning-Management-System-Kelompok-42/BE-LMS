@@ -10,8 +10,3 @@ type UpsertUsersSpec struct {
 	Phone            string `validate:"required"`
 	Address          string `validate:"required"`
 }
-
-type UpsertLoginUsersSpec struct {
-	Email    string `validate:"required,email"`
-	Password string `validate:"required,min=5"`
-}
