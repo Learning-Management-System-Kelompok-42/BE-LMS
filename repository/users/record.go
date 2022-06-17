@@ -42,7 +42,17 @@ func (user *User) ToDomain() users.Domain {
 		PhoneNumber:      user.PhoneNumber,
 		Address:          user.Address,
 		LevelAccess:      user.LevelAccess,
+		CreatedAt:        user.CreatedAt,
+		UpdatedAt:        user.UpdatedAt,
 	}
+}
+
+func ToDomainList(user []User) []users.Domain {
+	var domains []users.Domain
+	for _, user := range user {
+		domains = append(domains, user.ToDomain())
+	}
+	return domains
 }
 
 func FromDomain(domain users.Domain) User {
