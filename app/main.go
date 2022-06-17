@@ -29,6 +29,7 @@ import (
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/config"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/util"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 )
 
