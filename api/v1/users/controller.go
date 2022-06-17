@@ -53,12 +53,14 @@ func (ctrl *Controller) GetUserByID(c echo.Context) error {
 	user, err := ctrl.service.GetUserByID(id)
 	if err != nil {
 		if err == exception.ErrDataNotFound {
-			return c.JSON(http.StatusNotFound, err.Error())
+			return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))
 		}
-		return c.JSON(http.StatusInternalServerError, err.Error())
+		return c.JSON(http.StatusInternalServerError, r.InternalServerErrorResponse(err.Error()))
 	}
 
-	return c.JSON(http.StatusOK, user)
+	result := response.FromDomainUser(user)
+
+	return c.JSON(http.StatusOK, r.SuccessResponse(result))
 }
 
 func (ctrl *Controller) GetAllUsers(c echo.Context) error {

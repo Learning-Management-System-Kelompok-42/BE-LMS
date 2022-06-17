@@ -4,22 +4,9 @@ import (
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users/spec"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/encrypt"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 )
-
-type Auth struct {
-	Token  string
-	UserID string
-}
-
-type Claims struct {
-	Email       string
-	UserID      string
-	LevelAccess string
-	jwt.StandardClaims
-}
 
 type UserRepository interface {
 	// Insert creates a new user
@@ -29,7 +16,7 @@ type UserRepository interface {
 	Update(user Domain) (err error)
 
 	// FindByID returns a user by ID
-	FindByID(id string) (user *Domain, err error)
+	FindByID(id string) (user Domain, err error)
 
 	// GetAllUsers returns all users
 	FindAllUsers(userID string) (users []Domain, err error)
@@ -115,7 +102,7 @@ func (s *userService) GetUserByID(id string) (*Domain, error) {
 		return nil, exception.ErrInternalServer
 	}
 
-	return user, nil
+	return &user, nil
 }
 
 func (s *userService) GetAllUsers(userID string) (users []Domain, err error) {
