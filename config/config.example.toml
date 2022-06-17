@@ -1,0 +1,20 @@
+[app]
+name = "namaApp"
+port = 4001
+env = "local"
+timeout = 30
+secretkey = "key jwt"
+
+[database]
+driver = "postgres" // see on util.dbDrive.go supported database
+name = "capstonetest" // name database
+address = "localhost" // address database
+port = 5432 // port database
+username = "devpostgres" // username database
+password = "devpostgres" // password database
+
+[storage]
+cloudname = "id" //cloudinary id
+apikey = "key" //cloudinary apikey
+apisecret = "secret" //cloudinary apisecret
+uploadfolder = "nameFolder" //cloudinary folder name
