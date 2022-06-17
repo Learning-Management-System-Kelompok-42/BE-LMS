@@ -28,8 +28,11 @@ type UserRepository interface {
 	// Update updates an existing user
 	Update(user Domain) (err error)
 
-	// GetByID returns a user by ID
-	GetByID(id string) (user *Domain, err error)
+	// FindByID returns a user by ID
+	FindByID(id string) (user *Domain, err error)
+
+	// GetAllUsers returns all users
+	FindAllUsers(userID string) (users []Domain, err error)
 
 	// CheckEmail checks if an email is already registered
 	CheckEmail(email string) error
@@ -44,6 +47,9 @@ type UserService interface {
 
 	// GetUserByID returns a user by ID
 	GetUserByID(id string) (*Domain, error)
+
+	// GetAllUsers returns all users
+	GetAllUsers(userID string) (users []Domain, err error)
 }
 
 type userService struct {
@@ -101,7 +107,7 @@ func (s *userService) UpdateUser(user Domain, id string) (err error) {
 }
 
 func (s *userService) GetUserByID(id string) (*Domain, error) {
-	user, err := s.userRepo.GetByID(id)
+	user, err := s.userRepo.FindByID(id)
 	if err != nil {
 		if err == exception.ErrDataNotFound {
 			return nil, exception.ErrDataNotFound
@@ -110,4 +116,17 @@ func (s *userService) GetUserByID(id string) (*Domain, error) {
 	}
 
 	return user, nil
+}
+
+func (s *userService) GetAllUsers(userID string) (users []Domain, err error) {
+	users, err = s.userRepo.FindAllUsers(userID)
+	if err != nil {
+		if err == exception.ErrDataNotFound {
+			return nil, exception.ErrDataNotFound
+		}
+
+		return nil, exception.ErrInternalServer
+	}
+
+	return users, nil
 }

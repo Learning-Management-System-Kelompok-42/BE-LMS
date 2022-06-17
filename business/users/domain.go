@@ -17,7 +17,6 @@ type Domain struct {
 	LevelAccess      string
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
-	DeletedAt        time.Time
 }
 
 func NewUser(id, companyID, specializationID, role, fullName, email, password, phoneNumber, address, levelAccess string) Domain {

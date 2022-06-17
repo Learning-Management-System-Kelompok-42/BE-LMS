@@ -1,8 +1,10 @@
 package users
 
 import (
+	"fmt"
 	"net/http"
 
+	m "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/middleware"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/users/request"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/users/response"
 	domain "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users"
@@ -57,4 +59,21 @@ func (ctrl *Controller) GetUserByID(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, user)
+}
+
+func (ctrl *Controller) GetAllUsers(c echo.Context) error {
+	userID, _, _ := m.ExtractToken(c)
+	fmt.Println("exctract user id = ", userID)
+
+	users, err := ctrl.service.GetAllUsers(userID)
+	if err != nil {
+		if err == exception.ErrDataNotFound {
+			return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))
+		}
+		return c.JSON(http.StatusInternalServerError, r.InternalServerErrorResponse(err.Error()))
+	}
+
+	result := response.NewGetAllUsersReponse(users)
+
+	return c.JSON(http.StatusOK, r.SuccessResponse(result))
 }

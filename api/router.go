@@ -27,6 +27,7 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	userV1 := e.Group("/v1/users")
 	userV1.Use(m.JWTMiddleware(config))
 	userV1.GET("/:id", controller.UserV1Controller.GetUserByID)
+	userV1.GET("/", controller.UserV1Controller.GetAllUsers, m.CheckLevelAccess)
 
 	companyV1 := e.Group("/v1/admin")
 	companyV1.Use(m.JWTMiddleware(config))
