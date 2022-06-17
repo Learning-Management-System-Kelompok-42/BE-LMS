@@ -49,8 +49,15 @@ func main() {
 
 	api.RegistrationPath(e, controllers, cfg)
 
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+	}))
+
+	port := os.Getenv("PORT")
+
 	go func() {
-		address := fmt.Sprintf(":%d", cfg.App.Port)
+		address := fmt.Sprintf(":%s", port)
 		if err := e.Start(address); err != nil {
 			log.Info("Shutting down the server")
 		}
