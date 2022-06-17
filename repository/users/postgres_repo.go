@@ -38,15 +38,18 @@ func (repo *postgreSQLRepository) Update(user users.Domain) (err error) {
 	return nil
 }
 
-func (repo *postgreSQLRepository) FindByID(id string) (user *users.Domain, err error) {
-	err = repo.db.Where("Id =? ", id).First(&user).Error
+func (repo *postgreSQLRepository) FindByID(id string) (user users.Domain, err error) {
+	result := FromDomain(users.Domain{ID: id})
 
+	err = repo.db.First(&result).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, exception.ErrDataNotFound
+			return user, exception.ErrDataNotFound
 		}
-		return nil, exception.ErrInternalServer
+		return user, exception.ErrInternalServer
 	}
+
+	user = result.ToDomain()
 
 	return user, nil
 }
