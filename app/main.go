@@ -21,8 +21,7 @@ import (
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/course"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/faq"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/material"
-	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/module"
-	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/options"
+	module "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/modules"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/quiz"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/requestCourse"
 
@@ -55,10 +54,10 @@ func main() {
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 
-	port := os.Getenv("PORT")
+	// port := os.Getenv("PORT")
 
 	go func() {
-		address := fmt.Sprintf(":%s", port)
+		address := fmt.Sprintf(":%d", cfg.App.Port)
 		if err := e.Start(address); err != nil {
 			log.Info("Shutting down the server")
 		}
@@ -94,9 +93,8 @@ func init() {
 		&certificate.Certificate{},
 		&faq.Faq{},
 		&material.Material{},
-		&module.Module{},
 		&quiz.Quiz{},
-		&options.Option{},
+		&module.Module{},
 		&requestCourse.RequestCourse{},
 		&specializationCourse.SpecializationCourse{},
 		&userCourse.UserCourse{},
