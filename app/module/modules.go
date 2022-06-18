@@ -4,15 +4,24 @@ import (
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api"
 	authController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/auth"
 	companyController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/company"
+	courseController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/course"
+	moduleController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/modules"
+	quizController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/quiz"
 	specializationController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/specialization"
 	userController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/users"
 	authService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/auth"
 	companyService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/company"
+	courseService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course"
+	moduleService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/modules"
+	quizService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/quiz"
 	specializationService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/specialization"
 	userService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/config"
 	authRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/auth"
 	companyRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/company"
+	courseRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/course"
+	moduleRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/modules"
+	quizRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/quiz"
 	specializationRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/specialization"
 	userRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/users"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/util"
@@ -39,10 +48,28 @@ func RegisterModules(dbCon *util.DatabaseConnection, config *config.AppConfig) a
 	authPermitService := authService.NewAuthService(authPermitRepo, config)
 	authPermitControllerV1 := authController.NewController(authPermitService)
 
+	// initiate dependency injection for quiz
+	quizPermitRepo := quizRepo.RepositoryFactory(dbCon)
+	quizPermitService := quizService.NewQuizService(quizPermitRepo)
+	quizPermitControllerV1 := quizController.NewController(quizPermitService)
+
+	// initiate dependency injection for modules
+	modulePermitRepo := moduleRepo.RepositoryFactory(dbCon)
+	modulePermiService := moduleService.NewModuleService(modulePermitRepo)
+	modulePermitControllerV1 := moduleController.NewController(modulePermiService)
+
+	// initiate dependency injection for course
+	coursePermitRepo := courseRepo.RepositoryFactory(dbCon)
+	coursePermitService := courseService.NewCourseService(coursePermitRepo, modulePermiService, quizPermitService)
+	coursePermitControllerV1 := courseController.NewController(coursePermitService)
+
 	controllers := api.Controller{
 		UserV1Controller:           userPermitControllerV1,
 		CompanyV1Controller:        companyPermitControllerV1,
 		SpecializationV1Controller: specializationPermitControllerV1,
+		QuizV1Controller:           quizPermitControllerV1,
+		ModuleV1Controller:         modulePermitControllerV1,
+		CourseV1Controller:         coursePermitControllerV1,
 		AuthV1Controller:           authPermitControllerV1,
 	}
 
