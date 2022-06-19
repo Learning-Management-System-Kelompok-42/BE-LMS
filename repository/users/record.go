@@ -22,8 +22,8 @@ type User struct {
 	Address          string
 	Role             string
 	LevelAccess      string
-	UserCourses      []userCourse.UserCourse   `gorm:"foreignKey:CourseID"`
-	UserModules      []userModules.UserModule  `gorm:"foreignKey:CourseID"`
+	UserCourses      []userCourse.UserCourse   `gorm:"foreignKey:UserID"`
+	UserModules      []userModules.UserModule  `gorm:"foreignKey:UserID"`
 	Certificates     []certificate.Certificate `gorm:"foreignKey:UserID"`
 	CreatedAt        time.Time
 	UpdatedAt        time.Time

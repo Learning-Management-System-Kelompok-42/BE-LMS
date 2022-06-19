@@ -13,6 +13,15 @@ type Domain struct {
 	UpdatedAt time.Time
 }
 
+type DashboardDomain struct {
+	UserID               string
+	CompanyID            string
+	NameAdmin            string
+	NameCompany          string
+	AmountSpecialization string
+	AmountEmployee       string
+}
+
 func NewCompany(id, name, address, web, Sector, Logo string) Domain {
 	return Domain{
 		ID:      id,

@@ -58,6 +58,7 @@ func (s *authService) LoginUser(upsertAuth spec.UpsertAuthSpec) (auth *Auth, err
 
 	expirationTime := time.Now().Add(time.Hour * 24)
 	claims := &Claims{
+		CompanyID:   user.CompanyID,
 		Email:       user.Email,
 		UserID:      user.ID,
 		LevelAccess: user.LevelAccess,

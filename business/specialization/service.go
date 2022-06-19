@@ -50,6 +50,7 @@ func (s *specializationService) Register(upsertSpecializationSpec spec.UpsertSpe
 
 	newSpec := NewSpecialization(
 		newId,
+		upsertSpecializationSpec.CompanyID,
 		upsertSpecializationSpec.Name,
 		separateLink,
 	)

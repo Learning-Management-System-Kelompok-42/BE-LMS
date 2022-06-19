@@ -22,10 +22,13 @@ func NewController(service specialization.SpecializationService) *Controller {
 }
 
 func (ctrl *Controller) Register(c echo.Context) error {
-	userId, levelAccess, _ := middleware.ExtractToken(c)
+	companyId, userId, levelAccess, _ := middleware.ExtractToken(c)
 	fmt.Println("user id : ", userId)
 	fmt.Println("level access : ", levelAccess)
+	fmt.Println("company id : ", companyId)
+
 	createSpecializationRequest := new(request.CreateRequestSpecialization)
+	createSpecializationRequest.CompanyID = companyId
 
 	if err := c.Bind(&createSpecializationRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))

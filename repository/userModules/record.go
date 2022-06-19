@@ -1,13 +1,14 @@
 package userModules
 
 import (
-	"gorm.io/gorm"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type UserModule struct {
 	ID        string `gorm:"primaryKey;size:200;autoIncrement"`
-	CourseID  string `gorm:"size:200"`
+	UserID    string `gorm:"size:200"`
 	ModuleID  string `gorm:"size:200"`
 	Point     int32
 	Status    bool
