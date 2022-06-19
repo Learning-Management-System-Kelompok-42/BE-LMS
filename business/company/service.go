@@ -17,6 +17,9 @@ type CompanyRepository interface {
 	// Insert creates a new company into database
 	Insert(company Domain) (id string, err error)
 
+	// Dashboard return amount of specialization and amount of employee
+	FindDashboard(companyID string) (domain DashboardDomain, err error)
+
 	// CheckEmail checks if an email is already registered
 	CheckWeb(web string) error
 }
@@ -24,6 +27,9 @@ type CompanyRepository interface {
 type CompanyService interface {
 	// Register creates a new company
 	Register(upsertCompanySpec spec.UpsertCompanySpec) (id string, err error)
+
+	// Dashboard returns a list of specialization and amount of employees
+	Dashboard(companyID string) (domain DashboardDomain, err error)
 }
 
 type companyService struct {
@@ -102,4 +108,19 @@ func (s *companyService) Register(upsertCompanySpec spec.UpsertCompanySpec) (id 
 	}
 
 	return id, nil
+}
+
+func (s *companyService) Dashboard(userID string) (domain DashboardDomain, err error) {
+	domain, err = s.companyRepo.FindDashboard(userID)
+	if err != nil {
+		if err == exception.ErrNotFound {
+			return domain, exception.ErrNotFound
+		}
+
+		return domain, exception.ErrInternalServer
+	}
+
+	fmt.Println("service domain = ", domain)
+
+	return domain, nil
 }

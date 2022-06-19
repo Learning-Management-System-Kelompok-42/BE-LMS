@@ -86,8 +86,8 @@ func init() {
 	dbConnection := util.NewConnectionDB(cfg)
 
 	if err := dbConnection.PostgreSQL.AutoMigrate(
-		&specialization.Specialization{},
 		&company.Company{},
+		&specialization.Specialization{},
 		&users.User{},
 		&course.Course{},
 		&certificate.Certificate{},

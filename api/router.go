@@ -41,6 +41,7 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	companyV1.Use(m.JWTMiddleware(config))
 	companyV1.POST("/specialization", controller.SpecializationV1Controller.Register, m.CheckLevelAccess)
 	companyV1.GET("/users", controller.UserV1Controller.GetAllUsers, m.CheckLevelAccess)
+	companyV1.GET("/dashboard", controller.CompanyV1Controller.GetDashboard, m.CheckLevelAccess)
 
 	courseV1 := e.Group("/v1/course")
 	courseV1.Use(m.JWTMiddleware(config))

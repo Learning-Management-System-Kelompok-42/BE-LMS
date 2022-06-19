@@ -1,8 +1,9 @@
 package userCourse
 
 import (
-	"gorm.io/gorm"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type UserCourse struct {

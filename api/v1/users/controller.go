@@ -64,7 +64,7 @@ func (ctrl *Controller) GetUserByID(c echo.Context) error {
 }
 
 func (ctrl *Controller) GetAllUsers(c echo.Context) error {
-	userID, _, _ := m.ExtractToken(c)
+	_, userID, _, _ := m.ExtractToken(c)
 	fmt.Println("exctract user id = ", userID)
 
 	users, err := ctrl.service.GetAllUsers(userID)

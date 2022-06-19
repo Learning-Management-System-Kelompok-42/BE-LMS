@@ -45,7 +45,7 @@ func JWTMiddleware(config *config.AppConfig) echo.MiddlewareFunc {
 	}
 }
 
-func ExtractToken(c echo.Context) (id, levelAccess string, err error) {
+func ExtractToken(c echo.Context) (companyId, userId, levelAccess string, err error) {
 	signature := strings.Split(c.Request().Header.Get("Authorization"), " ")
 
 	claim := jwt.MapClaims{}
@@ -53,16 +53,17 @@ func ExtractToken(c echo.Context) (id, levelAccess string, err error) {
 		return []byte("Secret_JWT"), nil
 	})
 
-	id = fmt.Sprintf("%v", claim["UserID"])
+	companyId = fmt.Sprintf("%v", claim["CompanyID"])
+	userId = fmt.Sprintf("%v", claim["UserID"])
 	levelAccess = fmt.Sprintf("%v", claim["LevelAccess"])
 
-	return id, levelAccess, nil
+	return companyId, userId, levelAccess, nil
 }
 
 // Adding handlerFunction to check if the LevelAccess == admin or user
 func CheckLevelAccess(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		_, levelAccess, err := ExtractToken(c)
+		_, _, levelAccess, err := ExtractToken(c)
 
 		if err != nil {
 			return c.JSON(http.StatusForbidden, f.ForbiddenResponse("Invalid token"))
