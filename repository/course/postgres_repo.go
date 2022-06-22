@@ -26,3 +26,19 @@ func (repo *postgreSQLRepository) Insert(course course.Domain) (id string, err e
 
 	return id, nil
 }
+
+func (repo *postgreSQLRepository) FindByID(id string) (course course.Domain, err error) {
+	var newCourse Course
+	err = repo.db.Where("id = ?", id).First(&newCourse).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return course, exception.ErrNotFound
+		}
+		return course, exception.ErrNotFound
+	}
+
+	course = newCourse.ToDomain()
+
+	return course, nil
+}

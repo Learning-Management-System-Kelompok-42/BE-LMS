@@ -32,5 +32,6 @@ func (old *Domain) ModifyModule(title, youtubeURL, slideURL string, orders int) 
 		SlideURL:   slideURL,
 		Title:      title,
 		Orders:     orders,
+		CreatedAt:  old.CreatedAt,
 	}
 }

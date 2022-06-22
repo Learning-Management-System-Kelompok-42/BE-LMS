@@ -16,11 +16,17 @@ import (
 type CourseRepository interface {
 	// Insert insert a new course
 	Insert(course Domain) (id string, err error)
+
+	// FindByID find a course by id
+	FindByID(id string) (course Domain, err error)
 }
 
 type CourseService interface {
 	// Insert insert a new course
 	Create(upsertCourseSpec spec.UpsertCourseSpec) (id string, err error)
+
+	// GetByID get a course by id
+	GetByID(id string) (course Domain, err error)
 }
 
 type courseService struct {
@@ -56,7 +62,7 @@ func (s *courseService) Create(upsertCourseSpec spec.UpsertCourseSpec) (id strin
 	if err != nil {
 		return "", exception.ErrInternalServer
 	}
-	fmt.Println("course id dari insert = ", course)
+	// fmt.Println("course id dari insert = ", course)
 
 	for _, module := range upsertCourseSpec.Modules {
 		module.CourseID = course
@@ -77,7 +83,7 @@ func (s *courseService) Create(upsertCourseSpec spec.UpsertCourseSpec) (id strin
 			return "", exception.ErrInternalServer
 		}
 
-		fmt.Println("modules id dari insert = ", modulesID)
+		// fmt.Println("modules id dari insert = ", modulesID)
 
 		for _, quiz := range module.Quizzes {
 			newQuiz := specQuiz.UpsertQuizSpec{
@@ -98,6 +104,18 @@ func (s *courseService) Create(upsertCourseSpec spec.UpsertCourseSpec) (id strin
 
 			fmt.Println("quiz id dari insert = ", quizID)
 		}
+	}
+
+	return course, nil
+}
+
+func (s *courseService) GetByID(id string) (course Domain, err error) {
+	course, err = s.repo.FindByID(id)
+	if err != nil {
+		if err == exception.ErrNotFound {
+			return course, exception.ErrNotFound
+		}
+		return course, exception.ErrInternalServer
 	}
 
 	return course, nil

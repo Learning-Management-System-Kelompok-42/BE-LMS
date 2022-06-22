@@ -10,11 +10,23 @@ import (
 type ModuleRepository interface {
 	// Insert insert a new module
 	Insert(domain Domain) (id string, err error)
+
+	// GetByID get a module by id
+	FindByID(id string) (domain Domain, err error)
+
+	// Update update a module
+	Update(domain Domain) (id string, err error)
 }
 
 type ModuleService interface {
 	// Insert insert a new module
 	Create(UpsertModuleSpec spec.UpsertModuleSpec) (id string, err error)
+
+	// GetByID get a module by id
+	GetByID(id string) (domain Domain, err error)
+
+	// Update update a module
+	Update(UpsertModuleSpec spec.UpsertModuleSpec) (id string, err error)
 }
 
 type moduleService struct {
@@ -52,4 +64,52 @@ func (s *moduleService) Create(UpsertModuleSpec spec.UpsertModuleSpec) (id strin
 	}
 
 	return id, nil
+}
+
+func (s *moduleService) Update(UpsertModuleSpec spec.UpsertModuleSpec) (id string, err error) {
+	err = s.validate.Struct(&UpsertModuleSpec)
+	if err != nil {
+		return "", exception.ErrInvalidRequest
+	}
+
+	oldModule, err := s.GetByID(UpsertModuleSpec.ID)
+	if err != nil {
+		if err == exception.ErrNotFound {
+			return id, exception.ErrNotFound
+		}
+
+		return id, exception.ErrInternalServer
+	}
+
+	newModule := oldModule.ModifyModule(
+		UpsertModuleSpec.Title,
+		UpsertModuleSpec.YoutubeURL,
+		UpsertModuleSpec.SlideURL,
+		UpsertModuleSpec.Orders,
+	)
+
+	id, err = s.repo.Update(newModule)
+	if err != nil {
+		if err == exception.ErrNotFound {
+			return id, exception.ErrNotFound
+		}
+
+		return id, exception.ErrInternalServer
+	}
+
+	return id, nil
+}
+
+func (s *moduleService) GetByID(id string) (domain Domain, err error) {
+	domain, err = s.repo.FindByID(id)
+
+	if err != nil {
+		if err == exception.ErrNotFound {
+			return domain, exception.ErrNotFound
+		}
+
+		return domain, exception.ErrInternalServer
+	}
+
+	return domain, nil
 }

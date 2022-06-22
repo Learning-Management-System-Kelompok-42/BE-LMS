@@ -37,13 +37,24 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	userV1.Use(m.JWTMiddleware(config))
 	userV1.GET("/:id", controller.UserV1Controller.GetUserByID)
 
+	courseV1 := e.Group("/v1/course")
+	courseV1.Use(m.JWTMiddleware(config))
+	courseV1.POST("", controller.CourseV1Controller.Register, m.CheckLevelAccess)
+
+	quizV1 := e.Group("/v1/quiz")
+	quizV1.GET("/:id", controller.QuizV1Controller.FindByID)
+	quizV1.PUT("", controller.QuizV1Controller.Update)
+	quizV1.POST("", controller.QuizV1Controller.Create)
+
+	moduleV1 := e.Group("/v1/module")
+	moduleV1.GET("/:id", controller.ModuleV1Controller.GetByID)
+	moduleV1.PUT("", controller.ModuleV1Controller.Update)
+	moduleV1.POST("", controller.ModuleV1Controller.Register)
+
 	companyV1 := e.Group("/v1/admin")
 	companyV1.Use(m.JWTMiddleware(config))
 	companyV1.POST("/specialization", controller.SpecializationV1Controller.Register, m.CheckLevelAccess)
 	companyV1.GET("/users", controller.UserV1Controller.GetAllUsers, m.CheckLevelAccess)
 	companyV1.GET("/dashboard", controller.CompanyV1Controller.GetDashboard, m.CheckLevelAccess)
 
-	courseV1 := e.Group("/v1/course")
-	courseV1.Use(m.JWTMiddleware(config))
-	courseV1.POST("", controller.CourseV1Controller.Register, m.CheckLevelAccess)
 }

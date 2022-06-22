@@ -5,25 +5,25 @@ import (
 )
 
 type CreateCourseRequest struct {
-	Title       string         `json:"title"`
-	Description string         `json:"description"`
-	Thumbnail   string         `json:"thumbnail"`
-	Modules     []spec.Modules `json:"modules"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Thumbnail   string    `json:"thumbnail"`
+	Modules     []modules `json:"modules"`
 }
 
-// type modules struct {
-// 	Title      string `json:"name"`
-// 	YoutubeURL string `json:"youtube_url"`
-// 	SlideURL   string `json:"slide_url"`
-// 	Orders     int    `json:"orders"`
-// 	Quizzes    []quiz `json:"quizzes"`
-// }
+type modules struct {
+	Title      string `json:"name"`
+	YoutubeURL string `json:"youtube_url"`
+	SlideURL   string `json:"slide_url"`
+	Orders     int    `json:"orders"`
+	Quizzes    []quiz `json:"quizzes"`
+}
 
-// type quiz struct {
-// 	Question       string   `json:"question"`
-// 	Answer         string   `json:"answer"`
-// 	MultipleChoice []string `json:"multiple_choice"`
-// }
+type quiz struct {
+	Question       string   `json:"question"`
+	Answer         string   `json:"answer"`
+	MultipleChoice []string `json:"multiple_choice"`
+}
 
 func (req *CreateCourseRequest) ToSpec() *spec.UpsertCourseSpec {
 	return &spec.UpsertCourseSpec{
