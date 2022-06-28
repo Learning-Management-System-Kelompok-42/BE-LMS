@@ -4,12 +4,12 @@ name: ci
 on:
   push:
     branches:
-      - 'master'
+      - 'development'
     tags:
       - 'v*'
   pull_request:
     branches:
-      - 'master'
+      - 'development'
 
 jobs:
   docker:
