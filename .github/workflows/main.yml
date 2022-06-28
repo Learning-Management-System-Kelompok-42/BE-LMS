@@ -66,6 +66,7 @@ jobs:
         run: |
           echo "{{ steps.meta.outputs.tags }}"
           echo {{ steps.meta.outputs.labels }}
+          echo "{{ github.sha }}"
           echo {{ github.sha }}
 
 
