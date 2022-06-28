@@ -60,6 +60,12 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          # tags: ${{ steps.meta.outputs.tags }}
-          tags: ${{ github.sha }}
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  ssh-ec2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: get outputs tags from docker push
+        run: |
+          echo "{{ steps.build-docker-push.outputs.tags }}" 
