@@ -6,11 +6,18 @@ timeout = 30
 
 [database]
 driver = "postgres"
-name = "capstone-test"
-address = "localhost"
-port = 5432
+name = "capstone"
+address = "database-1.cc1wtqs1vivh.ap-southeast-1.rds.amazonaws.com"
+port = 5555
 username = "devpostgres"
 password = "devpostgres"
+
+#driver = "postgres"
+#name = "capstone-test"
+#address = "localhost"
+#port = 5432
+#username = "devpostgres"
+#password = "devpostgres"
 
 [storage]
 cloudname = "dr8volyui"
