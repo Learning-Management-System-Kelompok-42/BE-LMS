@@ -64,9 +64,9 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
       - name: print meta tags
         run: |
-          echo "${{ steps.meta.outputs.tags }}"
+          echo "tes ${{ steps.meta.outputs.labels }}"
+          echo "tes ${{ github.sha }}"
           echo ${{ steps.meta.outputs.labels }}
-          echo "${{ github.sha }}"
           echo ${{ github.sha }}
 
 
