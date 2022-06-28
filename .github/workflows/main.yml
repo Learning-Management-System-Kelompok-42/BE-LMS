@@ -1,7 +1,8 @@
 name: ci
 
 variables:
-  - tagsV: ${{ github.sha }}
+  - name: tagsv
+    run: ${{ github.sha }}
 
 on:
   push:
