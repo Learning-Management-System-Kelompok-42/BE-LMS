@@ -36,7 +36,8 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	userV1 := e.Group("/v1/users")
 	userV1.Use(m.JWTMiddleware(config))
 	userV1.GET("/:id", controller.UserV1Controller.GetUserByID)
-	userV1.GET("/dashboard", controller.UserV1Controller.GetAllUsers, m.CheckLevelAccess) //Get all users for admin
+	userV1.GET("/dashboard", controller.UserV1Controller.GetAllUsers, m.CheckLevelAccess)                //Get all users for admin
+	userV1.GET("/dashboard/:id", controller.UserV1Controller.GetDetailUserDashboard, m.CheckLevelAccess) //Get user by id for admin
 
 	courseV1 := e.Group("/v1/course")
 	courseV1.Use(m.JWTMiddleware(config))
@@ -56,7 +57,7 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	moduleV1.PUT("/:id", controller.ModuleV1Controller.Update)
 	moduleV1.POST("", controller.ModuleV1Controller.Register)
 
-	specializationV1 := e.Group("/v1/specialization")
+	specializationV1 := e.Group("/v1/specializations")
 	specializationV1.Use(m.JWTMiddleware(config))
 	specializationV1.POST("", controller.SpecializationV1Controller.Register, m.CheckLevelAccess)
 

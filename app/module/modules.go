@@ -28,9 +28,24 @@ import (
 )
 
 func RegisterModules(dbCon *util.DatabaseConnection, config *config.AppConfig) api.Controller {
+	// initiate dependency injection for quiz
+	quizPermitRepo := quizRepo.RepositoryFactory(dbCon)
+	quizPermitService := quizService.NewQuizService(quizPermitRepo)
+	quizPermitControllerV1 := quizController.NewController(quizPermitService)
+
+	// initiate dependency injection for modules
+	modulePermitRepo := moduleRepo.RepositoryFactory(dbCon)
+	modulePermiService := moduleService.NewModuleService(modulePermitRepo)
+	modulePermitControllerV1 := moduleController.NewController(modulePermiService)
+
+	// initiate dependency injection for course
+	coursePermitRepo := courseRepo.RepositoryFactory(dbCon)
+	coursePermitService := courseService.NewCourseService(coursePermitRepo, modulePermiService, quizPermitService)
+	coursePermitControllerV1 := courseController.NewController(coursePermitService)
+
 	//initiate dependency injection for user
 	userPermitRepo := userRepo.RepositoryFactory(dbCon)
-	userPermitService := userService.NewUserService(userPermitRepo)
+	userPermitService := userService.NewUserService(userPermitRepo, coursePermitRepo)
 	userPermitControllerV1 := userController.NewController(userPermitService)
 
 	//initiate dependency injection for company
@@ -47,21 +62,6 @@ func RegisterModules(dbCon *util.DatabaseConnection, config *config.AppConfig) a
 	authPermitRepo := authRepo.RepositoryFactory(dbCon)
 	authPermitService := authService.NewAuthService(authPermitRepo, config)
 	authPermitControllerV1 := authController.NewController(authPermitService)
-
-	// initiate dependency injection for quiz
-	quizPermitRepo := quizRepo.RepositoryFactory(dbCon)
-	quizPermitService := quizService.NewQuizService(quizPermitRepo)
-	quizPermitControllerV1 := quizController.NewController(quizPermitService)
-
-	// initiate dependency injection for modules
-	modulePermitRepo := moduleRepo.RepositoryFactory(dbCon)
-	modulePermiService := moduleService.NewModuleService(modulePermitRepo)
-	modulePermitControllerV1 := moduleController.NewController(modulePermiService)
-
-	// initiate dependency injection for course
-	coursePermitRepo := courseRepo.RepositoryFactory(dbCon)
-	coursePermitService := courseService.NewCourseService(coursePermitRepo, modulePermiService, quizPermitService)
-	coursePermitControllerV1 := courseController.NewController(coursePermitService)
 
 	controllers := api.Controller{
 		UserV1Controller:           userPermitControllerV1,

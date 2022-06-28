@@ -79,3 +79,21 @@ func (ctrl *Controller) GetAllUsers(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, r.SuccessResponse(result))
 }
+
+func (ctrl *Controller) GetDetailUserDashboard(c echo.Context) error {
+	userID := c.Param("id")
+
+	result, err := ctrl.service.GetDetailUserDashboard(userID)
+	if err != nil {
+		if err == exception.ErrDataNotFound {
+			return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))
+		}
+		return c.JSON(http.StatusInternalServerError, r.InternalServerErrorResponse(err.Error()))
+	}
+
+	// fmt.Println("course = ", courses.User)
+
+	resp := response.NewGetAllUserDetailDashboardResp(result.User, result.Courses)
+
+	return c.JSON(http.StatusOK, r.SuccessResponse(resp))
+}

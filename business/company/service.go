@@ -110,8 +110,8 @@ func (s *companyService) Register(upsertCompanySpec spec.UpsertCompanySpec) (id 
 	return id, nil
 }
 
-func (s *companyService) Dashboard(userID string) (domain DashboardDomain, err error) {
-	domain, err = s.companyRepo.FindDashboard(userID)
+func (s *companyService) Dashboard(companyID string) (domain DashboardDomain, err error) {
+	domain, err = s.companyRepo.FindDashboard(companyID)
 	if err != nil {
 		if err == exception.ErrNotFound {
 			return domain, exception.ErrNotFound

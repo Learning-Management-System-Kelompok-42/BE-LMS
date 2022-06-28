@@ -25,6 +25,9 @@ type CourseRepository interface {
 
 	// FindAllCourseDashboard get all course on dashboard admin
 	FindAllCourseDashboard(companyID string) (course []Domain, err error)
+
+	// FindAllCourseByUserID get all course by user id
+	FindAllCourseByUserID(userID string) (course []Domain, err error)
 }
 
 type CourseService interface {
