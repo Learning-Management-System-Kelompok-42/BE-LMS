@@ -67,6 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-docker-push
     steps:
-      - name: get outputs tags from docker push
+      - name: get outputs tags from docker push 
         run: |
-          echo "{{ steps.build-docker-push.outputs.tags }}" 
+        echo "{{ steps.build-docker-push.outputs.tags }}" > tags.txt
+        cat tags.txt
