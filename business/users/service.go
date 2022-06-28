@@ -3,6 +3,7 @@ package users
 import (
 	"fmt"
 
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users/spec"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/encrypt"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
@@ -24,7 +25,10 @@ type UserRepository interface {
 	FindAllUsers(companyID string) (users []Domain, err error)
 
 	// FindDetailUserDashboard returns a user by ID
-	FindDetailUserDashboard(userID string) (user Domain, err error)
+	FindDetailUserDashboard(userID string) (user UserDetailDashboard, err error)
+
+	// FindDetailCourseDashboardUsers returns a course by ID, this course will be return if user already enroll on courses
+	FindDetailCourseDashboardUsers(userID string) (courses []CourseDetailDashboardUser, err error)
 
 	// CheckEmail checks if an email is already registered
 	CheckEmail(email string) error
@@ -41,21 +45,23 @@ type UserService interface {
 	GetUserByID(id string) (*Domain, error)
 
 	// GetDetailUserDashboard  return a user by id
-	GetDetailUserDashboard(userID string) (user Domain, err error)
+	GetDetailUserDashboard(userID string) (user ToResponseDetailUserDashboard, err error)
 
 	// GetAllUsers returns all users
 	GetAllUsers(companyID string) (users []Domain, err error)
 }
 
 type userService struct {
-	userRepo UserRepository
-	validate *validator.Validate
+	userRepo   UserRepository
+	courseRepo course.CourseRepository
+	validate   *validator.Validate
 }
 
-func NewUserService(repo UserRepository) UserService {
+func NewUserService(user UserRepository, course course.CourseRepository) UserService {
 	return &userService{
-		userRepo: repo,
-		validate: validator.New(),
+		userRepo:   user,
+		courseRepo: course,
+		validate:   validator.New(),
 	}
 }
 
@@ -127,6 +133,29 @@ func (s *userService) GetAllUsers(companyID string) (users []Domain, err error) 
 	return users, nil
 }
 
-func (s *userService) GetDetailUserDashboard(userID string) (user Domain, err error) {
-	return user, nil
+func (s *userService) GetDetailUserDashboard(userID string) (result ToResponseDetailUserDashboard, err error) {
+	user, err := s.userRepo.FindDetailUserDashboard(userID)
+	if err != nil {
+		if err == exception.ErrDataNotFound {
+			return result, exception.ErrDataNotFound
+		}
+
+		return result, exception.ErrInternalServer
+	}
+
+	course, err := s.userRepo.FindDetailCourseDashboardUsers(user.ID)
+	if err != nil {
+		if err == exception.ErrDataNotFound {
+			return result, exception.ErrDataNotFound
+		}
+
+		return result, exception.ErrInternalServer
+	}
+
+	result = ToResponseDetailUserDashboard{
+		User:    user,
+		Courses: course,
+	}
+
+	return result, nil
 }

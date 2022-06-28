@@ -19,6 +19,32 @@ type Domain struct {
 	UpdatedAt        time.Time
 }
 
+type UserDetailDashboard struct {
+	ID                 string
+	Name               string
+	Email              string
+	PhoneNumber        string
+	Address            string
+	SpecializationName string
+	CreatedAt          time.Time
+	UpdatedAt          time.Time
+}
+
+type CourseDetailDashboardUser struct {
+	ID          string
+	Name        string
+	Thumbnail   string
+	Description string
+	Rating      float32
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+type ToResponseDetailUserDashboard struct {
+	User    UserDetailDashboard
+	Courses []CourseDetailDashboardUser
+}
+
 func NewUser(id, companyID, specializationID, role, fullName, email, password, phoneNumber, address, levelAccess string) Domain {
 	return Domain{
 		ID:               id,

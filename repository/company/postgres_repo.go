@@ -53,7 +53,7 @@ func (repo *postgreSQLRepository) FindDashboard(companyID string) (domain compan
 
 	fmt.Println("domain = ", domain)
 
-	if result != nil {
+	if result.Error != nil {
 		if result.RowsAffected == 0 {
 			return domain, exception.ErrNotFound
 		}
