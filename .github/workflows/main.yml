@@ -5,6 +5,9 @@ on:
     branches:
       - "development"
 
+env:
+
+
 jobs:
   # build-app:
   #   runs-on: ubuntu-latest
@@ -64,10 +67,10 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
       - name: print meta tags
         run: |
-          echo "{{ steps.meta.outputs.tags }}"
-          echo {{ steps.meta.outputs.labels }}
-          echo "{{ github.sha }}"
-          echo {{ github.sha }}
+          echo "${{ steps.meta.outputs.tags }}"
+          echo ${{ steps.meta.outputs.labels }}
+          echo "${{ github.sha }}"
+          echo ${{ github.sha }}
 
 
   ssh-ec2:
