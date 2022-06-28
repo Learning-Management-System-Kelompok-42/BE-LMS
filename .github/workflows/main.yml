@@ -31,8 +31,8 @@ jobs:
       - name: Build go App
         run: go build -v ./...
 
-      - name: Check go vet linting
-        run: go vet ./...
+      # - name: Check go vet linting
+      #   run: go vet ./...
 
   build-docker-push:
     runs-on: ubuntu-latest
@@ -44,7 +44,7 @@ jobs:
         with:
           images: |
             academytokyo/capstone
-          # tags: |
+          tags: |
           #   type=schedule
           #   type=ref,event=branch
           #   type=ref,event=pr
