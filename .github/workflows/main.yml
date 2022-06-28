@@ -63,7 +63,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: get tags from meta
-        run: echo ${{ steps.meta.outputs.tags }}
+        run: echo "{{ steps.meta.outputs.tags }}"
 
   ssh-ec2:
     runs-on: ubuntu-latest
