@@ -9,30 +9,30 @@ on:
       - "development"
 
 jobs:
-  build-app:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.17
+  # build-app:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Set up Go
+  #       uses: actions/setup-go@v2
+  #       with:
+  #         go-version: 1.17
 
-      - name: Install dependencies
-        run: go mod download
+  #     - name: Install dependencies
+  #       run: go mod download
 
-      - name: Verify module
-        run: go mod verify
+  #     - name: Verify module
+  #       run: go mod verify
 
-      # - name: Go testing
-      #   run: |
-      #     cd business
-      #     go test -v ./...
-      - name: Build go App
-        run: go build -v ./...
+  #     # - name: Go testing
+  #     #   run: |
+  #     #     cd business
+  #     #     go test -v ./...
+  #     - name: Build go App
+  #       run: go build -v ./...
 
-      # - name: Check go vet linting
-      #   run: go vet ./...
+  #     # - name: Check go vet linting
+  #     #   run: go vet ./...
 
   build-docker-push:
     runs-on: ubuntu-latest
@@ -45,13 +45,13 @@ jobs:
           images: |
             academytokyo/capstone
           tags: |
-          #   type=schedule
-          #   type=ref,event=branch
-          #   type=ref,event=pr
-          #   type=semver,pattern={{version}}
-          #   type=semver,pattern={{major}}.{{minor}}
-          #   type=semver,pattern={{major}}
-          #   type=sha
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v2
