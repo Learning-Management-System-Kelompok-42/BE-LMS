@@ -46,24 +46,14 @@ func (repo *postgreSQLRepository) CheckWeb(web string) error {
 }
 
 func (repo *postgreSQLRepository) FindDashboard(companyID string) (domain company.DashboardDomain, err error) {
-
-	// type queryTest struct {
-	// 	UserID               string
-	// 	CompanyID            string
-	// 	NameAdmin            string
-	// 	NameCompany          string
-	// 	AmountSpecialization string
-	// 	AmountEmployee       string
-	// }
-
-	// var queryTests queryTest
-
 	result := repo.db.Raw(`SELECT U.id AS user_id, CO.id AS company_id, U.full_name AS name_admin, CO.name AS name_company, (SELECT COUNT(id) FROM specializations WHERE company_id = CO.id) AS amount_specialization, (SELECT COUNT(level_access) FROM users WHERE level_access = 'employee') AS amount_employee 
 	FROM users U
-	INNER JOIN companies CO ON CO.id = U.company_id
-	WHERE CO.id = 'dcea3bc1-3665-4189-90fe-ce1cef9d3ec9'`).Scan(&domain)
+	INNER JOIN companies CO ON U.company_id = CO.id
+	WHERE CO.id = ?`, companyID).Find(&domain)
 
-	if result.Error != nil {
+	fmt.Println("domain = ", domain)
+
+	if result != nil {
 		if result.RowsAffected == 0 {
 			return domain, exception.ErrNotFound
 		}
@@ -71,9 +61,7 @@ func (repo *postgreSQLRepository) FindDashboard(companyID string) (domain compan
 		return domain, exception.ErrInternalServer
 	}
 
-	fmt.Println("companyID : ", companyID)
-	fmt.Println("result: ", result)
-	fmt.Println("queryTests: ", domain)
+	fmt.Println("Masuk repo")
 
 	return domain, nil
 }

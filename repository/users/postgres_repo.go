@@ -68,20 +68,10 @@ func (repo *postgreSQLRepository) CheckEmail(email string) error {
 	return exception.ErrEmailExists
 }
 
-func (repo *postgreSQLRepository) FindAllUsers(userID string) (users []users.Domain, err error) {
-	var admin User
-	err = repo.db.Table("users").Select("company_id").Where("id = ?", userID).First(&admin).Error
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, exception.ErrDataNotFound
-		}
-
-		return nil, exception.ErrInternalServer
-	}
-
+func (repo *postgreSQLRepository) FindAllUsers(companyID string) (users []users.Domain, err error) {
 	// Next we will add limit and offset
 	var user []User
-	result := repo.db.Where("company_id = ? AND level_access = ?", admin.CompanyID, "employee").Find(&user)
+	result := repo.db.Where("company_id = ? AND level_access = ?", companyID, "employee").Find(&user)
 	// check if result rows is empty
 	if result.RowsAffected == 0 {
 		return nil, exception.ErrDataNotFound
@@ -92,4 +82,8 @@ func (repo *postgreSQLRepository) FindAllUsers(userID string) (users []users.Dom
 	users = ToDomainList(user)
 
 	return users, nil
+}
+
+func (repo *postgreSQLRepository) FindDetailUserDashboard(userID string) (user users.Domain, err error) {
+	return user, nil
 }

@@ -32,5 +32,6 @@ func (old *Domain) ModifyQuiz(title, question, answer string, multipleChoice []s
 		Question:       question,
 		MultipleChoice: multipleChoice,
 		Answer:         answer,
+		CreatedAt:      old.CreatedAt,
 	}
 }

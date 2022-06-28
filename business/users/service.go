@@ -1,6 +1,8 @@
 package users
 
 import (
+	"fmt"
+
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users/spec"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/encrypt"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
@@ -19,7 +21,10 @@ type UserRepository interface {
 	FindByID(id string) (user Domain, err error)
 
 	// GetAllUsers returns all users
-	FindAllUsers(userID string) (users []Domain, err error)
+	FindAllUsers(companyID string) (users []Domain, err error)
+
+	// FindDetailUserDashboard returns a user by ID
+	FindDetailUserDashboard(userID string) (user Domain, err error)
 
 	// CheckEmail checks if an email is already registered
 	CheckEmail(email string) error
@@ -35,8 +40,11 @@ type UserService interface {
 	// GetUserByID returns a user by ID
 	GetUserByID(id string) (*Domain, error)
 
+	// GetDetailUserDashboard  return a user by id
+	GetDetailUserDashboard(userID string) (user Domain, err error)
+
 	// GetAllUsers returns all users
-	GetAllUsers(userID string) (users []Domain, err error)
+	GetAllUsers(companyID string) (users []Domain, err error)
 }
 
 type userService struct {
@@ -105,8 +113,9 @@ func (s *userService) GetUserByID(id string) (*Domain, error) {
 	return &user, nil
 }
 
-func (s *userService) GetAllUsers(userID string) (users []Domain, err error) {
-	users, err = s.userRepo.FindAllUsers(userID)
+func (s *userService) GetAllUsers(companyID string) (users []Domain, err error) {
+	fmt.Println("masuk")
+	users, err = s.userRepo.FindAllUsers(companyID)
 	if err != nil {
 		if err == exception.ErrDataNotFound {
 			return nil, exception.ErrDataNotFound
@@ -116,4 +125,8 @@ func (s *userService) GetAllUsers(userID string) (users []Domain, err error) {
 	}
 
 	return users, nil
+}
+
+func (s *userService) GetDetailUserDashboard(userID string) (user Domain, err error) {
+	return user, nil
 }

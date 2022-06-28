@@ -1,7 +1,6 @@
 package specialization
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/middleware"
@@ -22,13 +21,10 @@ func NewController(service specialization.SpecializationService) *Controller {
 }
 
 func (ctrl *Controller) Register(c echo.Context) error {
-	companyId, userId, levelAccess, _ := middleware.ExtractToken(c)
-	fmt.Println("user id : ", userId)
-	fmt.Println("level access : ", levelAccess)
-	fmt.Println("company id : ", companyId)
+	extract, _ := middleware.ExtractToken(c)
 
 	createSpecializationRequest := new(request.CreateRequestSpecialization)
-	createSpecializationRequest.CompanyID = companyId
+	createSpecializationRequest.CompanyID = extract.CompanyId
 
 	if err := c.Bind(&createSpecializationRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))

@@ -64,10 +64,10 @@ func (ctrl *Controller) GetUserByID(c echo.Context) error {
 }
 
 func (ctrl *Controller) GetAllUsers(c echo.Context) error {
-	_, userID, _, _ := m.ExtractToken(c)
-	fmt.Println("exctract user id = ", userID)
+	extract, _ := m.ExtractToken(c)
+	fmt.Println("exctract company id = ", extract.CompanyId)
 
-	users, err := ctrl.service.GetAllUsers(userID)
+	users, err := ctrl.service.GetAllUsers(extract.CompanyId)
 	if err != nil {
 		if err == exception.ErrDataNotFound {
 			return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))

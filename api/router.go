@@ -29,21 +29,39 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	// Register Company
 	e.POST("/v1/company/register", controller.CompanyV1Controller.Register)
 	// Login User and Company
-	e.POST("/v1/auth/login", controller.AuthV1Controller.Login)
+	e.POST("/v1/login", controller.AuthV1Controller.Login)
 	// Get invitation link
 	e.GET("/v1/specialization", controller.SpecializationV1Controller.GetInvitation)
 
 	userV1 := e.Group("/v1/users")
 	userV1.Use(m.JWTMiddleware(config))
 	userV1.GET("/:id", controller.UserV1Controller.GetUserByID)
-
-	companyV1 := e.Group("/v1/admin")
-	companyV1.Use(m.JWTMiddleware(config))
-	companyV1.POST("/specialization", controller.SpecializationV1Controller.Register, m.CheckLevelAccess)
-	companyV1.GET("/users", controller.UserV1Controller.GetAllUsers, m.CheckLevelAccess)
-	companyV1.GET("/dashboard", controller.CompanyV1Controller.GetDashboard, m.CheckLevelAccess)
+	userV1.GET("/dashboard", controller.UserV1Controller.GetAllUsers, m.CheckLevelAccess) //Get all users for admin
 
 	courseV1 := e.Group("/v1/course")
 	courseV1.Use(m.JWTMiddleware(config))
+	courseV1.GET("/:id", controller.CourseV1Controller.GetByID)
+	courseV1.GET("/dashboard", controller.CourseV1Controller.GetAllCourseDashboard, m.CheckLevelAccess)
 	courseV1.POST("", controller.CourseV1Controller.Register, m.CheckLevelAccess)
+
+	quizV1 := e.Group("/v1/quiz")
+	quizV1.Use(m.JWTMiddleware(config))
+	quizV1.GET("/:id", controller.QuizV1Controller.FindByID)
+	quizV1.PUT("/:id", controller.QuizV1Controller.Update)
+	quizV1.POST("", controller.QuizV1Controller.Create)
+
+	moduleV1 := e.Group("/v1/module")
+	moduleV1.Use(m.JWTMiddleware(config))
+	moduleV1.GET("/:id", controller.ModuleV1Controller.GetByID)
+	moduleV1.PUT("/:id", controller.ModuleV1Controller.Update)
+	moduleV1.POST("", controller.ModuleV1Controller.Register)
+
+	specializationV1 := e.Group("/v1/specialization")
+	specializationV1.Use(m.JWTMiddleware(config))
+	specializationV1.POST("", controller.SpecializationV1Controller.Register, m.CheckLevelAccess)
+
+	dashboardV1 := e.Group("/v1/company")
+	dashboardV1.Use(m.JWTMiddleware(config))
+	dashboardV1.GET("", controller.CompanyV1Controller.GetDashboard, m.CheckLevelAccess)
+
 }
