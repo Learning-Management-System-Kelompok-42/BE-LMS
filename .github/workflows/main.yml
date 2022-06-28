@@ -20,7 +20,7 @@ jobs:
         id: capstone
         uses: docker/metadata-action@v4
         with:
-          images: lms_api_42
+          images: lms-api-42
           tags: |
             type=schedule
             type=ref,event=branch
