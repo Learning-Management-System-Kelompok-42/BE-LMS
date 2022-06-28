@@ -69,5 +69,5 @@ jobs:
     steps:
       - name: get outputs tags from docker push 
         run: |
-        echo "{{ steps.build-docker-push.outputs.tags }}" > tags.txt
-        cat tags.txt
+          echo "{{ steps.build-docker-push.outputs.tags }}" > tags.txt
+          cat tags.txt
