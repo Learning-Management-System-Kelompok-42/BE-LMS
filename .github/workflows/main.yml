@@ -1,9 +1,5 @@
 name: ci
 
-variables:
-  - name: tagsv
-    run: ${{ github.sha }}
-
 on:
   push:
     branches:
@@ -36,7 +32,7 @@ jobs:
         run: go build -v ./...
 
       - name: Check variable TagsV
-        run: echo ${{ variables.tagsV }}
+        run: echo ${{ github.sha }}
 
       - name: Check go vet linting
         run: go vet ./...
