@@ -26,10 +26,32 @@ type quiz struct {
 }
 
 func (req *CreateCourseRequest) ToSpec() *spec.UpsertCourseSpec {
+	// Looping
+	var modules []spec.ModuleSpec
+	for _, module := range req.Modules {
+		var quizzes []spec.QuizSpec
+
+		modules = append(modules, spec.ModuleSpec{
+			Title:      module.Title,
+			YoutubeURL: module.YoutubeURL,
+			SlideURL:   module.SlideURL,
+			Orders:     module.Orders,
+			Quizzes:    quizzes,
+		})
+
+		for _, quiz := range module.Quizzes {
+			quizzes = append(quizzes, spec.QuizSpec{
+				Question:       quiz.Question,
+				Answer:         quiz.Answer,
+				MultipleChoice: quiz.MultipleChoice,
+			})
+		}
+	}
+
 	return &spec.UpsertCourseSpec{
 		Title:       req.Title,
 		Description: req.Description,
 		Thumbnail:   req.Thumbnail,
-		Modules:     req.Modules,
+		Modules:     modules,
 	}
 }

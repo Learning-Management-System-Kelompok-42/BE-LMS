@@ -1,23 +1,23 @@
 package spec
 
 type UpsertCourseSpec struct {
-	Title       string    `validate:"required"`
-	Description string    `validate:"required"`
-	Thumbnail   string    `validate:"required"`
-	Modules     []modules `validate:"required"`
+	Title       string       `validate:"required"`
+	Description string       `validate:"required"`
+	Thumbnail   string       `validate:"required"`
+	Modules     []ModuleSpec `validate:"required"`
 }
 
 // buat 1 1 struct
-type modules struct {
+type ModuleSpec struct {
 	CourseID   string
 	Title      string
 	YoutubeURL string
 	SlideURL   string
 	Orders     int
-	Quizzes    []quiz
+	Quizzes    []QuizSpec
 }
 
-type quiz struct {
+type QuizSpec struct {
 	ModuleID       string
 	Question       string
 	Answer         string

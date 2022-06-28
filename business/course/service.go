@@ -19,6 +19,12 @@ type CourseRepository interface {
 
 	// FindByID find a course by id
 	FindByID(id string) (course Domain, err error)
+
+	// Update update a course
+	Update(course Domain) (id string, err error)
+
+	// FindAllCourseDashboard get all course on dashboard admin
+	FindAllCourseDashboard(companyID string) (course []Domain, err error)
 }
 
 type CourseService interface {
@@ -27,6 +33,12 @@ type CourseService interface {
 
 	// GetByID get a course by id
 	GetByID(id string) (course Domain, err error)
+
+	// Update update a course
+	Update(upsertCourseSpec spec.UpsertCourseSpec) (id string, err error)
+
+	// GetAllCourseDashboard get all course on dashboard admin
+	GetAllCourseDashboard(companyID string) (course []Domain, err error)
 }
 
 type courseService struct {
@@ -111,6 +123,22 @@ func (s *courseService) Create(upsertCourseSpec spec.UpsertCourseSpec) (id strin
 
 func (s *courseService) GetByID(id string) (course Domain, err error) {
 	course, err = s.repo.FindByID(id)
+	if err != nil {
+		if err == exception.ErrNotFound {
+			return course, exception.ErrNotFound
+		}
+		return course, exception.ErrInternalServer
+	}
+
+	return course, nil
+}
+
+func (s *courseService) Update(upsertCourseSpec spec.UpsertCourseSpec) (id string, err error) {
+	return id, nil
+}
+
+func (s *courseService) GetAllCourseDashboard(companyID string) (course []Domain, err error) {
+	course, err = s.repo.FindAllCourseDashboard(companyID)
 	if err != nil {
 		if err == exception.ErrNotFound {
 			return course, exception.ErrNotFound

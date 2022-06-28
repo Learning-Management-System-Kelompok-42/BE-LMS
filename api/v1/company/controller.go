@@ -63,9 +63,9 @@ func (ctrl *Controller) Register(c echo.Context) error {
 }
 
 func (ctrl *Controller) GetDashboard(c echo.Context) error {
-	companyID, _, _, _ := m.ExtractToken(c)
+	extract, _ := m.ExtractToken(c)
 
-	company, err := ctrl.service.Dashboard(companyID)
+	company, err := ctrl.service.Dashboard(extract.CompanyId)
 	if err != nil {
 		if err == exception.ErrNotFound {
 			return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))
