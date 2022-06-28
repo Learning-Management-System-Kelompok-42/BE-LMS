@@ -62,11 +62,11 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      - name: get tags from meta
+      - name: print meta tags
         run: |
-          echo "tags = {{ steps.meta.outputs.tags }}"
-          echo "labels = {{ steps.meta.outputs.labels }}"
-          echo "version = {{ steps.meta.outputs.version }}"
+          echo "{{ steps.meta.outputs.tags }}"
+          echo {{ steps.meta.outputs.labels }}
+          echo {{ github.sha }}
 
 
   ssh-ec2:
