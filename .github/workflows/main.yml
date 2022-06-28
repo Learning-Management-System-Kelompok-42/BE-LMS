@@ -17,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Docker meta
-        id: capstone
+        id: academytokyo/capstone
         uses: docker/metadata-action@v4
         with:
           images: lms-api-42
@@ -41,5 +41,5 @@ jobs:
           context: .
           platforms: linux/amd64
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.capstone.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.academytokyo/capstone.outputs.tags }}
+          labels: ${{ steps.academytokyo/capstone.outputs.labels }}
