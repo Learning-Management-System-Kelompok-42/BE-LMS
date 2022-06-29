@@ -28,7 +28,6 @@ import (
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/config"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/util"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 )
 
@@ -48,11 +47,6 @@ func main() {
 	})
 
 	api.RegistrationPath(e, controllers, cfg)
-
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
-	}))
 
 	// port := os.Getenv("PORT")
 
