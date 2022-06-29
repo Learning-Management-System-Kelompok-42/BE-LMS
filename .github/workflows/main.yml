@@ -1,35 +1,39 @@
-name: CI
+name: CI-CD Api capstone project
 
 on:
   push:
     branches:
       - "development"
 
+env:
+  GITHUB_SHA: sha-${{ github.sha }}
+
 jobs:
-  # build-app:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Set up Go
-  #       uses: actions/setup-go@v2
-  #       with:
-  #         go-version: 1.17
+  build-app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
 
-  #     - name: Install dependencies
-  #       run: go mod download
+      - name: Install dependencies
+        run: go mod download
 
-  #     - name: Verify module
-  #       run: go mod verify
+      - name: Verify module
+        run: go mod verify
 
-  #     # - name: Go testing
-  #     #   run: |
-  #     #     cd business
-  #     #     go test -v ./...
-  #     - name: Build go App
-  #       run: go build -v ./...
+      # - name: Go testing
+      #   run: |
+      #     cd business
+      #     go test -v ./...
 
-  #     # - name: Check go vet linting
-  #     #   run: go vet ./...
+      - name: Build go App
+        run: go build -v ./...
+
+      # - name: Check go vet linting
+      #   run: go vet ./...
 
   build-docker-push:
     runs-on: ubuntu-latest
@@ -42,13 +46,7 @@ jobs:
           images: |
             academytokyo/capstone
           tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha
+            type=sha,format=long
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v2
@@ -64,17 +62,28 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
       - name: print meta tags
         run: |
-          echo "tes ${{ steps.meta.outputs.labels }}"
-          echo "tes ${{ github.sha }}"
-          echo ${{ steps.meta.outputs.labels }}
-          echo ${{ github.sha }}
-
+          echo "${{ env.GITHUB_SHA }}"
 
   ssh-ec2:
     runs-on: ubuntu-latest
     needs: build-docker-push
     steps:
-      - name: get outputs tags from docker push 
+      - uses: actions/checkout@v2 
+      - name: Setup ENV for ssh into EC2
+        env:
+          PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY  }}
+          HOSTNAME : ${{ secrets.HOSTNAME  }}
+          USER_NAME : ${{ secrets.USER_NAME  }}
         run: |
-          echo "{{ steps.build-docker-push.outputs.tags }}" > tags.txt
-          cat tags.txt
+          mkdir -p ~/.ssh
+          echo "${{ secrets.AWS_PRIVATE_KEY }}" > ~/.ssh/capstone
+          chmod 600 ~/.ssh/capstone
+          cat >> ~/.ssh/config << END
+          Host development
+            HostName ${{ secrets.HOSTNAME }}
+            User ${{ secrets.USER_NAME }}
+            IdentityFile ~/.ssh/capstone
+            StrictHostKeyChecking no
+          END
+      - name: ssh into EC2
+        run: ssh development 'docker rm -f $(docker ps -a -q) && docker rmi $(docker images -q)' && docker pull academytokyo/capstone:${{ env.GITHUB_SHA }} && docker run -d -p 4001:4001 --name capstone academytokyo/capstone:${{ env.GITHUB_SHA }}
