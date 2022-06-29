@@ -87,4 +87,4 @@ jobs:
             StrictHostKeyChecking no
           END
       - name: ssh into EC2
-        run: ssh development 'docker rm -f $(docker ps -a -q) && docker rmi $(docker images -q)' && docker pull academytokyo/capstone:${{ env.GITHUB_SHA }} && docker run -d -p 4001:4001 --name capstone academytokyo/capstone:${{ env.GITHUB_SHA }}
+        run: ssh development 'docker rm -f $(docker ps -a -q) && docker rmi $(docker images -q) && docker pull academytokyo/capstone:${{ env.GITHUB_SHA }} && docker run -d -p 4001:4001 --name capstone academytokyo/capstone:${{ env.GITHUB_SHA }}'
