@@ -33,6 +33,8 @@ func (ctrl *Controller) Register(c echo.Context) error {
 	if err != nil {
 		if err == exception.ErrInvalidRequest {
 			return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))
+		} else if err == exception.ErrCourseNotFound {
+			return c.JSON(http.StatusNotFound, f.NotFoundResponse(err.Error()))
 		}
 
 		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))

@@ -61,3 +61,19 @@ func (ctrl *Controller) GetInvitation(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, f.SuccessResponse(result))
 }
+
+func (ctrl *Controller) GetAllSpecialization(c echo.Context) error {
+	extract, _ := middleware.ExtractToken(c)
+
+	spec, err := ctrl.service.GetAllSpecialization(extract.CompanyId)
+	if err != nil {
+		if err == exception.ErrNotFound {
+			return c.JSON(http.StatusBadRequest, f.NotFoundResponse(err.Error()))
+		}
+		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
+	}
+
+	// result := response.NewGetAllSpecializationResponse(spec)
+
+	return c.JSON(http.StatusOK, f.SuccessResponse(spec))
+}
