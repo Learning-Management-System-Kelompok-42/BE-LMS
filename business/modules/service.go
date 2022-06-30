@@ -60,6 +60,9 @@ func (s *moduleService) Create(UpsertModuleSpec spec.UpsertModuleSpec) (id strin
 
 	id, err = s.repo.Insert(newModule)
 	if err != nil {
+		if err == exception.ErrCourseNotFound {
+			return id, exception.ErrCourseNotFound
+		}
 		return "", exception.ErrInternalServer
 	}
 

@@ -16,8 +16,13 @@ func NewPostgreSQLRepository(db *gorm.DB) module.ModuleRepository {
 
 func (repo *postgreSQLRepository) Insert(domain module.Domain) (id string, err error) {
 	newModule := FromDomain(domain)
-	err = repo.db.Create(&newModule).Error
 
+	err = repo.db.Table("modules").Where("course_id = ?", domain.CourseID).First(&newModule).Error
+	if err != nil {
+		return "", exception.ErrCourseNotFound
+	}
+
+	err = repo.db.Create(&newModule).Error
 	if err != nil {
 		return "", exception.ErrInternalServer
 	}

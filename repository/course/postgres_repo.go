@@ -54,7 +54,7 @@ func (repo *postgreSQLRepository) FindAllCourseDashboard(companyID string) (cour
 		Select("courses.id, courses.title, courses.thumbnail, courses.description, courses.created_at, courses.updated_at").
 		Joins("INNER JOIN specialization_courses ON courses.id = specialization_courses.course_id").
 		Joins("INNER JOIN specializations ON specialization_courses.specialization_id = specializations.id").
-		Where("specializations.company_id = 'COMP-001'").
+		Where("specializations.company_id = ?", companyID).
 		Scan(&course)
 
 	fmt.Println("result = ", result.Error)
