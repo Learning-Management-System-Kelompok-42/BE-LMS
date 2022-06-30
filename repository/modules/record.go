@@ -4,7 +4,6 @@ import (
 	"time"
 
 	module "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/modules"
-	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/material"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/quiz"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/userModules"
 	"gorm.io/gorm"
@@ -18,7 +17,6 @@ type Module struct {
 	Title       string
 	Orders      int
 	UserModules []userModules.UserModule `gorm:"foreignKey:ModuleID"`
-	Materials   []material.Material      `gorm:"foreignKey:ModuleID"`
 	Quizs       []quiz.Quiz              `gorm:"foreignKey:ModuleID"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time

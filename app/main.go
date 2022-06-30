@@ -20,7 +20,6 @@ import (
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/company"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/course"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/faq"
-	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/material"
 	module "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/modules"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/quiz"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/requestCourse"
@@ -86,7 +85,6 @@ func init() {
 		&course.Course{},
 		&certificate.Certificate{},
 		&faq.Faq{},
-		&material.Material{},
 		&quiz.Quiz{},
 		&module.Module{},
 		&requestCourse.RequestCourse{},
