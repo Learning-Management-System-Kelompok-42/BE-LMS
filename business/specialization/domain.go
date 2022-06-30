@@ -7,6 +7,13 @@ type Domain struct {
 	Invitation string
 }
 
+type SpecializationDashboard struct {
+	SpecializationID   string
+	SpecializationName string
+	AmountEmployee     int64
+	AmountCourse       int64
+}
+
 func NewSpecialization(id, companyId, name, invitation string) Domain {
 	return Domain{
 		ID:         id,

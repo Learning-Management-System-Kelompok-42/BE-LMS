@@ -40,3 +40,37 @@ func (repo *postgreSQLRepository) FindInvitation(invitation string) (specializat
 
 	return spec.ToDomain(), nil
 }
+
+func (repo *postgreSQLRepository) FindDashboardSpecialization(companyID string) (specializations []specialization.Domain, err error) {
+	var specs []Specialization
+	err = repo.db.Where("company_id = 'COMP-001'").Find(&specs).Error
+
+	if err != nil {
+		if len(specializations) == 0 {
+			return nil, exception.ErrNotFound
+		}
+		return nil, exception.ErrInternalServer
+	}
+
+	specializations = ToDomainList(specs)
+
+	return specializations, nil
+}
+
+func (repo *postgreSQLRepository) CountCourse(specID string) (result int64, err error) {
+	err = repo.db.Table("specialization_courses").Where("specialization_id = ?", specID).Count(&result).Error
+	if err != nil {
+		return 0, exception.ErrInternalServer
+	}
+
+	return result, nil
+}
+
+func (repo *postgreSQLRepository) CountEmployee(companyID, specID string) (result int64, err error) {
+	err = repo.db.Table("users").Where("company_id = ? AND specialization_id = ?", companyID, specID).Count(&result).Error
+	if err != nil {
+		return 0, exception.ErrInternalServer
+	}
+
+	return result, nil
+}

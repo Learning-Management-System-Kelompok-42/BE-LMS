@@ -15,7 +15,7 @@ timeout = 30
 driver = "postgres"
 name = "capstonetest"
 address = "localhost"
-port = 5555
+port = 5432
 username = "devpostgres"
 password = "devpostgres"
 
