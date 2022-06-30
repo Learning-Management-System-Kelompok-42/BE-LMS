@@ -70,6 +70,7 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 
 	specializationV1 := e.Group("/v1/specializations")
 	specializationV1.Use(m.JWTMiddleware(config))
+	specializationV1.GET("/dashboard", controller.SpecializationV1Controller.GetAllSpecialization, m.CheckLevelAccess)
 	specializationV1.POST("", controller.SpecializationV1Controller.Register, m.CheckLevelAccess)
 
 	dashboardV1 := e.Group("/v1/company")
