@@ -1,7 +1,6 @@
 package specialization
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/specialization/spec"
@@ -103,9 +102,6 @@ func (s *specializationService) GetAllSpecialization(companyID string) (speciali
 		if err != nil {
 			return specializations, err
 		}
-
-		fmt.Println("spec id =", spec.ID)
-		fmt.Println("spec companyID =", companyID)
 
 		countEmployee, err := s.specializationRepo.CountEmployee(companyID, spec.ID)
 

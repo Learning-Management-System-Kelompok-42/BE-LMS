@@ -1,8 +1,6 @@
 package course
 
 import (
-	"fmt"
-
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
 	"gorm.io/gorm"
@@ -56,9 +54,6 @@ func (repo *postgreSQLRepository) FindAllCourseDashboard(companyID string) (cour
 		Joins("INNER JOIN specializations ON specialization_courses.specialization_id = specializations.id").
 		Where("specializations.company_id = ?", companyID).
 		Scan(&course)
-
-	fmt.Println("result = ", result.Error)
-	fmt.Println("course = ", course)
 
 	if result.Error != nil {
 		if result.RowsAffected == 0 {

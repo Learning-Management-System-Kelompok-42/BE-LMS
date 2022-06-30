@@ -1,7 +1,6 @@
 package course
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/middleware"
@@ -24,17 +23,12 @@ func NewController(service course.CourseService) *Controller {
 }
 
 func (ctrl *Controller) Register(c echo.Context) error {
-	fmt.Println("masuk")
 	createCourseRequest := new(request.CreateCourseRequest)
 	if err := c.Bind(&createCourseRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))
 	}
 
-	fmt.Println("modules = ", createCourseRequest.Modules)
-
 	req := *createCourseRequest.ToSpec()
-
-	fmt.Println("modules request = ", req.Modules)
 
 	id, err := ctrl.service.Create(req)
 	if err != nil {

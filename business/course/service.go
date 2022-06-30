@@ -77,7 +77,6 @@ func (s *courseService) Create(upsertCourseSpec spec.UpsertCourseSpec) (id strin
 	if err != nil {
 		return "", exception.ErrInternalServer
 	}
-	// fmt.Println("course id dari insert = ", course)
 
 	for _, module := range upsertCourseSpec.Modules {
 		module.CourseID = course
@@ -98,8 +97,6 @@ func (s *courseService) Create(upsertCourseSpec spec.UpsertCourseSpec) (id strin
 			return "", exception.ErrInternalServer
 		}
 
-		// fmt.Println("modules id dari insert = ", modulesID)
-
 		for _, quiz := range module.Quizzes {
 			newQuiz := specQuiz.UpsertQuizSpec{
 				ModuleID:       modulesID,
@@ -113,12 +110,12 @@ func (s *courseService) Create(upsertCourseSpec spec.UpsertCourseSpec) (id strin
 				if err == exception.ErrInvalidRequest {
 					return "", exception.ErrInvalidRequest
 				}
-
 				return "", exception.ErrInternalServer
 			}
 
 			fmt.Println("quiz id dari insert = ", quizID)
 		}
+
 	}
 
 	return course, nil
