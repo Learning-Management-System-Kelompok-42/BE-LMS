@@ -51,3 +51,11 @@ func FromDomain(course course.Domain) Course {
 		DeletedAt:   gorm.DeletedAt{},
 	}
 }
+
+// func ToBatchList(courses []Course) []course.DashboardDomain {
+// 	var coursesDomain []course.DashboardDomain
+// 	for _, course := range courses {
+// 		coursesDomain = append(coursesDomain, course.ToDomain())
+// 	}
+// 	return coursesDomain
+// }

@@ -1,6 +1,8 @@
 package api
 
 import (
+	"net/http"
+
 	m "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/middleware"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/auth"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/company"
@@ -11,6 +13,7 @@ import (
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/users"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/config"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type Controller struct {
@@ -24,40 +27,43 @@ type Controller struct {
 }
 
 func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppConfig) {
+	// HTTPS redirect
+	// e.Pre(middleware.HTTPSRedirect())
+	// CORS
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+	}))
+
 	// Register User
 	e.POST("/v1/user/register", controller.UserV1Controller.Register)
 	// Register Company
 	e.POST("/v1/company/register", controller.CompanyV1Controller.Register)
 	// Login User and Company
-	e.POST("/v1/auth/login", controller.AuthV1Controller.Login)
+	e.POST("/v1/login", controller.AuthV1Controller.Login)
 	// Get invitation link
 	e.GET("/v1/specialization", controller.SpecializationV1Controller.GetInvitation)
 
 	userV1 := e.Group("/v1/users")
 	userV1.Use(m.JWTMiddleware(config))
 	userV1.GET("/:id", controller.UserV1Controller.GetUserByID)
-
-	companyV1 := e.Group("/v1/admin")
-	companyV1.Use(m.JWTMiddleware(config))
-	companyV1.POST("/specialization", controller.SpecializationV1Controller.Register, m.CheckLevelAccess)
-	companyV1.GET("/users", controller.UserV1Controller.GetAllUsers, m.CheckLevelAccess)
+	userV1.GET("/dashboard", controller.UserV1Controller.GetAllUsers, m.CheckLevelAccess)                //Get all users for admin
+	userV1.GET("/dashboard/:id", controller.UserV1Controller.GetDetailUserDashboard, m.CheckLevelAccess) //Get user by id for admin
 
 	courseV1 := e.Group("/v1/course")
 	courseV1.Use(m.JWTMiddleware(config))
+	courseV1.GET("/:id", controller.CourseV1Controller.GetByID)
+	courseV1.GET("/dashboard", controller.CourseV1Controller.GetAllCourseDashboard, m.CheckLevelAccess)
 	courseV1.POST("", controller.CourseV1Controller.Register, m.CheckLevelAccess)
-<<<<<<< Updated upstream
-=======
 
 	quizV1 := e.Group("/v1/quiz")
 	quizV1.Use(m.JWTMiddleware(config))
-	// GetByID this is for user (employee) to get quiz by id
-	quizV1.GET("/:id", controller.QuizV1Controller.GetByID)
+	quizV1.GET("/:id", controller.QuizV1Controller.FindByID)
 	quizV1.PUT("/:id", controller.QuizV1Controller.Update)
 	quizV1.POST("", controller.QuizV1Controller.Create)
 
 	moduleV1 := e.Group("/v1/module")
 	moduleV1.Use(m.JWTMiddleware(config))
-	// GetByID this is for user (employee) to get module by id
 	moduleV1.GET("/:id", controller.ModuleV1Controller.GetByID)
 	moduleV1.PUT("/:id", controller.ModuleV1Controller.Update)
 	moduleV1.POST("", controller.ModuleV1Controller.Register)
@@ -71,5 +77,4 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	dashboardV1.Use(m.JWTMiddleware(config))
 	dashboardV1.GET("", controller.CompanyV1Controller.GetDashboard, m.CheckLevelAccess)
 
->>>>>>> Stashed changes
 }

@@ -1,8 +1,6 @@
 package course
 
 import (
-	"fmt"
-
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
 	"gorm.io/gorm"
@@ -28,8 +26,6 @@ func (repo *postgreSQLRepository) Insert(course course.Domain) (id string, err e
 
 	return id, nil
 }
-<<<<<<< Updated upstream
-=======
 
 func (repo *postgreSQLRepository) FindByID(id string) (course course.Domain, err error) {
 	var newCourse Course
@@ -53,12 +49,11 @@ func (repo *postgreSQLRepository) Update(course course.Domain) (id string, err e
 
 func (repo *postgreSQLRepository) FindAllCourseDashboard(companyID string) (course []course.Domain, err error) {
 	result := repo.db.Table("courses").
-		Where("courses.company_id = ?", companyID).
+		Select("courses.id, courses.title, courses.thumbnail, courses.description, courses.created_at, courses.updated_at").
+		Joins("INNER JOIN specialization_courses ON courses.id = specialization_courses.course_id").
+		Joins("INNER JOIN specializations ON specialization_courses.specialization_id = specializations.id").
+		Where("specializations.company_id = ?", companyID).
 		Scan(&course)
-
-	for _, cour := range course {
-		fmt.Println("course = ", cour)
-	}
 
 	if result.Error != nil {
 		if result.RowsAffected == 0 {
@@ -92,4 +87,3 @@ func (repo *postgreSQLRepository) FindAllCourseByUserID(userID string) (course [
 
 	return course, nil
 }
->>>>>>> Stashed changes

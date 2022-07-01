@@ -8,6 +8,7 @@ type Auth struct {
 }
 
 type Claims struct {
+	CompanyID   string
 	Email       string
 	UserID      string
 	LevelAccess string

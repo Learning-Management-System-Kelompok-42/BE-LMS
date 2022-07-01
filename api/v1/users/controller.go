@@ -64,10 +64,10 @@ func (ctrl *Controller) GetUserByID(c echo.Context) error {
 }
 
 func (ctrl *Controller) GetAllUsers(c echo.Context) error {
-	userID, _, _ := m.ExtractToken(c)
-	fmt.Println("exctract user id = ", userID)
+	extract, _ := m.ExtractToken(c)
+	fmt.Println("exctract company id = ", extract.CompanyId)
 
-	users, err := ctrl.service.GetAllUsers(userID)
+	users, err := ctrl.service.GetAllUsers(extract.CompanyId)
 	if err != nil {
 		if err == exception.ErrDataNotFound {
 			return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))
@@ -78,4 +78,22 @@ func (ctrl *Controller) GetAllUsers(c echo.Context) error {
 	result := response.NewGetAllUsersReponse(users)
 
 	return c.JSON(http.StatusOK, r.SuccessResponse(result))
+}
+
+func (ctrl *Controller) GetDetailUserDashboard(c echo.Context) error {
+	userID := c.Param("id")
+
+	result, err := ctrl.service.GetDetailUserDashboard(userID)
+	if err != nil {
+		if err == exception.ErrDataNotFound {
+			return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))
+		}
+		return c.JSON(http.StatusInternalServerError, r.InternalServerErrorResponse(err.Error()))
+	}
+
+	// fmt.Println("course = ", courses.User)
+
+	resp := response.NewGetAllUserDetailDashboardResp(result.User, result.Courses)
+
+	return c.JSON(http.StatusOK, r.SuccessResponse(resp))
 }

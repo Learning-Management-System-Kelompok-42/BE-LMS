@@ -42,3 +42,23 @@ func (repo *postgreSQLRepository) CheckWeb(web string) error {
 
 	return exception.ErrWebExists
 }
+
+// Update this query, because UI/UX already update theyr own data
+func (repo *postgreSQLRepository) FindDashboard(companyID string) (domain company.DashboardDomain, err error) {
+	result := repo.db.Raw(`SELECT U.id AS user_id, CO.id AS company_id, U.full_name AS name_admin, CO.name AS name_company, (SELECT COUNT(id) FROM specializations WHERE company_id = CO.id) AS amount_specialization, (SELECT COUNT(level_access) FROM users WHERE level_access = 'employee') AS amount_employee 
+	FROM users U
+	INNER JOIN companies CO ON U.company_id = CO.id
+	WHERE CO.id = ?`, companyID).
+		Order("U.level_access ASD").
+		Find(&domain)
+
+	if result.Error != nil {
+		if result.RowsAffected == 0 {
+			return domain, exception.ErrNotFound
+		}
+
+		return domain, exception.ErrInternalServer
+	}
+
+	return domain, nil
+}

@@ -1,7 +1,6 @@
 package specialization
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/middleware"
@@ -22,10 +21,10 @@ func NewController(service specialization.SpecializationService) *Controller {
 }
 
 func (ctrl *Controller) Register(c echo.Context) error {
-	userId, levelAccess, _ := middleware.ExtractToken(c)
-	fmt.Println("user id : ", userId)
-	fmt.Println("level access : ", levelAccess)
+	extract, _ := middleware.ExtractToken(c)
+
 	createSpecializationRequest := new(request.CreateRequestSpecialization)
+	createSpecializationRequest.CompanyID = extract.CompanyId
 
 	if err := c.Bind(&createSpecializationRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))
@@ -61,4 +60,20 @@ func (ctrl *Controller) GetInvitation(c echo.Context) error {
 	result := response.NewGetInvitationResponse(spec)
 
 	return c.JSON(http.StatusOK, f.SuccessResponse(result))
+}
+
+func (ctrl *Controller) GetAllSpecialization(c echo.Context) error {
+	extract, _ := middleware.ExtractToken(c)
+
+	spec, err := ctrl.service.GetAllSpecialization(extract.CompanyId)
+	if err != nil {
+		if err == exception.ErrNotFound {
+			return c.JSON(http.StatusBadRequest, f.NotFoundResponse(err.Error()))
+		}
+		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
+	}
+
+	// result := response.NewGetAllSpecializationResponse(spec)
+
+	return c.JSON(http.StatusOK, f.SuccessResponse(spec))
 }

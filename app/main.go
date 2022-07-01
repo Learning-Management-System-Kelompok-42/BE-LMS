@@ -20,7 +20,6 @@ import (
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/company"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/course"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/faq"
-	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/material"
 	module "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/modules"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/quiz"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/requestCourse"
@@ -28,7 +27,6 @@ import (
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/config"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/util"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 )
 
@@ -48,11 +46,6 @@ func main() {
 	})
 
 	api.RegistrationPath(e, controllers, cfg)
-
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
-	}))
 
 	// port := os.Getenv("PORT")
 
@@ -86,13 +79,12 @@ func init() {
 	dbConnection := util.NewConnectionDB(cfg)
 
 	if err := dbConnection.PostgreSQL.AutoMigrate(
-		&specialization.Specialization{},
 		&company.Company{},
+		&specialization.Specialization{},
 		&users.User{},
 		&course.Course{},
 		&certificate.Certificate{},
 		&faq.Faq{},
-		&material.Material{},
 		&quiz.Quiz{},
 		&module.Module{},
 		&requestCourse.RequestCourse{},

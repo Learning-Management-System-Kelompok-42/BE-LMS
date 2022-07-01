@@ -3,6 +3,7 @@ package company
 import (
 	"net/http"
 
+	m "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/middleware"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/company/request"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/company/response"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/company"
@@ -59,4 +60,21 @@ func (ctrl *Controller) Register(c echo.Context) error {
 	result := response.NewCreateNewCompanyResponse(id)
 
 	return c.JSON(http.StatusCreated, r.CreateSuccessResponse(result))
+}
+
+func (ctrl *Controller) GetDashboard(c echo.Context) error {
+	extract, _ := m.ExtractToken(c)
+
+	company, err := ctrl.service.Dashboard(extract.CompanyId)
+	if err != nil {
+		if err == exception.ErrNotFound {
+			return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))
+		}
+
+		return c.JSON(http.StatusInternalServerError, r.InternalServerErrorResponse(err.Error()))
+	}
+
+	result := response.NewGetDashboardResponse(company)
+
+	return c.JSON(http.StatusOK, r.SuccessResponse(result))
 }

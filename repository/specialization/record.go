@@ -11,6 +11,7 @@ import (
 
 type Specialization struct {
 	ID                    string `gorm:"primaryKey;size:200"`
+	CompanyID             string `gorm:"size:200"`
 	Name                  string
 	Invitation            string
 	Users                 []users.User                                `gorm:"foreignKey:SpecializationID"`
@@ -23,6 +24,7 @@ type Specialization struct {
 func (specialization *Specialization) ToDomain() specializations.Domain {
 	return specializations.Domain{
 		ID:         specialization.ID,
+		CompanyID:  specialization.CompanyID,
 		Name:       specialization.Name,
 		Invitation: specialization.Invitation,
 	}
@@ -39,6 +41,7 @@ func ToDomainList(specialization []Specialization) []specializations.Domain {
 func FromDomain(domain specializations.Domain) Specialization {
 	return Specialization{
 		ID:                    domain.ID,
+		CompanyID:             domain.CompanyID,
 		Name:                  domain.Name,
 		Invitation:            domain.Invitation,
 		Users:                 nil,

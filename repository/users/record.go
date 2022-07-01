@@ -22,8 +22,8 @@ type User struct {
 	Address          string
 	Role             string
 	LevelAccess      string
-	UserCourses      []userCourse.UserCourse   `gorm:"foreignKey:CourseID"`
-	UserModules      []userModules.UserModule  `gorm:"foreignKey:CourseID"`
+	UserCourses      []userCourse.UserCourse   `gorm:"foreignKey:UserID"`
+	UserModules      []userModules.UserModule  `gorm:"foreignKey:UserID"`
 	Certificates     []certificate.Certificate `gorm:"foreignKey:UserID"`
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
@@ -74,4 +74,25 @@ func FromDomain(domain users.Domain) User {
 		UpdatedAt:        time.Time{},
 		DeletedAt:        gorm.DeletedAt{},
 	}
+}
+
+func ToBatchDetailList(users []User) []User {
+	var batchDetails []User
+	for _, user := range users {
+		batchDetails = append(batchDetails, User{
+			ID:               user.ID,
+			CompanyID:        user.CompanyID,
+			SpecializationID: user.SpecializationID,
+			FullName:         user.FullName,
+			Email:            user.Email,
+			Password:         user.Password,
+			PhoneNumber:      user.PhoneNumber,
+			Address:          user.Address,
+			Role:             user.Role,
+			LevelAccess:      user.LevelAccess,
+			CreatedAt:        user.CreatedAt,
+			UpdatedAt:        user.UpdatedAt,
+		})
+	}
+	return batchDetails
 }

@@ -15,6 +15,15 @@ type SpecializationRepository interface {
 
 	// FindInvitation
 	FindInvitation(invitation string) (specialization Domain, err error)
+
+	// FindDashboardSpecialization returns all specialization
+	FindDashboardSpecialization(companyID string) (specializations []Domain, err error)
+
+	// CountCourse returns the number of course
+	CountCourse(specID string) (result int64, err error)
+
+	// CountEmployee returns the number of employee
+	CountEmployee(companyID, specID string) (result int64, err error)
 }
 
 type SpecializationService interface {
@@ -23,6 +32,9 @@ type SpecializationService interface {
 
 	// GetInvitation returns a specialization by invitation
 	GetInvitation(invitation string) (specialization Domain, err error)
+
+	// GetAllSpecialization returns all specialization
+	GetAllSpecialization(companyID string) (specializations []SpecializationDashboard, err error)
 }
 
 type specializationService struct {
@@ -50,6 +62,7 @@ func (s *specializationService) Register(upsertSpecializationSpec spec.UpsertSpe
 
 	newSpec := NewSpecialization(
 		newId,
+		upsertSpecializationSpec.CompanyID,
 		upsertSpecializationSpec.Name,
 		separateLink,
 	)
@@ -74,4 +87,31 @@ func (s *specializationService) GetInvitation(invitation string) (specialization
 	}
 
 	return specialization, nil
+}
+
+func (s *specializationService) GetAllSpecialization(companyID string) (specializations []SpecializationDashboard, err error) {
+	// Get all specialization
+	specialization, err := s.specializationRepo.FindDashboardSpecialization(companyID)
+	if err != nil {
+		return specializations, err
+	}
+
+	// count course
+	for _, spec := range specialization {
+		countCourse, err := s.specializationRepo.CountCourse(spec.ID)
+		if err != nil {
+			return specializations, err
+		}
+
+		countEmployee, err := s.specializationRepo.CountEmployee(companyID, spec.ID)
+
+		specializations = append(specializations, SpecializationDashboard{
+			SpecializationID:   spec.ID,
+			SpecializationName: spec.Name,
+			AmountEmployee:     countEmployee,
+			AmountCourse:       countCourse,
+		})
+	}
+
+	return specializations, nil
 }
