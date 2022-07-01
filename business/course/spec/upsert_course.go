@@ -1,10 +1,18 @@
 package spec
 
 type UpsertCourseSpec struct {
+<<<<<<< Updated upstream
 	Title       string    `validate:"required"`
 	Description string    `validate:"required"`
 	Thumbnail   string    `validate:"required"`
 	Modules     []Modules `validate:"required"`
+=======
+	CompanyID   string       `validate:"required"`
+	Title       string       `validate:"required"`
+	Description string       `validate:"required"`
+	Thumbnail   string       `validate:"required"`
+	Modules     []ModuleSpec `validate:"required"`
+>>>>>>> Stashed changes
 }
 
 type Modules struct {

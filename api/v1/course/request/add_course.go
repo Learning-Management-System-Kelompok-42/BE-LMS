@@ -5,10 +5,18 @@ import (
 )
 
 type CreateCourseRequest struct {
+<<<<<<< Updated upstream
 	Title       string         `json:"title"`
 	Description string         `json:"description"`
 	Thumbnail   string         `json:"thumbnail"`
 	Modules     []spec.Modules `json:"modules"`
+=======
+	CompanyID   string
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Thumbnail   string    `json:"thumbnail"`
+	Modules     []modules `json:"modules"`
+>>>>>>> Stashed changes
 }
 
 // type modules struct {
@@ -27,6 +35,7 @@ type CreateCourseRequest struct {
 
 func (req *CreateCourseRequest) ToSpec() *spec.UpsertCourseSpec {
 	return &spec.UpsertCourseSpec{
+		CompanyID:   req.CompanyID,
 		Title:       req.Title,
 		Description: req.Description,
 		Thumbnail:   req.Thumbnail,

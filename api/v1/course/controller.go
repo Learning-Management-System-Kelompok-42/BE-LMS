@@ -22,11 +22,18 @@ func NewController(service course.CourseService) *Controller {
 }
 
 func (ctrl *Controller) Register(c echo.Context) error {
+<<<<<<< Updated upstream
 	fmt.Println("masuk")
 	CreateCourseRequest := new(request.CreateCourseRequest)
 	if err := c.Bind(&CreateCourseRequest); err != nil {
+=======
+	credential, _ := middleware.ExtractToken(c)
+	createCourseRequest := new(request.CreateCourseRequest)
+	if err := c.Bind(&createCourseRequest); err != nil {
+>>>>>>> Stashed changes
 		return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))
 	}
+	createCourseRequest.CompanyID = credential.CompanyId
 
 	req := *CreateCourseRequest.ToSpec()
 

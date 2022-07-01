@@ -34,5 +34,51 @@ func (ctrl *Controller) Create(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
 	}
 
+<<<<<<< Updated upstream
 	return c.JSON(http.StatusCreated, f.CreateSuccessResponse(id))
+=======
+	result := response.NewCreateUpdateQuizResponse(id)
+
+	return c.JSON(http.StatusCreated, f.CreateSuccessResponse(result))
+}
+
+func (ctrl *Controller) Update(c echo.Context) error {
+	createQuizRequest := new(request.UpdateQuizRequest)
+	if err := c.Bind(createQuizRequest); err != nil {
+		return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))
+	}
+
+	req := *createQuizRequest.ToSpecUpdate()
+
+	id, err := ctrl.service.Update(req)
+	if err != nil {
+		if err == exception.ErrInvalidRequest {
+			return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))
+		} else if err == exception.ErrNotFound {
+			return c.JSON(http.StatusNotFound, f.NotFoundResponse(err.Error()))
+		}
+
+		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
+	}
+
+	result := response.NewCreateUpdateQuizResponse(id)
+
+	return c.JSON(http.StatusCreated, f.CreateSuccessResponse(result))
+}
+
+func (ctrl *Controller) GetByID(c echo.Context) error {
+	id := c.Param("id")
+
+	quiz, err := ctrl.service.GetByID(id)
+	if err != nil {
+		if err == exception.ErrNotFound {
+			return c.JSON(http.StatusNotFound, f.NotFoundResponse(err.Error()))
+		}
+		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
+	}
+
+	result := response.NewGetByIDQuizResponse(quiz)
+
+	return c.JSON(http.StatusOK, f.SuccessResponse(result))
+>>>>>>> Stashed changes
 }

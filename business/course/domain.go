@@ -4,6 +4,7 @@ import "time"
 
 type Domain struct {
 	ID          string
+	CompanyID   string
 	Title       string
 	Thumbnail   string
 	Description string
@@ -11,9 +12,10 @@ type Domain struct {
 	UpdatedAt   time.Time
 }
 
-func NewCourse(id, title, thumbnail, description string) Domain {
+func NewCourse(id, companyID, title, thumbnail, description string) Domain {
 	return Domain{
 		ID:          id,
+		CompanyID:   companyID,
 		Title:       title,
 		Thumbnail:   thumbnail,
 		Description: description,

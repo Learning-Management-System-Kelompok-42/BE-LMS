@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/company"
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/course"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/requestCourse"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/users"
 	"gorm.io/gorm"
@@ -16,8 +17,15 @@ type Company struct {
 	Web            string `gorm:"size:250;uniqueIndex"`
 	Sector         string
 	Logo           string
+<<<<<<< Updated upstream
 	Users          []users.User                  `gorm:"foreignKey:CompanyID"`
 	RequestCourses []requestCourse.RequestCourse `gorm:"foreignKey:CompanyID"`
+=======
+	Courses        []course.Course                 `gorm:"primaryKey:CompanyID"`
+	Users          []users.User                    `gorm:"foreignKey:CompanyID"`
+	RequestCourses []requestCourse.RequestCourse   `gorm:"foreignKey:CompanyID"`
+	Specialization []specialization.Specialization `gorm:"foreignKey:CompanyID"`
+>>>>>>> Stashed changes
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	DeletedAt      gorm.DeletedAt `gorm:"index"`

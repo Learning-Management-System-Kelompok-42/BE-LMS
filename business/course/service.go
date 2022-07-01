@@ -48,10 +48,12 @@ func (s *courseService) Create(upsertCourseSpec spec.UpsertCourseSpec) (id strin
 	courseID := uuid.New().String()
 	newCourse := NewCourse(
 		courseID,
+		upsertCourseSpec.CompanyID,
 		upsertCourseSpec.Title,
 		upsertCourseSpec.Thumbnail,
 		upsertCourseSpec.Description,
 	)
+	fmt.Println("company id = ", upsertCourseSpec.CompanyID)
 	course, err := s.repo.Insert(newCourse)
 	if err != nil {
 		return "", exception.ErrInternalServer

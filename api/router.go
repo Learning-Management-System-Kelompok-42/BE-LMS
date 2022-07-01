@@ -45,4 +45,31 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	courseV1 := e.Group("/v1/course")
 	courseV1.Use(m.JWTMiddleware(config))
 	courseV1.POST("", controller.CourseV1Controller.Register, m.CheckLevelAccess)
+<<<<<<< Updated upstream
+=======
+
+	quizV1 := e.Group("/v1/quiz")
+	quizV1.Use(m.JWTMiddleware(config))
+	// GetByID this is for user (employee) to get quiz by id
+	quizV1.GET("/:id", controller.QuizV1Controller.GetByID)
+	quizV1.PUT("/:id", controller.QuizV1Controller.Update)
+	quizV1.POST("", controller.QuizV1Controller.Create)
+
+	moduleV1 := e.Group("/v1/module")
+	moduleV1.Use(m.JWTMiddleware(config))
+	// GetByID this is for user (employee) to get module by id
+	moduleV1.GET("/:id", controller.ModuleV1Controller.GetByID)
+	moduleV1.PUT("/:id", controller.ModuleV1Controller.Update)
+	moduleV1.POST("", controller.ModuleV1Controller.Register)
+
+	specializationV1 := e.Group("/v1/specializations")
+	specializationV1.Use(m.JWTMiddleware(config))
+	specializationV1.GET("/dashboard", controller.SpecializationV1Controller.GetAllSpecialization, m.CheckLevelAccess)
+	specializationV1.POST("", controller.SpecializationV1Controller.Register, m.CheckLevelAccess)
+
+	dashboardV1 := e.Group("/v1/company")
+	dashboardV1.Use(m.JWTMiddleware(config))
+	dashboardV1.GET("", controller.CompanyV1Controller.GetDashboard, m.CheckLevelAccess)
+
+>>>>>>> Stashed changes
 }
