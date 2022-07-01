@@ -5,6 +5,7 @@ import (
 )
 
 type CreateCourseRequest struct {
+	CompanyID   string
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	Thumbnail   string    `json:"thumbnail"`
@@ -49,6 +50,7 @@ func (req *CreateCourseRequest) ToSpec() *spec.UpsertCourseSpec {
 	}
 
 	return &spec.UpsertCourseSpec{
+		CompanyID:   req.CompanyID,
 		Title:       req.Title,
 		Description: req.Description,
 		Thumbnail:   req.Thumbnail,

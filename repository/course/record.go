@@ -14,6 +14,7 @@ import (
 
 type Course struct {
 	ID                    string `gorm:"primaryKey;size:200"`
+	CompanyID             string `gorm:"size:200"`
 	Title                 string
 	Thumbnail             string
 	Description           string
@@ -29,6 +30,7 @@ type Course struct {
 func (courses *Course) ToDomain() course.Domain {
 	return course.Domain{
 		ID:          courses.ID,
+		CompanyID:   courses.CompanyID,
 		Title:       courses.Title,
 		Thumbnail:   courses.Thumbnail,
 		Description: courses.Description,
@@ -40,6 +42,7 @@ func (courses *Course) ToDomain() course.Domain {
 func FromDomain(course course.Domain) Course {
 	return Course{
 		ID:          course.ID,
+		CompanyID:   course.CompanyID,
 		Title:       course.Title,
 		Thumbnail:   course.Thumbnail,
 		Description: course.Description,

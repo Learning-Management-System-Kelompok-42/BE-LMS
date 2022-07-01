@@ -1,6 +1,7 @@
 package spec
 
 type UpsertCourseSpec struct {
+	CompanyID   string       `validate:"required"`
 	Title       string       `validate:"required"`
 	Description string       `validate:"required"`
 	Thumbnail   string       `validate:"required"`
