@@ -23,10 +23,12 @@ func NewController(service course.CourseService) *Controller {
 }
 
 func (ctrl *Controller) Register(c echo.Context) error {
+	credential, _ := middleware.ExtractToken(c)
 	createCourseRequest := new(request.CreateCourseRequest)
 	if err := c.Bind(&createCourseRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))
 	}
+	createCourseRequest.CompanyID = credential.CompanyId
 
 	req := *createCourseRequest.ToSpec()
 

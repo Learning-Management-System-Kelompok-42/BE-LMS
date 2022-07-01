@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/company"
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/course"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/requestCourse"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/specialization"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/users"
@@ -17,6 +18,7 @@ type Company struct {
 	Web            string `gorm:"size:250;uniqueIndex"`
 	Sector         string
 	Logo           string
+	Courses        []course.Course                 `gorm:"foreignkey:CompanyID"`
 	Users          []users.User                    `gorm:"foreignKey:CompanyID"`
 	RequestCourses []requestCourse.RequestCourse   `gorm:"foreignKey:CompanyID"`
 	Specialization []specialization.Specialization `gorm:"foreignKey:CompanyID"`
