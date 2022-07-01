@@ -42,7 +42,7 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	// Login User and Company
 	e.POST("/v1/login", controller.AuthV1Controller.Login)
 	// Get invitation link
-	e.GET("/v1/specialization", controller.SpecializationV1Controller.GetInvitation)
+	e.GET("/v1/invitation", controller.SpecializationV1Controller.GetInvitation)
 
 	userV1 := e.Group("/v1/users")
 	userV1.Use(m.JWTMiddleware(config))
@@ -59,18 +59,19 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	quizV1 := e.Group("/v1/quiz")
 	quizV1.Use(m.JWTMiddleware(config))
 	quizV1.GET("/:id", controller.QuizV1Controller.FindByID)
-	quizV1.PUT("/:id", controller.QuizV1Controller.Update)
-	quizV1.POST("", controller.QuizV1Controller.Create)
+	quizV1.PUT("/:id", controller.QuizV1Controller.Update) // next will be implement Role based access
+	quizV1.POST("", controller.QuizV1Controller.Create)    // testing
 
 	moduleV1 := e.Group("/v1/module")
 	moduleV1.Use(m.JWTMiddleware(config))
 	moduleV1.GET("/:id", controller.ModuleV1Controller.GetByID)
-	moduleV1.PUT("/:id", controller.ModuleV1Controller.Update)
-	moduleV1.POST("", controller.ModuleV1Controller.Register)
+	moduleV1.PUT("/:id", controller.ModuleV1Controller.Update) // next will be implement Role based access
+	moduleV1.POST("", controller.ModuleV1Controller.Register)  // testing
 
 	specializationV1 := e.Group("/v1/specializations")
 	specializationV1.Use(m.JWTMiddleware(config))
 	specializationV1.GET("/dashboard", controller.SpecializationV1Controller.GetAllSpecialization, m.CheckLevelAccess)
+	specializationV1.GET("/generate", controller.SpecializationV1Controller.GenerateLinkInvitation, m.CheckLevelAccess)
 	specializationV1.POST("", controller.SpecializationV1Controller.Register, m.CheckLevelAccess)
 
 	dashboardV1 := e.Group("/v1/company")
