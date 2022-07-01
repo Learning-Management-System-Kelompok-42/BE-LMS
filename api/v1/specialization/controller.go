@@ -1,6 +1,7 @@
 package specialization
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/middleware"
@@ -76,4 +77,16 @@ func (ctrl *Controller) GetAllSpecialization(c echo.Context) error {
 	// result := response.NewGetAllSpecializationResponse(spec)
 
 	return c.JSON(http.StatusOK, f.SuccessResponse(spec))
+}
+
+func (ctrl *Controller) GenerateLinkInvitation(c echo.Context) error {
+	link, err := ctrl.service.GenerateLinkInvitation()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
+	}
+
+	result := fmt.Sprintf("https://rubick.tech/invitation?link=%s", link)
+	resp := response.NewGenerateLinkSpecializationResponse(result)
+
+	return c.JSON(http.StatusOK, f.SuccessResponse(resp))
 }

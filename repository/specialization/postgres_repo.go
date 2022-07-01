@@ -74,3 +74,17 @@ func (repo *postgreSQLRepository) CountEmployee(companyID, specID string) (resul
 
 	return result, nil
 }
+
+func (repo *postgreSQLRepository) CheckLinkInviation(link string) (err error) {
+	var spec Specialization
+
+	err = repo.db.Where("invitation = ?", link).First(&spec).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil
+		}
+		return exception.ErrInternalServer
+	}
+
+	return nil
+}

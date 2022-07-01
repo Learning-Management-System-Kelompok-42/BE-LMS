@@ -1,6 +1,7 @@
 package specialization
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/specialization/spec"
@@ -24,6 +25,9 @@ type SpecializationRepository interface {
 
 	// CountEmployee returns the number of employee
 	CountEmployee(companyID, specID string) (result int64, err error)
+
+	// CheckLinkInviation returns boolean
+	CheckLinkInviation(link string) (err error)
 }
 
 type SpecializationService interface {
@@ -35,6 +39,9 @@ type SpecializationService interface {
 
 	// GetAllSpecialization returns all specialization
 	GetAllSpecialization(companyID string) (specializations []SpecializationDashboard, err error)
+
+	// GenerateLinkInvitation returns a link invitation
+	GenerateLinkInvitation() (link string, err error)
 }
 
 type specializationService struct {
@@ -76,7 +83,8 @@ func (s *specializationService) Register(upsertSpecializationSpec spec.UpsertSpe
 }
 
 func (s *specializationService) GetInvitation(invitation string) (specialization Domain, err error) {
-	link := strings.SplitAfter(invitation, "invitation/")[1]
+	link := strings.SplitAfter(invitation, "link=")[1]
+	fmt.Println("invitation = ", link)
 
 	specialization, err = s.specializationRepo.FindInvitation(link)
 	if err != nil {
@@ -114,4 +122,18 @@ func (s *specializationService) GetAllSpecialization(companyID string) (speciali
 	}
 
 	return specializations, nil
+}
+
+func (s *specializationService) GenerateLinkInvitation() (link string, err error) {
+	// uuidNew := uuid.New().String()
+	// link = "invitation/" + strings.Replace(uuidNew, "-", "", -1)
+	link = strings.Replace(uuid.New().String(), "-", "", -1)
+	fmt.Println("link", link)
+
+	err = s.specializationRepo.CheckLinkInviation(link)
+	if err != nil {
+		return "", exception.ErrInternalServer
+	}
+
+	return link, nil
 }
