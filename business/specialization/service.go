@@ -63,7 +63,7 @@ func (s *specializationService) Register(upsertSpecializationSpec spec.UpsertSpe
 	}
 
 	link := upsertSpecializationSpec.Invitation
-	separateLink := strings.SplitAfter(link, "invitation/")[1]
+	separateLink := strings.SplitAfter(link, "link=")[1]
 
 	newId := uuid.New().String()
 
@@ -83,10 +83,11 @@ func (s *specializationService) Register(upsertSpecializationSpec spec.UpsertSpe
 }
 
 func (s *specializationService) GetInvitation(invitation string) (specialization Domain, err error) {
-	link := strings.SplitAfter(invitation, "link=")[1]
-	fmt.Println("invitation = ", link)
+	// link := strings.SplitAfter(invitation, "link=")[1]
+	// fmt.Println("invitation = ", link)
+	fmt.Println("invitation = ", invitation)
 
-	specialization, err = s.specializationRepo.FindInvitation(link)
+	specialization, err = s.specializationRepo.FindInvitation(invitation)
 	if err != nil {
 		if err == exception.ErrNotFound {
 			return specialization, exception.ErrNotFound
@@ -108,10 +109,13 @@ func (s *specializationService) GetAllSpecialization(companyID string) (speciali
 	for _, spec := range specialization {
 		countCourse, err := s.specializationRepo.CountCourse(spec.ID)
 		if err != nil {
-			return specializations, err
+			return specializations, exception.ErrInternalServer
 		}
 
 		countEmployee, err := s.specializationRepo.CountEmployee(companyID, spec.ID)
+		if err != nil {
+			return specializations, exception.ErrInternalServer
+		}
 
 		specializations = append(specializations, SpecializationDashboard{
 			SpecializationID:   spec.ID,
@@ -125,8 +129,6 @@ func (s *specializationService) GetAllSpecialization(companyID string) (speciali
 }
 
 func (s *specializationService) GenerateLinkInvitation() (link string, err error) {
-	// uuidNew := uuid.New().String()
-	// link = "invitation/" + strings.Replace(uuidNew, "-", "", -1)
 	link = strings.Replace(uuid.New().String(), "-", "", -1)
 	fmt.Println("link", link)
 
