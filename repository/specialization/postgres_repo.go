@@ -43,7 +43,7 @@ func (repo *postgreSQLRepository) FindInvitation(invitation string) (specializat
 
 func (repo *postgreSQLRepository) FindDashboardSpecialization(companyID string) (specializations []specialization.Domain, err error) {
 	var specs []Specialization
-	err = repo.db.Where("company_id = 'COMP-001'").Find(&specs).Error
+	err = repo.db.Where("company_id = ?", companyID).Find(&specs).Error
 
 	if err != nil {
 		if len(specializations) == 0 {

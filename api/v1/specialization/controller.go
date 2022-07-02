@@ -49,6 +49,7 @@ func (ctrl *Controller) Register(c echo.Context) error {
 
 func (ctrl *Controller) GetInvitation(c echo.Context) error {
 	invitation := c.QueryParam("link")
+	fmt.Println("invitation = ", invitation)
 
 	spec, err := ctrl.service.GetInvitation(invitation)
 	if err != nil {
