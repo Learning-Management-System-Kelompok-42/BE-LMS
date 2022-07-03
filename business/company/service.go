@@ -120,7 +120,5 @@ func (s *companyService) Dashboard(companyID string) (domain DashboardDomain, er
 		return domain, exception.ErrInternalServer
 	}
 
-	fmt.Println("service domain = ", domain)
-
 	return domain, nil
 }

@@ -99,8 +99,6 @@ func (ctrl *Controller) GetDetailUserDashboard(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, r.InternalServerErrorResponse(err.Error()))
 	}
 
-	// fmt.Println("course = ", courses.User)
-
 	resp := response.NewGetAllUserDetailDashboardResp(result.User, result.Courses)
 
 	return c.JSON(http.StatusOK, r.SuccessResponse(resp))

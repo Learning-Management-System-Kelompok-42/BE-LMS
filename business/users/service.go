@@ -1,8 +1,6 @@
 package users
 
 import (
-	"fmt"
-
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users/spec"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/encrypt"
@@ -29,6 +27,9 @@ type UserRepository interface {
 
 	// FindDetailCourseDashboardUsers returns a course by ID, this course will be return if user already enroll on courses
 	FindDetailCourseDashboardUsers(userID string) (courses []CourseDetailDashboardUser, err error)
+
+	// FindAllUserBySpecializationID returns all users by specialization ID
+	FindAllUserBySpecializationID(specializationID string) (users []Domain, err error)
 
 	// CheckEmail checks if an email is already registered
 	CheckEmail(email string) error
@@ -120,7 +121,6 @@ func (s *userService) GetUserByID(id string) (*Domain, error) {
 }
 
 func (s *userService) GetAllUsers(companyID string) (users []Domain, err error) {
-	fmt.Println("masuk")
 	users, err = s.userRepo.FindAllUsers(companyID)
 	if err != nil {
 		if err == exception.ErrDataNotFound {

@@ -7,13 +7,13 @@ import (
 type Domain struct {
 	ID               string
 	CompanyID        string
-	Role             string
 	SpecializationID string
 	FullName         string
 	Email            string
 	Password         string
 	PhoneNumber      string
 	Address          string
+	Role             string
 	LevelAccess      string
 	CreatedAt        time.Time
 	UpdatedAt        time.Time

@@ -103,19 +103,39 @@ func (repo *postgreSQLRepository) FindDetailUserDashboard(userID string) (user u
 }
 
 func (repo *postgreSQLRepository) FindDetailCourseDashboardUsers(userID string) (courses []users.CourseDetailDashboardUser, err error) {
-	courseQuery := repo.db.Table("courses").
+	result := repo.db.Table("courses").
 		Select("courses.id AS id, courses.title, courses.thumbnail, courses.description, AVG(user_courses.rating) as rating, courses.created_at, courses.updated_at").
 		Joins("INNER JOIN user_courses ON courses.id = user_courses.course_id").
 		Where("user_courses.user_id = ?", userID).
 		Group("courses.id").
 		Find(&courses)
 
-	if courseQuery.Error != nil {
-		if courseQuery.RowsAffected == 0 {
-			return nil, exception.ErrNotFound
+	if result.Error != nil {
+		if result.RowsAffected == 0 {
+			return nil, exception.ErrEmployeeNotFound
 		}
 		return nil, exception.ErrInternalServer
 	}
 
 	return courses, nil
+}
+
+func (repo *postgreSQLRepository) FindAllUserBySpecializationID(specializationID string) (users []users.Domain, err error) {
+	var user []User
+	result := repo.db.Table("users").
+		Select("users.id, users.company_id, users.specialization_id, users.role, users.full_name AS full_name, users.email, users.phone_number AS phone_number, users.address, users.created_at, users.updated_at").
+		Joins("INNER JOIN specializations ON users.specialization_id = specializations.id").
+		Where("specializations.id = ?", specializationID).
+		Find(&user)
+
+	if result.Error != nil {
+		if result.RowsAffected == 0 {
+			return nil, exception.ErrEmployeeNotFound
+		}
+		return nil, exception.ErrInternalServer
+	}
+
+	users = ToDomainList(user)
+
+	return users, nil
 }

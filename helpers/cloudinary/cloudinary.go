@@ -2,7 +2,6 @@ package cloudOD
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/config"
@@ -19,14 +18,12 @@ func ImageUploadHelper(input interface{}) (string, error) {
 	//create cloudinary instance
 	cld, err := cloudinary.NewFromParams(cfg.Storage.CloudName, cfg.Storage.APIKey, cfg.Storage.APISecret)
 	if err != nil {
-		fmt.Println("Cloud od = ", err)
 		return "", err
 	}
 
 	//upload file
 	uploadParam, err := cld.Upload.Upload(ctx, input, uploader.UploadParams{Folder: config.GetConfig().Storage.UploadStorage})
 	if err != nil {
-		fmt.Println("Cloud od upload = ", err)
 		return "", err
 	}
 	return uploadParam.SecureURL, nil
