@@ -52,10 +52,10 @@ func FromDomain(course course.Domain) Course {
 	}
 }
 
-// func ToBatchList(courses []Course) []course.DashboardDomain {
-// 	var coursesDomain []course.DashboardDomain
-// 	for _, course := range courses {
-// 		coursesDomain = append(coursesDomain, course.ToDomain())
-// 	}
-// 	return coursesDomain
-// }
+func ToBatchList(courses []Course) []course.Domain {
+	var coursesDomain []course.Domain
+	for _, course := range courses {
+		coursesDomain = append(coursesDomain, course.ToDomain())
+	}
+	return coursesDomain
+}
