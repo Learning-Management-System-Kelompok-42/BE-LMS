@@ -131,3 +131,30 @@ func (ctrl *Controller) GetDetailSpecialization(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, f.SuccessResponse(result))
 }
+
+func (ctrl *Controller) RegisterCourseSpecialization(c echo.Context) error {
+	extract, _ := m.ExtractToken(c)
+	companyID := c.Param("companyID")
+	SpecializationID := c.Param("specializationID")
+	if companyID != extract.CompanyId {
+		return c.JSON(http.StatusUnauthorized, f.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
+
+	createRequestRegister := new(request.CreateRequestCourseSpecialization)
+	if err := c.Bind(&createRequestRegister); err != nil {
+		return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))
+	}
+
+	createRequestRegister.SpecializationID = SpecializationID
+
+	req := *createRequestRegister.ToSpec()
+
+	id, err := ctrl.service.AddCourseSpecialization(req)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
+	}
+
+	resp := response.NewCreateNewSpecializationResponse(id)
+
+	return c.JSON(http.StatusCreated, f.CreateSuccessResponse(resp))
+}

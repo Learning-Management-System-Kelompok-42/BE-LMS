@@ -85,3 +85,24 @@ func (repo *postgreSQLRepository) FindAllCourseByUserID(userID string) (course [
 
 	return course, nil
 }
+
+func (repo *postgreSQLRepository) FindAllCourseBySpecializationID(specializationID string) (courses []course.Domain, err error) {
+	var course []Course
+
+	result := repo.db.Table("specialization_courses").
+		Select("courses.id, courses.title, courses.thumbnail, courses.description, courses.created_at, courses.updated_at").
+		Joins("INNER JOIN courses ON specialization_courses.course_id = courses.id").
+		Where("specialization_courses.specialization_id = ?", specializationID).
+		Find(&course)
+
+	if result.Error != nil {
+		if result.RowsAffected == 0 {
+			return nil, exception.ErrCourseNotFound
+		}
+		return nil, exception.ErrInternalServer
+	}
+
+	courses = ToBatchList(course)
+
+	return courses, nil
+}

@@ -28,6 +28,9 @@ type CourseRepository interface {
 
 	// FindAllCourseByUserID get all course by user id
 	FindAllCourseByUserID(userID string) (course []Domain, err error)
+
+	// FindAllCourseBySpecializationID get all course by specialization id
+	FindAllCourseBySpecializationID(specializationID string) (upsertCourseSpecializationSpec []Domain, err error)
 }
 
 type CourseService interface {

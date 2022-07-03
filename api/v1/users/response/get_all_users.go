@@ -11,10 +11,8 @@ type GetAllUsersResponse struct {
 	SpecializationID string `json:"specialization_id"`
 	FullName         string `json:"full_name"`
 	Email            string `json:"email"`
-	Password         string `json:"password"`
 	PhoneNumber      string `json:"phone_number"`
 	Address          string `json:"address"`
-	LevelAccess      string `json:"level_access"`
 	CreatedAt        string `json:"created_at"`
 	UpdatedAt        string `json:"updated_at"`
 }
@@ -27,10 +25,8 @@ func FromDomainList(users users.Domain) GetAllUsersResponse {
 		SpecializationID: users.SpecializationID,
 		FullName:         users.FullName,
 		Email:            users.Email,
-		Password:         users.Password,
 		PhoneNumber:      users.PhoneNumber,
 		Address:          users.Address,
-		LevelAccess:      users.LevelAccess,
 		CreatedAt:        users.CreatedAt.String(),
 		UpdatedAt:        users.UpdatedAt.String(),
 	}

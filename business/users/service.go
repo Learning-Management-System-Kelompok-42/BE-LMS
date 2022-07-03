@@ -30,6 +30,9 @@ type UserRepository interface {
 	// FindDetailCourseDashboardUsers returns a course by ID, this course will be return if user already enroll on courses
 	FindDetailCourseDashboardUsers(userID string) (courses []CourseDetailDashboardUser, err error)
 
+	// FindAllUserBySpecializationID returns all users by specialization ID
+	FindAllUserBySpecializationID(specializationID string) (users []Domain, err error)
+
 	// CheckEmail checks if an email is already registered
 	CheckEmail(email string) error
 }
