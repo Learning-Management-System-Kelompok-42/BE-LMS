@@ -88,3 +88,18 @@ func (repo *postgreSQLRepository) CheckLinkInviation(link string) (err error) {
 
 	return nil
 }
+
+func (repo *postgreSQLRepository) FindSpecializationByID(specializationID, companyID string) (specialization specialization.Domain, err error) {
+	var spec Specialization
+	err = repo.db.Where("id = ? AND company_id = ?", specializationID, companyID).First(&spec).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return specialization, exception.ErrSpecializationNotFound
+		}
+		return specialization, exception.ErrInternalServer
+	}
+
+	specialization = spec.ToDomain()
+
+	return specialization, nil
+}
