@@ -4,7 +4,6 @@ import (
 	"time"
 
 	specializations "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/specialization"
-	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/specializationCourse"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/users"
 	"gorm.io/gorm"
 )
@@ -14,11 +13,20 @@ type Specialization struct {
 	CompanyID             string `gorm:"size:200"`
 	Name                  string
 	Invitation            string
-	Users                 []users.User                                `gorm:"foreignKey:SpecializationID"`
-	SpecializationCourses []specializationCourse.SpecializationCourse `gorm:"foreignKey:SpecializationID"`
+	Users                 []users.User           `gorm:"foreignKey:SpecializationID"`
+	SpecializationCourses []SpecializationCourse `gorm:"foreignKey:SpecializationID"`
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
 	DeletedAt             gorm.DeletedAt `gorm:"index"`
+}
+
+type SpecializationCourse struct {
+	ID               string `gorm:"primaryKey;size:200"`
+	CourseID         string `gorm:"size:200"`
+	SpecializationID string `gorm:"size:200"`
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
+	DeletedAt        gorm.DeletedAt `gorm:"index"`
 }
 
 func (specialization *Specialization) ToDomain() specializations.Domain {
