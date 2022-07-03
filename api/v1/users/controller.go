@@ -1,7 +1,6 @@
 package users
 
 import (
-	"fmt"
 	"net/http"
 
 	m "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/middleware"
@@ -65,9 +64,12 @@ func (ctrl *Controller) GetUserByID(c echo.Context) error {
 
 func (ctrl *Controller) GetAllUsers(c echo.Context) error {
 	extract, _ := m.ExtractToken(c)
-	fmt.Println("exctract company id = ", extract.CompanyId)
+	companyID := c.Param("companyID")
+	if companyID != extract.CompanyId {
+		return c.JSON(http.StatusUnauthorized, r.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
 
-	users, err := ctrl.service.GetAllUsers(extract.CompanyId)
+	users, err := ctrl.service.GetAllUsers(companyID)
 	if err != nil {
 		if err == exception.ErrDataNotFound {
 			return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))
@@ -81,7 +83,13 @@ func (ctrl *Controller) GetAllUsers(c echo.Context) error {
 }
 
 func (ctrl *Controller) GetDetailUserDashboard(c echo.Context) error {
-	userID := c.Param("id")
+	extract, _ := m.ExtractToken(c)
+	companyID := c.Param("companyID")
+	userID := c.Param("employeeID")
+
+	if companyID != extract.CompanyId {
+		return c.JSON(http.StatusUnauthorized, r.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
 
 	result, err := ctrl.service.GetDetailUserDashboard(userID)
 	if err != nil {
