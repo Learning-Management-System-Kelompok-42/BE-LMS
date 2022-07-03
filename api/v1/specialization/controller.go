@@ -53,7 +53,6 @@ func (ctrl *Controller) Register(c echo.Context) error {
 
 func (ctrl *Controller) GetInvitation(c echo.Context) error {
 	invitation := c.QueryParam("link")
-	fmt.Println("invitation = ", invitation)
 
 	spec, err := ctrl.service.GetInvitation(invitation)
 	if err != nil {
@@ -157,4 +156,36 @@ func (ctrl *Controller) RegisterCourseSpecialization(c echo.Context) error {
 	resp := response.NewCreateNewSpecializationResponse(id)
 
 	return c.JSON(http.StatusCreated, f.CreateSuccessResponse(resp))
+}
+
+func (ctrl *Controller) UpdateSpecialization(c echo.Context) error {
+	extract, _ := m.ExtractToken(c)
+	companyID := c.Param("companyID")
+	SpecializationID := c.Param("specializationID")
+	if companyID != extract.CompanyId {
+		return c.JSON(http.StatusUnauthorized, f.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
+
+	updateRequest := new(request.UpdateSpecializationRequest)
+	if err := c.Bind(&updateRequest); err != nil {
+		return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))
+	}
+
+	updateRequest.SpecializationID = SpecializationID
+	updateRequest.CompanyID = companyID
+
+	req := *updateRequest.ToSpec()
+
+	id, err := ctrl.service.UpdateSpecializationByID(req)
+	if err != nil {
+		if err == exception.ErrSpecializationNotFound {
+			return c.JSON(http.StatusBadRequest, f.NotFoundResponse(err.Error()))
+		}
+
+		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
+	}
+
+	resp := response.NewCreateNewSpecializationResponse(id)
+
+	return c.JSON(http.StatusOK, f.SuccessResponse(resp))
 }

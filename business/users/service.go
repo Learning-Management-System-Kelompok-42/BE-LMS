@@ -1,8 +1,6 @@
 package users
 
 import (
-	"fmt"
-
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users/spec"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/encrypt"
@@ -123,7 +121,6 @@ func (s *userService) GetUserByID(id string) (*Domain, error) {
 }
 
 func (s *userService) GetAllUsers(companyID string) (users []Domain, err error) {
-	fmt.Println("masuk")
 	users, err = s.userRepo.FindAllUsers(companyID)
 	if err != nil {
 		if err == exception.ErrDataNotFound {

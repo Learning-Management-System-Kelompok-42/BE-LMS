@@ -1,8 +1,6 @@
 package course
 
 import (
-	"fmt"
-
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course/spec"
 	module "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/modules"
 	specModule "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/modules/spec"
@@ -77,7 +75,6 @@ func (s *courseService) Create(upsertCourseSpec spec.UpsertCourseSpec) (id strin
 		upsertCourseSpec.Thumbnail,
 		upsertCourseSpec.Description,
 	)
-	fmt.Println("company id = ", upsertCourseSpec.CompanyID)
 	course, err := s.repo.Insert(newCourse)
 	if err != nil {
 		return "", exception.ErrInternalServer
@@ -110,15 +107,13 @@ func (s *courseService) Create(upsertCourseSpec spec.UpsertCourseSpec) (id strin
 				MultipleChoice: quiz.MultipleChoice,
 			}
 
-			quizID, err := s.serviceQuiz.Create(newQuiz)
+			_, err := s.serviceQuiz.Create(newQuiz)
 			if err != nil {
 				if err == exception.ErrInvalidRequest {
 					return "", exception.ErrInvalidRequest
 				}
 				return "", exception.ErrInternalServer
 			}
-
-			fmt.Println("quiz id dari insert = ", quizID)
 		}
 
 	}

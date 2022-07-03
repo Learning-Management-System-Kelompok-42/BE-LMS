@@ -1,7 +1,6 @@
 package specialization
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course"
@@ -36,6 +35,9 @@ type SpecializationRepository interface {
 
 	// CheckLinkInviation returns boolean
 	CheckLinkInviation(link string) (err error)
+
+	// UpdateSpecialization updates a specialization
+	UpdateSpecialization(specialization Domain) (id string, err error)
 }
 
 type SpecializationService interface {
@@ -56,6 +58,9 @@ type SpecializationService interface {
 
 	// GenerateLinkInvitation returns a link invitation
 	GenerateLinkInvitation() (link string, err error)
+
+	// UpdateSpecializationByID updates a specialization
+	UpdateSpecializationByID(upsertUpdateSpec spec.UpsertUpdateSpecializationSpec) (id string, err error)
 }
 
 type specializationService struct {
@@ -107,7 +112,6 @@ func (s *specializationService) Register(upsertSpecializationSpec spec.UpsertSpe
 func (s *specializationService) GetInvitation(invitation string) (specialization Domain, err error) {
 	// link := strings.SplitAfter(invitation, "link=")[1]
 	// fmt.Println("invitation = ", link)
-	fmt.Println("invitation = ", invitation)
 
 	specialization, err = s.specializationRepo.FindInvitation(invitation)
 	if err != nil {
@@ -152,7 +156,6 @@ func (s *specializationService) GetAllSpecialization(companyID string) (speciali
 
 func (s *specializationService) GenerateLinkInvitation() (link string, err error) {
 	link = strings.Replace(uuid.New().String(), "-", "", -1)
-	fmt.Println("link", link)
 
 	err = s.specializationRepo.CheckLinkInviation(link)
 	if err != nil {
@@ -201,8 +204,6 @@ func (s *specializationService) GetSpecializationByID(specializationID, companyI
 		return specializations, exception.ErrInternalServer
 	}
 
-	fmt.Println("users = ", users)
-
 	specializations = SpecializationDetail{
 		SpecializationID:   specialization.ID,
 		CompanyID:          specialization.CompanyID,
@@ -224,6 +225,25 @@ func (s *specializationService) AddCourseSpecialization(upsertCourseSpecializati
 	}
 
 	id, err = s.specializationRepo.InsertCourseSpecialization(upsertCourseSpecializationSpec.CourseID, upsertCourseSpecializationSpec.SpecializationID)
+	if err != nil {
+		return "", exception.ErrInternalServer
+	}
+
+	return id, nil
+}
+
+func (s *specializationService) UpdateSpecializationByID(upsertUpdateSpec spec.UpsertUpdateSpecializationSpec) (id string, err error) {
+	specialization, err := s.specializationRepo.FindSpecializationByID(upsertUpdateSpec.SpecializationID, upsertUpdateSpec.CompanyID)
+	if err != nil {
+		if err == exception.ErrSpecializationNotFound {
+			return "", exception.ErrSpecializationNotFound
+		}
+		return "", exception.ErrInternalServer
+	}
+
+	newSpecilization := specialization.ModifySpecialization(upsertUpdateSpec.Name)
+
+	id, err = s.specializationRepo.UpdateSpecialization(newSpecilization)
 	if err != nil {
 		return "", exception.ErrInternalServer
 	}

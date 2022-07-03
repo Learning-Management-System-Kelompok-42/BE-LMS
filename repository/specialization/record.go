@@ -35,6 +35,8 @@ func (specialization *Specialization) ToDomain() specializations.Domain {
 		CompanyID:  specialization.CompanyID,
 		Name:       specialization.Name,
 		Invitation: specialization.Invitation,
+		CreatedAt:  specialization.CreatedAt,
+		UpdatedAt:  specialization.UpdatedAt,
 	}
 }
 
@@ -54,7 +56,7 @@ func FromDomain(domain specializations.Domain) Specialization {
 		Invitation:            domain.Invitation,
 		Users:                 nil,
 		SpecializationCourses: nil,
-		CreatedAt:             time.Time{},
+		CreatedAt:             domain.CreatedAt,
 		UpdatedAt:             time.Time{},
 		DeletedAt:             gorm.DeletedAt{},
 	}

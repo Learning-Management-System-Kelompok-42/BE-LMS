@@ -123,3 +123,16 @@ func (repo *postgreSQLRepository) InsertCourseSpecialization(courseID, specializ
 
 	return id, nil
 }
+
+func (repo *postgreSQLRepository) UpdateSpecialization(specialization specialization.Domain) (id string, err error) {
+	spec := FromDomain(specialization)
+
+	err = repo.db.Save(&spec).Error
+	if err != nil {
+		return "", exception.ErrInternalServer
+	}
+
+	id = spec.ID
+
+	return id, nil
+}

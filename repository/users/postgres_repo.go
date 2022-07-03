@@ -1,8 +1,6 @@
 package users
 
 import (
-	"fmt"
-
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
 	"gorm.io/gorm"
@@ -114,7 +112,6 @@ func (repo *postgreSQLRepository) FindDetailCourseDashboardUsers(userID string) 
 
 	if result.Error != nil {
 		if result.RowsAffected == 0 {
-			fmt.Println("error")
 			return nil, exception.ErrEmployeeNotFound
 		}
 		return nil, exception.ErrInternalServer

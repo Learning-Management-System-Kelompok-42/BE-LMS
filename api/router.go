@@ -57,9 +57,10 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	// Dashboard specialization
 	companyV1.GET("/:companyID/specialization", controller.SpecializationV1Controller.GetAllSpecialization, m.CheckLevelAccess)
 	companyV1.GET("/:companyID/specialization/:specializationID", controller.SpecializationV1Controller.GetDetailSpecialization, m.CheckLevelAccess)
-	companyV1.POST("/:companyID/specialization/:specializationID/course", controller.SpecializationV1Controller.RegisterCourseSpecialization, m.CheckLevelAccess) // add priority 3
-	companyV1.POST("/:companyID/specialization", controller.SpecializationV1Controller.Register, m.CheckLevelAccess)
 	companyV1.GET("/:companyID/specialization/generate", controller.SpecializationV1Controller.GenerateLinkInvitation, m.CheckLevelAccess)
+	companyV1.POST("/:companyID/specialization/:specializationID/course", controller.SpecializationV1Controller.RegisterCourseSpecialization, m.CheckLevelAccess)
+	companyV1.POST("/:companyID/specialization", controller.SpecializationV1Controller.Register, m.CheckLevelAccess)
+	companyV1.PUT("/:companyID/specialization/:specializationID", controller.SpecializationV1Controller.UpdateSpecialization, m.CheckLevelAccess)
 
 	// Dashboard courses
 	companyV1.GET("/:companyID/course", controller.CourseV1Controller.GetAllCourseDashboard, m.CheckLevelAccess) //change upload thumbnail with cloudinary
