@@ -3,7 +3,7 @@ package course
 import (
 	"net/http"
 
-	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/middleware"
+	m "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/middleware"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/course/request"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/course/response"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course"
@@ -22,13 +22,18 @@ func NewController(service course.CourseService) *Controller {
 	}
 }
 
-func (ctrl *Controller) Register(c echo.Context) error {
-	credential, _ := middleware.ExtractToken(c)
+func (ctrl *Controller) RegisterCourse(c echo.Context) error {
+	extract, _ := m.ExtractToken(c)
+	companyID := c.Param("companyID")
+	if companyID != extract.CompanyId {
+		return c.JSON(http.StatusUnauthorized, f.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
+
 	createCourseRequest := new(request.CreateCourseRequest)
 	if err := c.Bind(&createCourseRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))
 	}
-	createCourseRequest.CompanyID = credential.CompanyId
+	createCourseRequest.CompanyID = companyID
 
 	req := *createCourseRequest.ToSpec()
 
@@ -45,8 +50,13 @@ func (ctrl *Controller) Register(c echo.Context) error {
 }
 
 func (ctrl *Controller) GetByID(c echo.Context) error {
-	id := c.Param("id")
-	// result, _ := middleware.ExtractToken(c)
+	extract, _ := m.ExtractToken(c)
+	companyID := c.Param("companyID")
+	id := c.Param("courseID")
+
+	if companyID != extract.CompanyId {
+		return c.JSON(http.StatusUnauthorized, f.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
 
 	course, err := ctrl.service.GetByID(id)
 	if err != nil {
@@ -63,8 +73,13 @@ func (ctrl *Controller) GetByID(c echo.Context) error {
 }
 
 func (ctrl *Controller) GetAllCourseDashboard(c echo.Context) error {
-	extract, _ := middleware.ExtractToken(c)
-	course, err := ctrl.service.GetAllCourseDashboard(extract.CompanyId)
+	extract, _ := m.ExtractToken(c)
+	companyID := c.Param("companyID")
+	if companyID != extract.CompanyId {
+		return c.JSON(http.StatusUnauthorized, f.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
+
+	course, err := ctrl.service.GetAllCourseDashboard(companyID)
 	if err != nil {
 		if err == exception.ErrNotFound {
 			return c.JSON(http.StatusNotFound, f.NotFoundResponse(err.Error()))

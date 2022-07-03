@@ -74,7 +74,7 @@ func (repo *postgreSQLRepository) FindAllUsers(companyID string) (users []users.
 	result := repo.db.Where("company_id = ? AND level_access = ?", companyID, "employee").Find(&user)
 	// check if result rows is empty
 	if result.RowsAffected == 0 {
-		return nil, exception.ErrDataNotFound
+		return nil, exception.ErrEmployeeNotFound
 	} else if result.Error != nil {
 		return nil, exception.ErrInternalServer
 	}

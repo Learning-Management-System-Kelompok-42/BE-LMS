@@ -44,38 +44,37 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	// Get invitation link
 	e.GET("/v1/invitation", controller.SpecializationV1Controller.GetInvitation)
 
-	userV1 := e.Group("/v1/users")
-	userV1.Use(m.JWTMiddleware(config))
-	userV1.GET("/:id", controller.UserV1Controller.GetUserByID)
-	userV1.GET("/dashboard", controller.UserV1Controller.GetAllUsers, m.CheckLevelAccess)                //Get all users for admin
-	userV1.GET("/dashboard/:id", controller.UserV1Controller.GetDetailUserDashboard, m.CheckLevelAccess) //Get user by id for admin
+	// userV1 := e.Group("/v1/dashboard")
+	// userV1.Use(m.JWTMiddleware(config))
+	// userV1.GET("/:id", controller.UserV1Controller.GetUserByID)
 
-	courseV1 := e.Group("/v1/course")
-	courseV1.Use(m.JWTMiddleware(config))
-	courseV1.GET("/:id", controller.CourseV1Controller.GetByID)
-	courseV1.GET("/dashboard", controller.CourseV1Controller.GetAllCourseDashboard, m.CheckLevelAccess)
-	courseV1.POST("", controller.CourseV1Controller.Register, m.CheckLevelAccess)
+	companyV1 := e.Group("/v1/company")
+	companyV1.Use(m.JWTMiddleware(config))
 
-	quizV1 := e.Group("/v1/quiz")
-	quizV1.Use(m.JWTMiddleware(config))
-	quizV1.GET("/:id", controller.QuizV1Controller.FindByID)
-	quizV1.PUT("/:id", controller.QuizV1Controller.Update) // next will be implement Role based access
-	quizV1.POST("", controller.QuizV1Controller.Create)    // testing
+	// Dashboard company
+	companyV1.GET("/:companyID/dashboard", controller.CompanyV1Controller.GetDashboard, m.CheckLevelAccess) //need to update UI, priority 1
 
-	moduleV1 := e.Group("/v1/module")
-	moduleV1.Use(m.JWTMiddleware(config))
-	moduleV1.GET("/:id", controller.ModuleV1Controller.GetByID)
-	moduleV1.PUT("/:id", controller.ModuleV1Controller.Update) // next will be implement Role based access
-	moduleV1.POST("", controller.ModuleV1Controller.Register)  // testing
+	// Dashboard specialization
+	companyV1.GET("/:companyID/specialization", controller.SpecializationV1Controller.GetAllSpecialization, m.CheckLevelAccess)
+	companyV1.GET("/:companyID/specialization/:specializationID", controller.SpecializationV1Controller.GetDetailSpecialization, m.CheckLevelAccess) // add priority 2
+	// companyV1.POST("/:companyID/specialization/:specializationID/course", controller.SpecializationV1Controller.AddCourseSpecialization, m.CheckLevelAccess) // add priority 3
+	companyV1.POST("/:companyID/specialization", controller.SpecializationV1Controller.Register, m.CheckLevelAccess)
+	companyV1.GET("/:companyID/specialization/generate", controller.SpecializationV1Controller.GenerateLinkInvitation, m.CheckLevelAccess)
 
-	specializationV1 := e.Group("/v1/specializations")
-	specializationV1.Use(m.JWTMiddleware(config))
-	specializationV1.GET("/dashboard", controller.SpecializationV1Controller.GetAllSpecialization, m.CheckLevelAccess)
-	specializationV1.GET("/generate", controller.SpecializationV1Controller.GenerateLinkInvitation, m.CheckLevelAccess)
-	specializationV1.POST("", controller.SpecializationV1Controller.Register, m.CheckLevelAccess)
+	// Dashboard courses
+	companyV1.GET("/:companyID/course", controller.CourseV1Controller.GetAllCourseDashboard, m.CheckLevelAccess) //change upload thumbnail with cloudinary
+	companyV1.POST("/:companyID/course", controller.CourseV1Controller.RegisterCourse, m.CheckLevelAccess)
+	companyV1.GET("/:companyID/course/:courseID", controller.CourseV1Controller.GetByID, m.CheckLevelAccess)
+	// companyV1.PUT("/:companyID/course/:courseID", controller.CourseV1Controller.UpdateCourseByID, m.CheckLevelAccess) // add priority 4
 
-	dashboardV1 := e.Group("/v1/company")
-	dashboardV1.Use(m.JWTMiddleware(config))
-	dashboardV1.GET("", controller.CompanyV1Controller.GetDashboard, m.CheckLevelAccess)
+	// Dashboard employee
+	companyV1.GET("/:companyID/employee", controller.UserV1Controller.GetAllUsers, m.CheckLevelAccess)                        //need to update response, remove password, priority 5
+	companyV1.GET("/:companyID/employee/:employeeID", controller.UserV1Controller.GetDetailUserDashboard, m.CheckLevelAccess) //need to add progress course, priority 6
+	// companyV1.PUT("/:companyID/employee/:employeeID", controller.UserV1Controller.UpdateUserByID, m.CheckLevelAccess)        //add priority 7
 
+	// Dashboard setting
+	// companyV1.GET("/:companyID/setting/:employeeID", controller.CompanyV1Controller.Profile, m.CheckLevelAccess) //add priority 8
+	// companyV1.PUT("/:companyID", controller.CompanyV1Controller.UpdateCompanyProfile, m.CheckLevelAccess) //add priority 9
+
+	// Semua routes yang ada saat ini, sudah ditesting dan berhasil
 }

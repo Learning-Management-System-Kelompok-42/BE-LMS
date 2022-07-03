@@ -1,8 +1,6 @@
 package course
 
 import (
-	"fmt"
-
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
 	"gorm.io/gorm"
@@ -50,20 +48,17 @@ func (repo *postgreSQLRepository) Update(course course.Domain) (id string, err e
 }
 
 func (repo *postgreSQLRepository) FindAllCourseDashboard(companyID string) (course []course.Domain, err error) {
-	result := repo.db.Table("courses").
-		Where("courses.company_id = ?", companyID).
-		Scan(&course)
-
-	for _, cour := range course {
-		fmt.Println("course = ", cour)
-	}
+	var courses []Course
+	result := repo.db.Where("company_id = ?", companyID).Find(&courses)
 
 	if result.Error != nil {
 		if result.RowsAffected == 0 {
-			return course, exception.ErrNotFound
+			return course, exception.ErrCourseNotFound
 		}
 		return course, exception.ErrInternalServer
 	}
+
+	course = ToBatchList(courses)
 
 	return course, nil
 }

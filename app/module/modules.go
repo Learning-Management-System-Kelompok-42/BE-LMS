@@ -55,7 +55,7 @@ func RegisterModules(dbCon *util.DatabaseConnection, config *config.AppConfig) a
 
 	//initiate dependency injection for specialization
 	specializationPermitRepo := specializationRepo.RepositoryFactory(dbCon)
-	specializationPermitService := specializationService.NewSpecializationService(specializationPermitRepo)
+	specializationPermitService := specializationService.NewSpecializationService(specializationPermitRepo, coursePermitRepo, userPermitRepo)
 	specializationPermitControllerV1 := specializationController.NewController(specializationPermitService)
 
 	// initiate dependency injection for auth

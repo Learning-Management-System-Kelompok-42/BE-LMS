@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/middleware"
+	m "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/middleware"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/specialization/request"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/specialization/response"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/specialization"
@@ -22,10 +22,14 @@ func NewController(service specialization.SpecializationService) *Controller {
 }
 
 func (ctrl *Controller) Register(c echo.Context) error {
-	extract, _ := middleware.ExtractToken(c)
+	extract, _ := m.ExtractToken(c)
+	companyID := c.Param("companyID")
+	if companyID != extract.CompanyId {
+		return c.JSON(http.StatusUnauthorized, f.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
 
 	createSpecializationRequest := new(request.CreateRequestSpecialization)
-	createSpecializationRequest.CompanyID = extract.CompanyId
+	createSpecializationRequest.CompanyID = companyID
 
 	if err := c.Bind(&createSpecializationRequest); err != nil {
 		return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))
@@ -65,9 +69,13 @@ func (ctrl *Controller) GetInvitation(c echo.Context) error {
 }
 
 func (ctrl *Controller) GetAllSpecialization(c echo.Context) error {
-	extract, _ := middleware.ExtractToken(c)
+	extract, _ := m.ExtractToken(c)
+	companyID := c.Param("companyID")
+	if companyID != extract.CompanyId {
+		return c.JSON(http.StatusUnauthorized, f.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
 
-	spec, err := ctrl.service.GetAllSpecialization(extract.CompanyId)
+	spec, err := ctrl.service.GetAllSpecialization(companyID)
 	if err != nil {
 		if err == exception.ErrNotFound {
 			return c.JSON(http.StatusBadRequest, f.NotFoundResponse(err.Error()))
@@ -81,6 +89,12 @@ func (ctrl *Controller) GetAllSpecialization(c echo.Context) error {
 }
 
 func (ctrl *Controller) GenerateLinkInvitation(c echo.Context) error {
+	extract, _ := m.ExtractToken(c)
+	companyID := c.Param("companyID")
+	if companyID != extract.CompanyId {
+		return c.JSON(http.StatusUnauthorized, f.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
+
 	link, err := ctrl.service.GenerateLinkInvitation()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
@@ -90,4 +104,30 @@ func (ctrl *Controller) GenerateLinkInvitation(c echo.Context) error {
 	resp := response.NewGenerateLinkSpecializationResponse(result)
 
 	return c.JSON(http.StatusOK, f.SuccessResponse(resp))
+}
+
+func (ctrl *Controller) GetDetailSpecialization(c echo.Context) error {
+	extract, _ := m.ExtractToken(c)
+	companyID := c.Param("companyID")
+	specializationID := c.Param("specializationID")
+	if companyID != extract.CompanyId {
+		return c.JSON(http.StatusUnauthorized, f.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
+
+	specialization, err := ctrl.service.GetSpecializationByID(specializationID, companyID)
+	if err != nil {
+		if err == exception.ErrSpecializationNotFound {
+			return c.JSON(http.StatusBadRequest, f.NotFoundResponse(err.Error()))
+		} else if err == exception.ErrCourseNotFound {
+			return c.JSON(http.StatusBadRequest, f.NotFoundResponse(err.Error()))
+		} else if err == exception.ErrEmployeeNotFound {
+			return c.JSON(http.StatusBadRequest, f.NotFoundResponse(err.Error()))
+		}
+
+		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
+	}
+
+	result := response.NewGetSpecializationByIDResponse(specialization)
+
+	return c.JSON(http.StatusOK, f.SuccessResponse(result))
 }

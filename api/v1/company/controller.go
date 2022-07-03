@@ -64,8 +64,12 @@ func (ctrl *Controller) Register(c echo.Context) error {
 
 func (ctrl *Controller) GetDashboard(c echo.Context) error {
 	extract, _ := m.ExtractToken(c)
+	companyID := c.Param("companyID")
+	if companyID != extract.CompanyId {
+		return c.JSON(http.StatusUnauthorized, r.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
 
-	company, err := ctrl.service.Dashboard(extract.CompanyId)
+	company, err := ctrl.service.Dashboard(companyID)
 	if err != nil {
 		if err == exception.ErrNotFound {
 			return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))

@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/specialization/spec"
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
@@ -19,6 +21,9 @@ type SpecializationRepository interface {
 
 	// FindDashboardSpecialization returns all specialization
 	FindDashboardSpecialization(companyID string) (specializations []Domain, err error)
+
+	// FindSpecializationByID returns specialization by id
+	FindSpecializationByID(specializationID, companyID string) (specialization Domain, err error)
 
 	// CountCourse returns the number of course
 	CountCourse(specID string) (result int64, err error)
@@ -40,18 +45,29 @@ type SpecializationService interface {
 	// GetAllSpecialization returns all specialization
 	GetAllSpecialization(companyID string) (specializations []SpecializationDashboard, err error)
 
+	// GetSpecializationByID returns a specialization by id
+	GetSpecializationByID(specializationID, companyID string) (specializations SpecializationDetail, err error)
+
 	// GenerateLinkInvitation returns a link invitation
 	GenerateLinkInvitation() (link string, err error)
 }
 
 type specializationService struct {
 	specializationRepo SpecializationRepository
+	courseRepo         course.CourseRepository
+	userRepo           users.UserRepository
 	validate           *validator.Validate
 }
 
-func NewSpecializationService(specializationRepo SpecializationRepository) SpecializationService {
+func NewSpecializationService(
+	specializationRepo SpecializationRepository,
+	courseRepo course.CourseRepository,
+	userRepo users.UserRepository,
+) SpecializationService {
 	return &specializationService{
 		specializationRepo: specializationRepo,
+		courseRepo:         courseRepo,
+		userRepo:           userRepo,
 		validate:           validator.New(),
 	}
 }
@@ -138,4 +154,57 @@ func (s *specializationService) GenerateLinkInvitation() (link string, err error
 	}
 
 	return link, nil
+}
+
+func (s *specializationService) GetSpecializationByID(specializationID, companyID string) (specializations SpecializationDetail, err error) {
+	specialization, err := s.specializationRepo.FindSpecializationByID(specializationID, companyID)
+	if err != nil {
+		if err == exception.ErrSpecializationNotFound {
+			return specializations, exception.ErrSpecializationNotFound
+		}
+		return specializations, exception.ErrInternalServer
+	}
+
+	// count course
+	countCourse, err := s.specializationRepo.CountCourse(specialization.ID)
+	if err != nil {
+		return specializations, exception.ErrInternalServer
+	}
+
+	// count employee
+	countEmployee, err := s.specializationRepo.CountEmployee(companyID, specialization.ID)
+	if err != nil {
+		return specializations, exception.ErrInternalServer
+	}
+
+	courses, err := s.courseRepo.FindAllCourseDashboard(companyID)
+	if err != nil {
+		if err == exception.ErrCourseNotFound {
+			return specializations, exception.ErrCourseNotFound
+		}
+
+		return specializations, exception.ErrInternalServer
+	}
+
+	users, err := s.userRepo.FindAllUsers(companyID)
+	if err != nil {
+		if err == exception.ErrEmployeeNotFound {
+			return specializations, exception.ErrEmployeeNotFound
+		}
+
+		return specializations, exception.ErrInternalServer
+	}
+
+	specializations = SpecializationDetail{
+		SpecializationID:   specialization.ID,
+		CompanyID:          specialization.CompanyID,
+		SpecializationName: specialization.Name,
+		Invitation:         specialization.Invitation,
+		AmountEmployee:     countEmployee,
+		AmountCourse:       countCourse,
+		Courses:            courses,
+		Users:              users,
+	}
+
+	return specializations, nil
 }
