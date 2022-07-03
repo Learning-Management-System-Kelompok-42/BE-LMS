@@ -16,6 +16,9 @@ type SpecializationRepository interface {
 	// Insert creates a new specialization into database
 	Insert(specialization Domain) (id string, err error)
 
+	// InsertCourseSpecialization creates a new course into specialization table
+	InsertCourseSpecialization(courseID, specializationID string) (id string, err error)
+
 	// FindInvitation
 	FindInvitation(invitation string) (specialization Domain, err error)
 
@@ -38,6 +41,9 @@ type SpecializationRepository interface {
 type SpecializationService interface {
 	// Register creates a new specialization
 	Register(upsertSpecializationSpec spec.UpsertSpecializationSpec) (id string, err error)
+
+	// AddCourseSpecialization adds a new course into specialization
+	AddCourseSpecialization(upsertCourseSpecializationSpec spec.UpsertCourseSpecializationSpec) (id string, err error)
 
 	// GetInvitation returns a specialization by invitation
 	GetInvitation(invitation string) (specialization Domain, err error)
@@ -172,12 +178,12 @@ func (s *specializationService) GetSpecializationByID(specializationID, companyI
 	}
 
 	// count employee
-	countEmployee, err := s.specializationRepo.CountEmployee(companyID, specialization.ID)
+	countEmployee, err := s.specializationRepo.CountEmployee(specialization.CompanyID, specialization.ID)
 	if err != nil {
 		return specializations, exception.ErrInternalServer
 	}
 
-	courses, err := s.courseRepo.FindAllCourseDashboard(companyID)
+	courses, err := s.courseRepo.FindAllCourseBySpecializationID(specialization.ID)
 	if err != nil {
 		if err == exception.ErrCourseNotFound {
 			return specializations, exception.ErrCourseNotFound
@@ -186,7 +192,7 @@ func (s *specializationService) GetSpecializationByID(specializationID, companyI
 		return specializations, exception.ErrInternalServer
 	}
 
-	users, err := s.userRepo.FindAllUsers(companyID)
+	users, err := s.userRepo.FindAllUserBySpecializationID(specialization.ID)
 	if err != nil {
 		if err == exception.ErrEmployeeNotFound {
 			return specializations, exception.ErrEmployeeNotFound
@@ -194,6 +200,8 @@ func (s *specializationService) GetSpecializationByID(specializationID, companyI
 
 		return specializations, exception.ErrInternalServer
 	}
+
+	fmt.Println("users = ", users)
 
 	specializations = SpecializationDetail{
 		SpecializationID:   specialization.ID,
@@ -207,4 +215,18 @@ func (s *specializationService) GetSpecializationByID(specializationID, companyI
 	}
 
 	return specializations, nil
+}
+
+func (s *specializationService) AddCourseSpecialization(upsertCourseSpecializationSpec spec.UpsertCourseSpecializationSpec) (id string, err error) {
+	err = s.validate.Struct(&upsertCourseSpecializationSpec)
+	if err != nil {
+		return "", exception.ErrInvalidRequest
+	}
+
+	id, err = s.specializationRepo.InsertCourseSpecialization(upsertCourseSpecializationSpec.CourseID, upsertCourseSpecializationSpec.SpecializationID)
+	if err != nil {
+		return "", exception.ErrInternalServer
+	}
+
+	return id, nil
 }

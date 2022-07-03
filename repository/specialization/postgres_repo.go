@@ -3,6 +3,7 @@ package specialization
 import (
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/specialization"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -102,4 +103,23 @@ func (repo *postgreSQLRepository) FindSpecializationByID(specializationID, compa
 	specialization = spec.ToDomain()
 
 	return specialization, nil
+}
+
+func (repo *postgreSQLRepository) InsertCourseSpecialization(courseID, specializationID string) (id string, err error) {
+	var spec SpecializationCourse
+
+	newId := uuid.New().String()
+
+	spec.ID = newId
+	spec.CourseID = courseID
+	spec.SpecializationID = specializationID
+
+	err = repo.db.Create(&spec).Error
+	if err != nil {
+		return "", exception.ErrInternalServer
+	}
+
+	id = spec.ID
+
+	return id, nil
 }
