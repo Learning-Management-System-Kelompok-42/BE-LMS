@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/specialization"
-	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/specializationCourse"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/userCourse"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/userModules"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/users"
@@ -88,7 +87,7 @@ func init() {
 		&quiz.Quiz{},
 		&module.Module{},
 		&requestCourse.RequestCourse{},
-		&specializationCourse.SpecializationCourse{},
+		&specialization.SpecializationCourse{},
 		&userCourse.UserCourse{},
 		&userModules.UserModule{},
 	); err != nil {
