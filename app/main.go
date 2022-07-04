@@ -31,9 +31,6 @@ import (
 
 func main() {
 	cfg := config.GetConfig()
-	fmt.Println("cfg.S3.AwsId: ", cfg.AwsS3.AwsId)
-	fmt.Println("cfg.S3.AwsKey: ", cfg.AwsS3.AwsKey)
-	fmt.Println("bucket = ", cfg.AwsS3.Bucket)
 
 	dbConnection := util.NewConnectionDB(cfg)
 
@@ -53,7 +50,11 @@ func main() {
 
 	go func() {
 		address := fmt.Sprintf(":%d", cfg.App.Port)
-		if err := e.Start(address); err != nil {
+		// if err := e.Start(address); err != nil {
+		// 	log.Info("Shutting down the server")
+		// }
+		// run server with https with file localhost.crt and localhost.key
+		if err := e.StartTLS(address, "localhost.crt", "localhost.key"); err != nil {
 			log.Info("Shutting down the server")
 		}
 	}()

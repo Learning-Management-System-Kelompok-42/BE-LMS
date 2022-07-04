@@ -30,8 +30,6 @@ func UploadFileHelper(file multipart.File, fileName string) (string, error) {
 	// Create an uploader with the session and default options
 	uploader := s3manager.NewUploader(sess)
 
-	// uploader := s3manager.NewUploader(sess)
-
 	upload, err := uploader.Upload(&s3manager.UploadInput{
 		Bucket: aws.String(cfg.AwsS3.Bucket),
 		Key:    aws.String(fileName),
