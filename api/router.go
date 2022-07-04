@@ -44,6 +44,8 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	// Get invitation link
 	e.GET("/v1/invitation", controller.SpecializationV1Controller.GetInvitation)
 
+	e.POST("/image", controller.CourseV1Controller.UploadFile)
+
 	// userV1 := e.Group("/v1/dashboard")
 	// userV1.Use(m.JWTMiddleware(config))
 	// userV1.GET("/:id", controller.UserV1Controller.GetUserByID)

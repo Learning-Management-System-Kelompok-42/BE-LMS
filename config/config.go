@@ -30,6 +30,12 @@ type AppConfig struct {
 		UploadStorage string `toml:"uploadfolder"`
 		Test          string `toml:"test"`
 	} `toml:"storage"`
+	S3 struct {
+		AccessKeyID     string `toml:"accesskeyid"`
+		SecretAccessKey string `toml:"secretaccesskey"`
+		Region          string `toml:"region"`
+		Bucket          string `toml:"bucket"`
+	} `toml:"s3"`
 }
 
 var lock = &sync.Mutex{}

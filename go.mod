@@ -3,6 +3,7 @@ module github.com/Learning-Management-System-Kelompok-42/BE-LMS
 go 1.17
 
 require (
+	github.com/aws/aws-sdk-go v1.44.47
 	github.com/cloudinary/cloudinary-go v1.7.0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-playground/validator/v10 v10.11.0
@@ -34,6 +35,7 @@ require (
 	github.com/jackc/pgtype v1.11.0 // indirect
 	github.com/jackc/pgx/v4 v4.16.1 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
