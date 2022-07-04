@@ -28,14 +28,14 @@ type AppConfig struct {
 		APIKey        string `toml:"apikey"`
 		APISecret     string `toml:"apisecret"`
 		UploadStorage string `toml:"uploadfolder"`
-		Test          string `toml:"test"`
+		AwsKey        string `toml:"awsKey"`
 	} `toml:"storage"`
-	S3 struct {
-		AccessKeyID     string `toml:"aws_access_key_id "`
-		SecretAccessKey string `toml:"aws_secret_access_key "`
-		Region          string `toml:"region"`
-		Bucket          string `toml:"bucket"`
-	} `toml:"s3"`
+	AwsS3 struct {
+		AwsId  string `toml:"awsId"`
+		AwsKey string `toml:"awsKey"`
+		Region string `toml:"region"`
+		Bucket string `toml:"bucket"`
+	} `toml:"awss3"`
 }
 
 var lock = &sync.Mutex{}

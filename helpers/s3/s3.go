@@ -15,10 +15,10 @@ func UploadFileHelper(file multipart.File, fileName string) (string, error) {
 	var cfg = config.GetConfig()
 
 	sess, err := session.NewSession(&aws.Config{
-		Region: aws.String(cfg.S3.Region),
+		Region: aws.String(cfg.AwsS3.Region),
 		Credentials: credentials.NewStaticCredentials(
-			cfg.S3.AccessKeyID,
-			cfg.S3.SecretAccessKey,
+			cfg.AwsS3.AwsId,
+			cfg.AwsS3.AwsKey,
 			"",
 		),
 		CredentialsChainVerboseErrors: aws.Bool(true),
@@ -33,7 +33,7 @@ func UploadFileHelper(file multipart.File, fileName string) (string, error) {
 	// uploader := s3manager.NewUploader(sess)
 
 	upload, err := uploader.Upload(&s3manager.UploadInput{
-		Bucket: aws.String(cfg.S3.Bucket),
+		Bucket: aws.String(cfg.AwsS3.Bucket),
 		Key:    aws.String(fileName),
 		Body:   file,
 	})

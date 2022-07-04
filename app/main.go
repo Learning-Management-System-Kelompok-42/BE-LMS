@@ -31,6 +31,9 @@ import (
 
 func main() {
 	cfg := config.GetConfig()
+	fmt.Println("cfg.S3.AwsId: ", cfg.AwsS3.AwsId)
+	fmt.Println("cfg.S3.AwsKey: ", cfg.AwsS3.AwsKey)
+	fmt.Println("bucket = ", cfg.AwsS3.Bucket)
 
 	dbConnection := util.NewConnectionDB(cfg)
 

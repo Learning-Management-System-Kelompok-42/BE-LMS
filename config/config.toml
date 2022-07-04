@@ -24,9 +24,10 @@ cloudname = "dr8volyui"
 apikey = "828743457647186"
 apisecret = "BcDKFLS8izAM18lgxF-vkFNPxD4"
 uploadfolder = "lms"
+awsKey = "AKIAV5IVTUNNRVDRXUGG"
 
-[s3]
+[awss3]
+awsId = "AKIAV5IVTUNNRVDRXUGG"
+awsKey = "Cpu/aqKpXKUx0rHSPpFqfgEu3zMY7TXF/9g/++fp"
 bucket = "capstone-42"
-aws_access_key_id = "AKIAV5IVTUNNRVDRXUGG"
-aws_secret_access_key = "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"
 region = "ap-southeast-1"
