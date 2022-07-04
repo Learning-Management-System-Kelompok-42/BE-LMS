@@ -31,8 +31,8 @@ type AppConfig struct {
 		Test          string `toml:"test"`
 	} `toml:"storage"`
 	S3 struct {
-		AccessKeyID     string `toml:"accesskeyid"`
-		SecretAccessKey string `toml:"secretaccesskey"`
+		AccessKeyID     string `toml:"aws_access_key_id "`
+		SecretAccessKey string `toml:"aws_secret_access_key "`
 		Region          string `toml:"region"`
 		Bucket          string `toml:"bucket"`
 	} `toml:"s3"`

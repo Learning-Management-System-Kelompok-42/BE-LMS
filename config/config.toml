@@ -27,6 +27,6 @@ uploadfolder = "lms"
 
 [s3]
 bucket = "capstone-42"
-accesskeyid = "AKIAV5IVTUNNRVDRXUGG"
-secretaccesskey = "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"
+aws_access_key_id = "AKIAV5IVTUNNRVDRXUGG"
+aws_secret_access_key = "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"
 region = "ap-southeast-1"
