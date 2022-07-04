@@ -37,7 +37,7 @@ func (ctrl *Controller) RegisterCourse(c echo.Context) error {
 
 	req := *createCourseRequest.ToSpec()
 
-	id, err := ctrl.service.Create(req)
+	id, err := ctrl.service.CreateCourse(req)
 	if err != nil {
 		if err == exception.ErrInvalidRequest {
 			return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))
