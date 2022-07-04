@@ -33,7 +33,7 @@ type CourseRepository interface {
 
 type CourseService interface {
 	// Insert insert a new course
-	Create(upsertCourseSpec spec.UpsertCourseSpec) (id string, err error)
+	CreateCourse(upsertCourseSpec spec.UpsertCourseSpec) (id string, err error)
 
 	// GetByID get a course by id
 	GetByID(id string) (course Domain, err error)
@@ -61,7 +61,7 @@ func NewCourseService(repo CourseRepository, serviceModule module.ModuleService,
 	}
 }
 
-func (s *courseService) Create(upsertCourseSpec spec.UpsertCourseSpec) (id string, err error) {
+func (s *courseService) CreateCourse(upsertCourseSpec spec.UpsertCourseSpec) (id string, err error) {
 	err = s.validate.Struct(&upsertCourseSpec)
 	if err != nil {
 		return "", exception.ErrInvalidRequest
