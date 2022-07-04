@@ -5,6 +5,7 @@ import "github.com/dgrijalva/jwt-go"
 type Auth struct {
 	Token  string
 	UserID string
+	CompanyID string
 }
 
 type Claims struct {
