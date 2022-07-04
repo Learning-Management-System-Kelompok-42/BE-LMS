@@ -14,9 +14,13 @@ func UploadFileHelper(file multipart.File, fileName string) (string, error) {
 	var cfg = config.GetConfig()
 
 	// The session the S3 Uploader will use
-	s3Config := &aws.Config{
-		Region: aws.String(cfg.S3.Region),
-	}
+	// s3Config := &aws.Config{
+	// 	Region: aws.String(cfg.S3.Region),
+	// }
+
+	s3Config := aws.NewConfig()
+	s3Config.CredentialsChainVerboseErrors = aws.Bool(true)
+
 	sess, err := session.NewSession(s3Config)
 	if err != nil {
 		return "", err
