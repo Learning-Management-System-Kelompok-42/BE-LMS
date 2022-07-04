@@ -5,22 +5,28 @@ env = "local"
 timeout = 30
 
 [database]
-driver = "postgres"
-name = "capstone"
-address = "database-1.cc1wtqs1vivh.ap-southeast-1.rds.amazonaws.com"
-port = 5555
-username = "devpostgres"
-password = "devpostgres"
-
 #driver = "postgres"
-#name = "capstonetest"
-#address = "localhost"
-#port = 5432
+#name = "capstone"
+#address = "database-1.cc1wtqs1vivh.ap-southeast-1.rds.amazonaws.com"
+#port = 5555
 #username = "devpostgres"
 #password = "devpostgres"
+
+driver = "postgres"
+name = "capstonetest"
+address = "localhost"
+port = 5432
+username = "devpostgres"
+password = "devpostgres"
 
 [storage]
 cloudname = "dr8volyui"
 apikey = "828743457647186"
 apisecret = "BcDKFLS8izAM18lgxF-vkFNPxD4"
 uploadfolder = "lms"
+
+[s3]
+bucket = "capstone-42"
+accesskeyid = "AKIAV5IVTUNNRVDRXUGG"
+secretaccesskey = "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"
+region = "ap-southeast-1"
