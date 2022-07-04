@@ -11,17 +11,13 @@ import (
 
 // upload file to s3
 func UploadFileHelper(file multipart.File, fileName string) (string, error) {
-	// ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
-	// defer cancel()
-
 	var cfg = config.GetConfig()
 
 	// The session the S3 Uploader will use
-	sess, err := session.NewSession(
-		&aws.Config{
-			Region: aws.String(cfg.S3.Region),
-		},
-	)
+	s3Config := &aws.Config{
+		Region: aws.String(cfg.S3.Region),
+	}
+	sess, err := session.NewSession(s3Config)
 	if err != nil {
 		return "", err
 	}
