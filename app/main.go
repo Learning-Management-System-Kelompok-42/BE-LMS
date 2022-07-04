@@ -54,7 +54,7 @@ func main() {
 		// 	log.Info("Shutting down the server")
 		// }
 		// run server with https with file localhost.crt and localhost.key
-		if err := e.StartTLS(address, "localhost.crt", "localhost.key"); err != nil {
+		if err := e.StartTLS(address, cfg.App.Crt, cfg.App.Key); err != nil {
 			log.Info("Shutting down the server")
 		}
 	}()

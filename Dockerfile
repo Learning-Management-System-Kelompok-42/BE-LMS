@@ -41,6 +41,7 @@ RUN adduser \
 
 COPY --from=builder --chown=appuser:appuser /app/api-lms .
 COPY --from=builder --chown=appuser:appuser /app/config ./config
+COPY --from=builder --chown=appuser:appuser /app/certs ./certs
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 RUN apt-get update; \
     apt-get upgrade; \

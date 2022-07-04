@@ -14,6 +14,8 @@ type AppConfig struct {
 		Env       string `toml:"env"`
 		Timeout   int    `toml:"timeout"`
 		SecretKey string `toml:"secretkey"`
+		Crt       string `toml:"crt"`
+		Key       string `toml:"key"`
 	} `toml:"app"`
 	Database struct {
 		Driver   string `toml:"driver"`

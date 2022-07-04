@@ -3,6 +3,8 @@ name = "LMS"
 port = 4001
 env = "local"
 timeout = 30
+crt = "./certs/localhost.crt"
+key = "./certs/localhost.key"
 
 [database]
 driver = "postgres"
