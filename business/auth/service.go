@@ -76,9 +76,10 @@ func (s *authService) LoginUser(upsertAuth spec.UpsertAuthSpec) (auth *Auth, err
 	}
 
 	auth = &Auth{
-		Token:     tokenString,
-		UserID:    user.ID,
-		CompanyID: user.CompanyID,
+		Token:       tokenString,
+		UserID:      user.ID,
+		CompanyID:   user.CompanyID,
+		LevelAccess: user.LevelAccess,
 	}
 
 	return auth, nil

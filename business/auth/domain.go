@@ -3,9 +3,10 @@ package auth
 import "github.com/dgrijalva/jwt-go"
 
 type Auth struct {
-	Token  string
-	UserID string
-	CompanyID string
+	Token       string
+	UserID      string
+	CompanyID   string
+	LevelAccess string
 }
 
 type Claims struct {
