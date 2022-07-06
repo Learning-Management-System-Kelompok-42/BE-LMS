@@ -42,7 +42,7 @@ func FromDomain(quiz quiz.Domain) Quiz {
 		Options:   quiz.MultipleChoice,
 		Answer:    quiz.Answer,
 		CreatedAt: quiz.CreatedAt,
-		UpdatedAt: quiz.UpdatedAt,
+		UpdatedAt: time.Time{},
 		DeletedAt: gorm.DeletedAt{},
 	}
 }

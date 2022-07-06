@@ -45,9 +45,9 @@ func (repo *postgreSQLRepository) Update(domain module.Domain) (id string, err e
 }
 
 func (repo *postgreSQLRepository) FindByID(id string) (domain module.Domain, err error) {
-	returnModule := FromDomain(module.Domain{ID: id})
+	var module Module
 
-	err = repo.db.Where("id = ?", id).First(&returnModule).Error
+	err = repo.db.Where("id = ?", id).First(&module).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return domain, exception.ErrNotFound
@@ -56,7 +56,7 @@ func (repo *postgreSQLRepository) FindByID(id string) (domain module.Domain, err
 		return domain, exception.ErrInternalServer
 	}
 
-	domain = returnModule.ToDomain()
+	domain = module.ToDomain()
 
 	return domain, nil
 }

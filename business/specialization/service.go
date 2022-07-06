@@ -110,8 +110,6 @@ func (s *specializationService) Register(upsertSpecializationSpec spec.UpsertSpe
 }
 
 func (s *specializationService) GetInvitation(invitation string) (specialization Domain, err error) {
-	// link := strings.SplitAfter(invitation, "link=")[1]
-	// fmt.Println("invitation = ", link)
 
 	specialization, err = s.specializationRepo.FindInvitation(invitation)
 	if err != nil {

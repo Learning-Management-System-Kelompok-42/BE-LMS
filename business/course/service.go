@@ -21,7 +21,10 @@ type CourseRepository interface {
 	FindCourseByIDDashboard(id string) (course Domain, err error)
 
 	// Update update a course
-	Update(course Domain) (id string, err error)
+	UpdateCourse(course Domain) (id string, err error)
+
+	// FindCourseByID find a course by id
+	FindCourseByID(id string) (course Domain, err error)
 
 	// FindAllCourseDashboard get all course on dashboard admin
 	FindAllCourseDashboard(companyID string) (course []Domain, err error)
@@ -53,7 +56,7 @@ type CourseService interface {
 	GetDetailCourseByIDDashboard(courseID string) (courses DetailCourseDashboard, err error)
 
 	// Update update a course``
-	Update(upsertCourseSpec spec.UpsertCourseSpec) (id string, err error)
+	UpdateCourse(upsertCourseSpec spec.UpsertCourseSpec) (id string, err error)
 
 	// GetAllCourseDashboard get all course on dashboard admin
 	GetAllCourseDashboard(companyID string) (course []Domain, err error)
@@ -183,8 +186,67 @@ func (s *courseService) GetDetailCourseByIDDashboard(courseID string) (courses D
 	return courses, nil
 }
 
-func (s *courseService) Update(upsertCourseSpec spec.UpsertCourseSpec) (id string, err error) {
-	return id, nil
+func (s *courseService) UpdateCourse(upsertCourseSpec spec.UpsertCourseSpec) (id string, err error) {
+	err = s.validate.Struct(&upsertCourseSpec)
+	if err != nil {
+		return "", exception.ErrInvalidRequest
+	}
+
+	oldCourse, err := s.courseRepo.FindCourseByID(upsertCourseSpec.ID)
+	if err != nil {
+		return "", exception.ErrInternalServer
+	}
+
+	upsertCourse := oldCourse.ModifyCourse(
+		upsertCourseSpec.Title,
+		upsertCourseSpec.Thumbnail,
+		upsertCourseSpec.Description,
+	)
+
+	newCourse, err := s.courseRepo.UpdateCourse(upsertCourse)
+	if err != nil {
+		return "", exception.ErrInternalServer
+	}
+
+	for _, module := range upsertCourseSpec.Modules {
+		module.CourseID = newCourse
+		newModules := specModule.UpsertModuleSpec{
+			ID:         module.ModuleID,
+			CourseID:   module.CourseID,
+			Title:      module.Title,
+			YoutubeURL: module.YoutubeURL,
+			SlideURL:   module.SlideURL,
+			Orders:     module.Orders,
+		}
+
+		modulesID, err := s.serviceModule.Update(newModules)
+		if err != nil {
+			if err == exception.ErrInvalidRequest {
+				return "", exception.ErrInvalidRequest
+			}
+
+			return "", exception.ErrInternalServer
+		}
+
+		for _, quiz := range module.Quizzes {
+			newQuiz := specQuiz.UpsertQuizSpec{
+				ID:             quiz.QuizID,
+				ModuleID:       modulesID,
+				Question:       quiz.Question,
+				Answer:         quiz.Answer,
+				MultipleChoice: quiz.MultipleChoice,
+			}
+
+			_, err := s.serviceQuiz.Update(newQuiz)
+			if err != nil {
+				if err == exception.ErrInvalidRequest {
+					return "", exception.ErrInvalidRequest
+				}
+			}
+		}
+	}
+
+	return newCourse, nil
 }
 
 func (s *courseService) GetAllCourseDashboard(companyID string) (course []Domain, err error) {

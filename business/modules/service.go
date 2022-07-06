@@ -75,7 +75,7 @@ func (s *moduleService) Update(UpsertModuleSpec spec.UpsertModuleSpec) (id strin
 		return "", exception.ErrInvalidRequest
 	}
 
-	oldModule, err := s.GetByID(UpsertModuleSpec.ID)
+	oldModule, err := s.repo.FindByID(UpsertModuleSpec.ID)
 	if err != nil {
 		if err == exception.ErrNotFound {
 			return id, exception.ErrNotFound

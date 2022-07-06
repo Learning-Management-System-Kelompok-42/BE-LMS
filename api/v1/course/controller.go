@@ -112,3 +112,34 @@ func (ctrl *Controller) UploadFile(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, result)
 }
+
+func (ctrl *Controller) UpdateCourse(c echo.Context) error {
+	extract, _ := m.ExtractToken(c)
+	companyID := c.Param("companyID")
+	if companyID != extract.CompanyId {
+		return c.JSON(http.StatusUnauthorized, f.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
+
+	courseID := c.Param("courseID")
+	updateCourseRequest := new(request.UpdateCourseRequest)
+	if err := c.Bind(&updateCourseRequest); err != nil {
+		return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))
+	}
+
+	updateCourseRequest.ID = courseID
+	updateCourseRequest.CompanyID = companyID
+	req := *updateCourseRequest.ToSpec()
+
+	id, err := ctrl.service.UpdateCourse(req)
+	if err != nil {
+		if err == exception.ErrInvalidRequest {
+			return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))
+		}
+
+		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
+	}
+
+	resp := response.NewUpdateCreateCourseResponse(id)
+
+	return c.JSON(http.StatusOK, f.SuccessResponse(resp))
+}

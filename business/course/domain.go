@@ -55,6 +55,7 @@ func NewCourse(id, companyID, title, thumbnail, description string) Domain {
 func (old *Domain) ModifyCourse(title, thumbnail, description string) Domain {
 	return Domain{
 		ID:          old.ID,
+		CompanyID:   old.CompanyID,
 		Title:       title,
 		Thumbnail:   thumbnail,
 		Description: description,

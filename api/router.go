@@ -67,10 +67,10 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	companyV1.PUT("/:companyID/specialization/:specializationID", controller.SpecializationV1Controller.UpdateSpecialization, m.CheckLevelAccess)
 
 	// Dashboard courses
-	companyV1.GET("/:companyID/course", controller.CourseV1Controller.GetAllCourseDashboard, m.CheckLevelAccess) //change upload thumbnail with cloudinary
+	companyV1.GET("/:companyID/course", controller.CourseV1Controller.GetAllCourseDashboard, m.CheckLevelAccess)
 	companyV1.POST("/:companyID/course", controller.CourseV1Controller.RegisterCourse, m.CheckLevelAccess)
 	companyV1.GET("/:companyID/course/:courseID", controller.CourseV1Controller.GetDetailCourseDashboard, m.CheckLevelAccess)
-	// companyV1.PUT("/:companyID/course/:courseID", controller.CourseV1Controller.UpdateCourseByID, m.CheckLevelAccess) // add priority 4
+	companyV1.PUT("/:companyID/course/:courseID", controller.CourseV1Controller.UpdateCourse, m.CheckLevelAccess)
 
 	// Dashboard employee
 	companyV1.GET("/:companyID/employee", controller.UserV1Controller.GetAllUsers, m.CheckLevelAccess)                        //need to update response, remove password, priority 5
