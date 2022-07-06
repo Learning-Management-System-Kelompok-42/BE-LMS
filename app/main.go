@@ -50,13 +50,13 @@ func main() {
 
 	go func() {
 		address := fmt.Sprintf(":%d", cfg.App.Port)
-		// if err := e.Start(address); err != nil {
-		// 	log.Info("Shutting down the server")
-		// }
-		// run server with https with file localhost.crt and localhost.key
-		if err := e.StartTLS(address, cfg.App.Crt, cfg.App.Key); err != nil {
+		if err := e.Start(address); err != nil {
 			log.Info("Shutting down the server")
 		}
+		// run server with https with file localhost.crt and localhost.key
+		// if err := e.StartTLS(address, cfg.App.Crt, cfg.App.Key); err != nil {
+		// 	log.Info("Shutting down the server")
+		// }
 	}()
 
 	// Wait for interrupt signal to gracefully shutdown the server with
