@@ -53,7 +53,8 @@ func main() {
 		if err := e.Start(address); err != nil {
 			log.Info("Shutting down the server")
 		}
-		// run server with https with file localhost.crt and localhost.key
+
+		// run server with https with file rubick.crt and rubick.key
 		// if err := e.StartTLS(address, cfg.App.Crt, cfg.App.Key); err != nil {
 		// 	log.Info("Shutting down the server")
 		// }

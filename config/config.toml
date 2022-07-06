@@ -1,10 +1,10 @@
 [app]
 name = "LMS"
-port = 4001
+port = 80
 env = "local"
 timeout = 30
-crt = "./certs/localhost.crt"
-key = "./certs/localhost.key"
+crt = "./certs/rubick_tech.crt"
+key = "./certs/rubick_tech.p7b"
 
 [database]
 driver = "postgres"
@@ -17,7 +17,7 @@ password = "devpostgres"
 #driver = "postgres"
 #name = "capstonetest"
 #address = "localhost"
-#port = 5432
+#port = 5555
 #username = "devpostgres"
 #password = "devpostgres"
 
