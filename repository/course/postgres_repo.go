@@ -45,7 +45,16 @@ func (repo *postgreSQLRepository) FindCourseByIDDashboard(id string) (course cou
 	return course, nil
 }
 
-func (repo *postgreSQLRepository) Update(course course.Domain) (id string, err error) {
+func (repo *postgreSQLRepository) UpdateCourse(course course.Domain) (id string, err error) {
+	newCourse := FromDomain(course)
+
+	err = repo.db.Where("id = ?", course.ID).Save(&newCourse).Error
+	if err != nil {
+		return "", exception.ErrInternalServer
+	}
+
+	id = newCourse.ID
+
 	return id, nil
 }
 
@@ -129,4 +138,20 @@ func (repo *postgreSQLRepository) CountEmployeeByCourseID(courseID string) (coun
 	}
 
 	return countEmployee, nil
+}
+
+func (repo *postgreSQLRepository) FindCourseByID(id string) (course course.Domain, err error) {
+	var courses Course
+	err = repo.db.Where("id = ?", id).First(&courses).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return course, exception.ErrCourseNotFound
+		}
+		return course, exception.ErrInternalServer
+	}
+
+	course = courses.ToDomain()
+
+	return course, nil
 }

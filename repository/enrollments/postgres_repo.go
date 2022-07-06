@@ -1,8 +1,6 @@
 package enrollments
 
 import (
-	"fmt"
-
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/enrollments"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
 	"gorm.io/gorm"
@@ -30,8 +28,6 @@ func (repo *postgreSQLRepository) FindAllEnrollmentsByCourseID(courseID string) 
 		}
 		return enrollments, exception.ErrInternalServer
 	}
-
-	fmt.Println("newEnrollments: ", newEnrollments)
 
 	enrollments = ToDomainRatingList(newEnrollments)
 
