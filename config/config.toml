@@ -4,7 +4,7 @@ port = 80
 env = "local"
 timeout = 30
 crt = "./certs/rubick_tech.crt"
-key = "./certs/rubick_tech.p7b"
+key = "./certs/rubick_tech.key"
 
 [database]
 driver = "postgres"
