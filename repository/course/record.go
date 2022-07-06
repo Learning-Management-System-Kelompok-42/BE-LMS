@@ -5,9 +5,9 @@ import (
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/certificate"
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/enrollments"
 	module "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/modules"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/specialization"
-	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/userCourse"
 
 	"gorm.io/gorm"
 )
@@ -21,7 +21,7 @@ type Course struct {
 	SpecializationCourses []specialization.SpecializationCourse `gorm:"primaryKey:CourseID"`
 	Certificates          []certificate.Certificate             `gorm:"primaryKey:CourseID"`
 	Modules               []module.Module                       `gorm:"primaryKey:CourseID"`
-	UserCourses           []userCourse.UserCourse               `gorm:"primaryKey:CourseID"`
+	Enrollments           []enrollments.Enrollments             `gorm:"primaryKey:CourseID"`
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
 	DeletedAt             gorm.DeletedAt `gorm:"index"`

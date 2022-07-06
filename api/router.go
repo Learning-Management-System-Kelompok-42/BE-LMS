@@ -7,6 +7,7 @@ import (
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/auth"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/company"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/course"
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/enrollments"
 	module "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/modules"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/quiz"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/specialization"
@@ -17,6 +18,7 @@ import (
 )
 
 type Controller struct {
+	EnrollmentV1Controller     *enrollments.Controller
 	UserV1Controller           *users.Controller
 	CompanyV1Controller        *company.Controller
 	SpecializationV1Controller *specialization.Controller
@@ -67,7 +69,7 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	// Dashboard courses
 	companyV1.GET("/:companyID/course", controller.CourseV1Controller.GetAllCourseDashboard, m.CheckLevelAccess) //change upload thumbnail with cloudinary
 	companyV1.POST("/:companyID/course", controller.CourseV1Controller.RegisterCourse, m.CheckLevelAccess)
-	companyV1.GET("/:companyID/course/:courseID", controller.CourseV1Controller.GetByID, m.CheckLevelAccess)
+	companyV1.GET("/:companyID/course/:courseID", controller.CourseV1Controller.GetDetailCourseDashboard, m.CheckLevelAccess)
 	// companyV1.PUT("/:companyID/course/:courseID", controller.CourseV1Controller.UpdateCourseByID, m.CheckLevelAccess) // add priority 4
 
 	// Dashboard employee

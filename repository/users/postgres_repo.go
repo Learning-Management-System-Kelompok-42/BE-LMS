@@ -139,3 +139,23 @@ func (repo *postgreSQLRepository) FindAllUserBySpecializationID(specializationID
 
 	return users, nil
 }
+
+func (repo *postgreSQLRepository) FindAllUserByCourseID(courseID string) (users []users.Domain, err error) {
+	var user []User
+	result := repo.db.Table("users").
+		Select("users.id, users.company_id, users.specialization_id, users.role, users.full_name AS full_name, users.email, users.phone_number AS phone_number, users.address, users.created_at, users.updated_at").
+		Joins("INNER JOIN enrollments ON users.id = enrollments.user_id").
+		Where("enrollments.course_id = ?", courseID).
+		Find(&user)
+
+	if result.Error != nil {
+		if result.RowsAffected == 0 {
+			return nil, exception.ErrEmployeeNotFound
+		}
+		return nil, exception.ErrInternalServer
+	}
+
+	users = ToDomainList(user)
+
+	return users, nil
+}

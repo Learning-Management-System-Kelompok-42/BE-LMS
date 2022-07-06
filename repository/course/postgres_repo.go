@@ -27,9 +27,11 @@ func (repo *postgreSQLRepository) Insert(course course.Domain) (id string, err e
 	return id, nil
 }
 
-func (repo *postgreSQLRepository) FindByID(id string) (course course.Domain, err error) {
+func (repo *postgreSQLRepository) FindCourseByIDDashboard(id string) (course course.Domain, err error) {
 	var newCourse Course
-	err = repo.db.Where("id = ?", id).First(&newCourse).Error
+	// query with nested preload for course module quizzes and multiple choice questions
+	// err = repo.db.Where("id = ?", id).Preload("Modules").Find(&newCourse).Error
+	err = repo.db.Where("id = ?", id).Find(&newCourse).Error
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -105,4 +107,26 @@ func (repo *postgreSQLRepository) FindAllCourseBySpecializationID(specialization
 	courses = ToBatchList(course)
 
 	return courses, nil
+}
+
+func (repo *postgreSQLRepository) CountModulesByCourseID(courseID string) (count int64, err error) {
+	var countModule int64
+	result := repo.db.Table("modules").Where("course_id = ?", courseID).Count(&countModule)
+
+	if result.Error != nil {
+		return count, exception.ErrInternalServer
+	}
+
+	return countModule, nil
+}
+
+func (repo *postgreSQLRepository) CountEmployeeByCourseID(courseID string) (count int64, err error) {
+	var countEmployee int64
+	result := repo.db.Table("user_courses").Where("course_id = ?", courseID).Count(&countEmployee)
+
+	if result.Error != nil {
+		return count, exception.ErrInternalServer
+	}
+
+	return countEmployee, nil
 }

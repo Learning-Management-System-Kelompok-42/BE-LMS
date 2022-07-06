@@ -50,16 +50,16 @@ func (ctrl *Controller) RegisterCourse(c echo.Context) error {
 	return c.JSON(http.StatusCreated, f.CreateSuccessResponse(id))
 }
 
-func (ctrl *Controller) GetByID(c echo.Context) error {
+func (ctrl *Controller) GetDetailCourseDashboard(c echo.Context) error {
 	extract, _ := m.ExtractToken(c)
 	companyID := c.Param("companyID")
-	id := c.Param("courseID")
+	courseID := c.Param("courseID")
 
 	if companyID != extract.CompanyId {
 		return c.JSON(http.StatusUnauthorized, f.UnauthorizedResponse("You are not authorized to access this resource"))
 	}
 
-	course, err := ctrl.service.GetByID(id)
+	course, err := ctrl.service.GetDetailCourseByIDDashboard(courseID)
 	if err != nil {
 		if err == exception.ErrNotFound {
 			return c.JSON(http.StatusNotFound, f.NotFoundResponse(err.Error()))
@@ -68,7 +68,7 @@ func (ctrl *Controller) GetByID(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
 	}
 
-	result := response.NewGetByIDCourseResponse(course)
+	result := response.NewGetDetailCourseDashbordResp(course)
 
 	return c.JSON(http.StatusOK, f.SuccessResponse(result))
 }

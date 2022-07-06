@@ -1,0 +1,39 @@
+package enrollments
+
+import (
+	"fmt"
+
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/enrollments"
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
+	"gorm.io/gorm"
+)
+
+type postgreSQLRepository struct {
+	db *gorm.DB
+}
+
+func NewPostgreSQLRepository(db *gorm.DB) enrollments.EnrollmentRepository {
+	return &postgreSQLRepository{db: db}
+}
+
+func (repo *postgreSQLRepository) FindAllEnrollmentsByCourseID(courseID string) (enrollments []enrollments.RatingReviews, err error) {
+	var newEnrollments []RatingReviews
+	result := repo.db.Table("enrollments").
+		Select("enrollments.id, enrollments.rating, enrollments.reviews, users.full_name as name, users.email").
+		Joins("JOIN users ON enrollments.user_id = users.id").
+		Where("enrollments.course_id = ?", courseID).
+		Find(&newEnrollments)
+
+	if result.Error != nil {
+		if result.RowsAffected == 0 {
+			return enrollments, exception.ErrEnrollmentNotFound
+		}
+		return enrollments, exception.ErrInternalServer
+	}
+
+	fmt.Println("newEnrollments: ", newEnrollments)
+
+	enrollments = ToDomainRatingList(newEnrollments)
+
+	return enrollments, nil
+}
