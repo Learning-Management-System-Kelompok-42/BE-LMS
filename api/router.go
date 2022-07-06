@@ -30,7 +30,8 @@ type Controller struct {
 
 func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppConfig) {
 	// HTTPS redirect
-	// e.Pre(middleware.HTTPSRedirect())
+	// e.Use(middleware.HTTPSRedirect())
+
 	// CORS
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},

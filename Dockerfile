@@ -10,7 +10,7 @@ ENV GO111MODULE=on
 COPY go.mod go.sum ./
 RUN export GOPROXY=https://proxy.golang.org && go mod download -x
 RUN go mod verify
-ENV PORT=4001
+ENV PORT=80
 
 COPY . .
 
@@ -26,7 +26,7 @@ WORKDIR /app
 ENV USER=appuser
 ENV UID=10001
 ENV TZ=Asia/Jakarta
-ENV PORT=4001
+ENV PORT=80
 
 COPY ./config/config.toml /app/config.toml
 
@@ -52,6 +52,6 @@ RUN echo Y || apt-get install curl
 
 STOPSIGNAL SIGINT
 
-EXPOSE 4001
+EXPOSE 80
 
 ENTRYPOINT ["./api-lms"]
