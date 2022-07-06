@@ -57,9 +57,17 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	moduleV1.PUT("/:id", controller.ModuleV1Controller.Update)
 	moduleV1.POST("", controller.ModuleV1Controller.Register)
 
+<<<<<<< Updated upstream
 	specializationV1 := e.Group("/v1/specializations")
 	specializationV1.Use(m.JWTMiddleware(config))
 	specializationV1.POST("", controller.SpecializationV1Controller.Register, m.CheckLevelAccess)
+=======
+	// Dashboard employee
+	companyV1.GET("/:companyID/employee", controller.UserV1Controller.GetAllUsers, m.CheckLevelAccess)                        //need to update response, remove password, priority 5
+	companyV1.GET("/:companyID/employee/:employeeID", controller.UserV1Controller.GetDetailUserDashboard, m.CheckLevelAccess) //need to add progress course, priority 6
+	companyV1.GET("/:companyID/employee/:employeeID/test", controller.UserV1Controller.GetUserByID, m.CheckLevelAccess)       //need to add progress course, priority 6
+	// companyV1.PUT("/:companyID/employee/:employeeID", controller.UserV1Controller.UpdateUserByID, m.CheckLevelAccess)        //add priority 7
+>>>>>>> Stashed changes
 
 	dashboardV1 := e.Group("/v1/company")
 	dashboardV1.Use(m.JWTMiddleware(config))

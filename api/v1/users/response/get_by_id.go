@@ -9,12 +9,12 @@ type GetUserByID struct {
 	SpecializationID string `json:"specialization_id"`
 	FullName         string `json:"full_name"`
 	Email            string `json:"email"`
-	Password         string `json:"password"`
-	PhoneNumber      string `json:"phone_number"`
-	Address          string `json:"address"`
-	LevelAccess      string `json:"level_access"`
-	CreatedAt        string `json:"created_at"`
-	UpdatedAt        string `json:"updated_at"`
+	// Password         string `json:"password"`
+	PhoneNumber string `json:"phone_number"`
+	Address     string `json:"address"`
+	LevelAccess string `json:"level_access"`
+	CreatedAt   string `json:"created_at"`
+	UpdatedAt   string `json:"updated_at"`
 }
 
 func FromDomainUser(user *users.Domain) GetUserByID {
@@ -25,11 +25,11 @@ func FromDomainUser(user *users.Domain) GetUserByID {
 		SpecializationID: user.SpecializationID,
 		FullName:         user.FullName,
 		Email:            user.Email,
-		Password:         user.Password,
-		PhoneNumber:      user.PhoneNumber,
-		Address:          user.Address,
-		LevelAccess:      user.LevelAccess,
-		CreatedAt:        user.CreatedAt.String(),
-		UpdatedAt:        user.UpdatedAt.String(),
+		// Password:         user.Password,
+		PhoneNumber: user.PhoneNumber,
+		Address:     user.Address,
+		LevelAccess: user.LevelAccess,
+		CreatedAt:   user.CreatedAt.Format("2006-01-02 15:04:05"),
+		UpdatedAt:   user.UpdatedAt.Format("2006-01-02 15:04:05"),
 	}
 }

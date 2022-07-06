@@ -48,9 +48,9 @@ func (ctrl *Controller) Register(c echo.Context) error {
 }
 
 func (ctrl *Controller) GetUserByID(c echo.Context) error {
-	id := c.Param("id")
+	employeeID := c.Param("employeeID")
 
-	user, err := ctrl.service.GetUserByID(id)
+	user, err := ctrl.service.GetUserByID(employeeID)
 	if err != nil {
 		if err == exception.ErrDataNotFound {
 			return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))
