@@ -17,6 +17,7 @@ var (
 	ErrSlideNotFound          = errors.New("slide not found")
 	ErrQuizNotFound           = errors.New("quiz not found")
 	ErrSpecializationNotFound = errors.New("specialization not found")
+	ErrEnrollmentNotFound     = errors.New("enrollment not found")
 
 	// NotAuthorized
 	ErrNotAuthorized = errors.New("not authorized")

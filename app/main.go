@@ -8,8 +8,8 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/enrollments"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/specialization"
-	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/userCourse"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/userModules"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/users"
 
@@ -92,7 +92,7 @@ func init() {
 		&module.Module{},
 		&requestCourse.RequestCourse{},
 		&specialization.SpecializationCourse{},
-		&userCourse.UserCourse{},
+		&enrollments.Enrollments{},
 		&userModules.UserModule{},
 	); err != nil {
 		panic(err)

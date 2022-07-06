@@ -1,12 +1,11 @@
 package users
 
 import (
-	// . "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users"
 	"time"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/certificate"
-	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/userCourse"
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/enrollments"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/userModules"
 	"gorm.io/gorm"
 )
@@ -22,7 +21,7 @@ type User struct {
 	Address          string
 	Role             string
 	LevelAccess      string
-	UserCourses      []userCourse.UserCourse   `gorm:"foreignKey:UserID"`
+	Enrollments      []enrollments.Enrollments `gorm:"foreignKey:UserID"`
 	UserModules      []userModules.UserModule  `gorm:"foreignKey:UserID"`
 	Certificates     []certificate.Certificate `gorm:"foreignKey:UserID"`
 	CreatedAt        time.Time
@@ -67,7 +66,7 @@ func FromDomain(domain users.Domain) User {
 		Address:          domain.Address,
 		Role:             domain.Role,
 		LevelAccess:      domain.LevelAccess,
-		UserCourses:      nil,
+		Enrollments:      nil,
 		UserModules:      nil,
 		Certificates:     nil,
 		CreatedAt:        time.Time{},

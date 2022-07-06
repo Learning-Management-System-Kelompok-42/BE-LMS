@@ -1,7 +1,6 @@
 package users
 
 import (
-	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users/spec"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/encrypt"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
@@ -21,6 +20,9 @@ type UserRepository interface {
 
 	// GetAllUsers returns all users
 	FindAllUsers(companyID string) (users []Domain, err error)
+
+	// FindAllUserByCourseID returns all users by course ID
+	FindAllUserByCourseID(courseID string) (users []Domain, err error)
 
 	// FindDetailUserDashboard returns a user by ID
 	FindDetailUserDashboard(userID string) (user UserDetailDashboard, err error)
@@ -53,16 +55,14 @@ type UserService interface {
 }
 
 type userService struct {
-	userRepo   UserRepository
-	courseRepo course.CourseRepository
-	validate   *validator.Validate
+	userRepo UserRepository
+	validate *validator.Validate
 }
 
-func NewUserService(user UserRepository, course course.CourseRepository) UserService {
+func NewUserService(user UserRepository) UserService {
 	return &userService{
-		userRepo:   user,
-		courseRepo: course,
-		validate:   validator.New(),
+		userRepo: user,
+		validate: validator.New(),
 	}
 }
 
