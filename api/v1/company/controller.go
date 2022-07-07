@@ -39,9 +39,12 @@ func (ctrl *Controller) Register(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, r.BadRequestResponse(err.Error()))
 	}
 
+	createCompanyRequest.FileName = file.Filename
+	createCompanyRequest.Logo = formFile
+
 	req := *createCompanyRequest.ToSpecCreateCompany()
 
-	req.Logo = formFile
+	// req.Logo = formFile
 
 	id, err := ctrl.service.Register(req)
 
@@ -79,6 +82,72 @@ func (ctrl *Controller) GetDashboard(c echo.Context) error {
 	}
 
 	result := response.NewGetDashboardResponse(company)
+
+	return c.JSON(http.StatusOK, r.SuccessResponse(result))
+}
+
+func (ctrl *Controller) UpdateCompanyProfile(c echo.Context) error {
+	extract, _ := m.ExtractToken(c)
+	companyID := c.Param("companyID")
+	if companyID != extract.CompanyId {
+		return c.JSON(http.StatusUnauthorized, r.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
+
+	updateCompanyRequest := new(request.UpdateProfileCompanyRequest)
+
+	file, err := c.FormFile("logo")
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, r.BadRequestResponse(err.Error()))
+	}
+
+	formFile, err := file.Open()
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, r.BadRequestResponse(err.Error()))
+	}
+
+	if err := c.Bind(updateCompanyRequest); err != nil {
+		return c.JSON(http.StatusBadRequest, r.BadRequestResponse(err.Error()))
+	}
+
+	updateCompanyRequest.FileName = file.Filename
+	updateCompanyRequest.Logo = formFile
+	updateCompanyRequest.CompanyID = companyID
+
+	req := *updateCompanyRequest.ToSpecUpdateCompany()
+
+	id, err := ctrl.service.UpdateProfile(req)
+	if err != nil {
+		if err == exception.ErrInvalidRequest {
+			return c.JSON(http.StatusBadRequest, r.BadRequestResponse(err.Error()))
+		} else if err == exception.ErrCompanyNotFound {
+			return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))
+		}
+
+		return c.JSON(http.StatusInternalServerError, r.InternalServerErrorResponse(err.Error()))
+	}
+
+	result := response.NewUpdateCompanyProfileResponse(id)
+
+	return c.JSON(http.StatusOK, r.SuccessResponse(result))
+}
+
+func (ctrl *Controller) GetCompanyProfile(c echo.Context) error {
+	extract, _ := m.ExtractToken(c)
+	companyID := c.Param("companyID")
+	if companyID != extract.CompanyId {
+		return c.JSON(http.StatusUnauthorized, r.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
+
+	company, err := ctrl.service.GetCompanyByID(companyID)
+	if err != nil {
+		if err == exception.ErrCompanyNotFound {
+			return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))
+		}
+
+		return c.JSON(http.StatusInternalServerError, r.InternalServerErrorResponse(err.Error()))
+	}
+
+	result := response.NewGetCompanyProfileResponse(company)
 
 	return c.JSON(http.StatusOK, r.SuccessResponse(result))
 }

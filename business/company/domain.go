@@ -35,11 +35,13 @@ func NewCompany(id, name, address, web, Sector, Logo string) Domain {
 
 func (old *Domain) ModifyCompany(name, address, web, Sector, Logo string) Domain {
 	return Domain{
-		ID:      old.ID,
-		Name:    name,
-		Address: address,
-		Web:     web,
-		Sector:  Sector,
-		Logo:    Logo,
+		ID:        old.ID,
+		Name:      name,
+		Address:   address,
+		Web:       web,
+		Sector:    Sector,
+		Logo:      Logo,
+		CreatedAt: old.CreatedAt,
+		UpdatedAt: old.UpdatedAt,
 	}
 }

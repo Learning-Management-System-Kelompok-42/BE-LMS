@@ -12,11 +12,12 @@ type CreateRequestCompany struct {
 	Sector         string         `form:"sector"`
 	Website        string         `form:"website"`
 	Logo           multipart.File `form:"logo"`
-	NameAdmin      string         `form:"name_admin"`
-	PhoneNumber    string         `form:"phone_number"`
-	AddressAdmin   string         `form:"address_admin"`
-	EmailAdmin     string         `form:"email_admin"`
-	PasswordAdmin  string         `form:"password_admin"`
+	FileName       string
+	NameAdmin      string `form:"name_admin"`
+	PhoneNumber    string `form:"phone_number"`
+	AddressAdmin   string `form:"address_admin"`
+	EmailAdmin     string `form:"email_admin"`
+	PasswordAdmin  string `form:"password_admin"`
 }
 
 func (req *CreateRequestCompany) ToSpecCreateCompany() *spec.UpsertCompanySpec {
@@ -26,6 +27,7 @@ func (req *CreateRequestCompany) ToSpecCreateCompany() *spec.UpsertCompanySpec {
 		Sector:         req.Sector,
 		Website:        req.Website,
 		Logo:           req.Logo,
+		FileName:       req.FileName,
 		NameAdmin:      req.NameAdmin,
 		PhoneNumber:    req.PhoneNumber,
 		AddressAdmin:   req.AddressAdmin,

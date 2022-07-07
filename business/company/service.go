@@ -1,11 +1,9 @@
 package company
 
 import (
-	"fmt"
-
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users"
-	cloud "github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/cloudinary"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/encrypt"
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/s3"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/company/spec"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
@@ -20,6 +18,12 @@ type CompanyRepository interface {
 	// Dashboard return amount of specialization and amount of employee
 	FindDashboard(companyID string) (domain DashboardDomain, err error)
 
+	// FindCompanyByID return company by id
+	FindCompanyByID(companyID string) (domain *Domain, err error)
+
+	// UpdateProfile update profile company
+	UpdateProfile(company Domain) (id string, err error)
+
 	// CheckEmail checks if an email is already registered
 	CheckWeb(web string) error
 }
@@ -30,6 +34,12 @@ type CompanyService interface {
 
 	// Dashboard returns a list of specialization and amount of employees
 	Dashboard(companyID string) (domain DashboardDomain, err error)
+
+	// UpdateProfile updates a company profile
+	UpdateProfile(upsertProfileCompanySpec spec.UpsertProfileCompanySpec) (id string, err error)
+
+	// GetCompanyByID returns a company profile
+	GetCompanyByID(companyID string) (domain Domain, err error)
 }
 
 type companyService struct {
@@ -63,11 +73,15 @@ func (s *companyService) Register(upsertCompanySpec spec.UpsertCompanySpec) (id 
 		return "", exception.ErrEmailExists
 	}
 
-	urlLogo, err := cloud.ImageUploadHelper(upsertCompanySpec.Logo)
+	// urlLogo, err := cloud.ImageUploadHelper(upsertCompanySpec.Logo)
+	// if err != nil {
+	// 	return "", exception.ErrCantUploadImage
+	// }
+
+	urlLogo, err := s3.UploadFileHelper(upsertCompanySpec.Logo, upsertCompanySpec.FileName)
 	if err != nil {
 		return "", exception.ErrCantUploadImage
 	}
-	fmt.Print("urlLogo = ", urlLogo)
 
 	idCompany := uuid.New().String()
 	newCompany := NewCompany(
@@ -121,4 +135,55 @@ func (s *companyService) Dashboard(companyID string) (domain DashboardDomain, er
 	}
 
 	return domain, nil
+}
+
+func (s *companyService) GetCompanyByID(companyID string) (domain Domain, err error) {
+	company, err := s.companyRepo.FindCompanyByID(companyID)
+	if err != nil {
+		if err == exception.ErrCompanyNotFound {
+			return domain, exception.ErrCompanyNotFound
+		}
+
+		return domain, exception.ErrInternalServer
+	}
+
+	domain = *company
+
+	return domain, nil
+}
+
+func (s *companyService) UpdateProfile(upsertProfileCompanySpec spec.UpsertProfileCompanySpec) (id string, err error) {
+	err = s.validate.Struct(&upsertProfileCompanySpec)
+	if err != nil {
+		return "", exception.ErrInvalidRequest
+	}
+
+	oldCompany, err := s.companyRepo.FindCompanyByID(upsertProfileCompanySpec.CompanyID)
+	if err != nil {
+		if err == exception.ErrCompanyNotFound {
+			return "", exception.ErrCompanyNotFound
+		}
+
+		return "", exception.ErrInternalServer
+	}
+
+	imageURL, err := s3.UploadFileHelper(upsertProfileCompanySpec.Logo, upsertProfileCompanySpec.FileName)
+	if err != nil {
+		return "", exception.ErrCantUploadImage
+	}
+
+	newCompany := oldCompany.ModifyCompany(
+		upsertProfileCompanySpec.NameCompany,
+		upsertProfileCompanySpec.AddressCompany,
+		upsertProfileCompanySpec.Website,
+		upsertProfileCompanySpec.Sector,
+		imageURL,
+	)
+
+	id, err = s.companyRepo.UpdateProfile(newCompany)
+	if err != nil {
+		return "", exception.ErrInternalServer
+	}
+
+	return id, nil
 }

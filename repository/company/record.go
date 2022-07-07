@@ -27,8 +27,8 @@ type Company struct {
 	DeletedAt      gorm.DeletedAt `gorm:"index"`
 }
 
-func (comp *Company) ToDomain() company.Domain {
-	return company.Domain{
+func (comp *Company) ToDomain() *company.Domain {
+	return &company.Domain{
 		ID:        comp.ID,
 		Name:      comp.Name,
 		Address:   comp.Address,
@@ -50,8 +50,8 @@ func FromDomain(domain company.Domain) Company {
 		Logo:           domain.Logo,
 		Users:          nil,
 		RequestCourses: nil,
-		CreatedAt:      time.Time{},
-		UpdatedAt:      time.Time{},
+		CreatedAt:      domain.CreatedAt,
+		UpdatedAt:      domain.UpdatedAt,
 		DeletedAt:      gorm.DeletedAt{},
 	}
 }
