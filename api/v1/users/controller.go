@@ -9,6 +9,7 @@ import (
 	domain "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
 	r "github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/formatter"
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/s3"
 	"github.com/labstack/echo/v4"
 )
 
@@ -134,4 +135,77 @@ func (ctrl *Controller) UpdateSpecializationName(c echo.Context) error {
 	result := response.NewUpdateSpecializationNameResponse(id)
 
 	return c.JSON(http.StatusOK, r.SuccessResponse(result))
+}
+
+func (ctrl *Controller) UpdateProfile(c echo.Context) error {
+	extract, _ := m.ExtractToken(c)
+	companyID := c.Param("companyID")
+	userID := c.Param("employeeID")
+
+	if companyID != extract.CompanyId {
+		return c.JSON(http.StatusUnauthorized, r.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
+
+	updateProfileRequest := new(request.UpdateRequestUser)
+
+	// Check headers Content-Type
+	if c.Request().Header.Get("Content-Type") != "application/json" {
+		if err := c.Bind(updateProfileRequest); err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
+
+		file, err := c.FormFile("avatar")
+		if err != nil {
+			return err
+		}
+		src, err := file.Open()
+		if err != nil {
+			return err
+		}
+		defer src.Close()
+
+		imageURL, err := s3.UploadFileHelper(src, file.Filename)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, r.InternalServerErrorResponse(err.Error()))
+		}
+
+		updateProfileRequest.CompanyID = companyID
+		updateProfileRequest.ID = userID
+		updateProfileRequest.Avatar = imageURL
+
+		req := *updateProfileRequest.ToSpecUpdateUsers()
+
+		id, err := ctrl.service.UpdateProfile(req)
+		if err != nil {
+			if err == exception.ErrEmployeeNotFound {
+				return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))
+			}
+			return c.JSON(http.StatusInternalServerError, r.InternalServerErrorResponse(err.Error()))
+		}
+
+		result := response.NewCreateUpdateUserResponse(id)
+
+		return c.JSON(http.StatusOK, r.SuccessResponse(result))
+	} else {
+		if err := c.Bind(&updateProfileRequest); err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
+
+		updateProfileRequest.CompanyID = companyID
+		updateProfileRequest.ID = userID
+
+		req := *updateProfileRequest.ToSpecUpdateUsers()
+
+		id, err := ctrl.service.UpdateProfile(req)
+		if err != nil {
+			if err == exception.ErrEmployeeNotFound {
+				return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))
+			}
+			return c.JSON(http.StatusInternalServerError, r.InternalServerErrorResponse(err.Error()))
+		}
+
+		result := response.NewCreateUpdateUserResponse(id)
+
+		return c.JSON(http.StatusOK, r.SuccessResponse(result))
+	}
 }

@@ -20,6 +20,7 @@ type User struct {
 	PhoneNumber      string
 	Address          string
 	Role             string
+	Avatar           string
 	LevelAccess      string
 	Enrollments      []enrollments.Enrollments `gorm:"foreignKey:UserID"`
 	UserModules      []userModules.UserModule  `gorm:"foreignKey:UserID"`
@@ -40,6 +41,7 @@ func (user *User) ToDomain() users.Domain {
 		Password:         user.Password,
 		PhoneNumber:      user.PhoneNumber,
 		Address:          user.Address,
+		Avatar:           user.Avatar,
 		LevelAccess:      user.LevelAccess,
 		CreatedAt:        user.CreatedAt,
 		UpdatedAt:        user.UpdatedAt,

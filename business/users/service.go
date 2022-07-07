@@ -1,8 +1,6 @@
 package users
 
 import (
-	"fmt"
-
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users/spec"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/encrypt"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
@@ -16,6 +14,9 @@ type UserRepository interface {
 
 	// Update updates an existing user
 	UpdateSpecializationName(userUpdate Domain) (id string, err error)
+
+	// UpdateProfile updates an existing user
+	UpdateProfile(userUpdate Domain) (id string, err error)
 
 	// FindByID returns a user by ID
 	FindByID(id string) (user Domain, err error)
@@ -45,6 +46,9 @@ type UserService interface {
 
 	// UpdateUser updates an existing user
 	UpdateSpecializationName(upsertUpdateSpecName spec.UpsertUpdateSpecName) (id string, err error)
+
+	// UpdateProfile updates an existing user
+	UpdateProfile(upsertUpdateProfile spec.UpsertUpdateProfileSpec) (id string, err error)
 
 	// GetUserByID returns a user by ID
 	GetDetailUserByID(id string) (*Domain, error)
@@ -162,8 +166,6 @@ func (s *userService) GetDetailUserDashboard(userID string) (result ToResponseDe
 		return result, exception.ErrInternalServer
 	}
 
-	fmt.Println("specialization name = ", user.Role)
-
 	course, err := s.userRepo.FindDetailCourseDashboardUsers(user.ID)
 	if err != nil {
 		if err == exception.ErrDataNotFound {
@@ -179,4 +181,35 @@ func (s *userService) GetDetailUserDashboard(userID string) (result ToResponseDe
 	}
 
 	return result, nil
+}
+
+func (s *userService) UpdateProfile(upsertUpdateProfile spec.UpsertUpdateProfileSpec) (id string, err error) {
+	err = s.validate.Struct(&upsertUpdateProfile)
+	if err != nil {
+		return "", exception.ErrInvalidRequest
+	}
+
+	oldUser, err := s.userRepo.FindByID(upsertUpdateProfile.ID)
+	if err != nil {
+
+		if err == exception.ErrEmployeeNotFound {
+			return "", exception.ErrEmployeeNotFound
+		}
+		return "", exception.ErrInternalServer
+	}
+
+	newUser := oldUser.ModifyUser(
+		upsertUpdateProfile.FullName,
+		upsertUpdateProfile.Email,
+		upsertUpdateProfile.PhoneNumber,
+		upsertUpdateProfile.Address,
+		oldUser.Avatar,
+	)
+
+	id, err = s.userRepo.UpdateProfile(newUser)
+	if err != nil {
+		return "", exception.ErrInternalServer
+	}
+
+	return id, nil
 }

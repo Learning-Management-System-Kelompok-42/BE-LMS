@@ -11,6 +11,17 @@ type UpsertUsersSpec struct {
 	Address          string `validate:"required"`
 }
 
+type UpsertUpdateProfileSpec struct {
+	ID          string `validate:"required"`
+	CompanyID   string `validate:"required"`
+	FullName    string `validate:"required"`
+	Email       string `validate:"required,email"`
+	PhoneNumber string `validate:"required"`
+	Address     string `validate:"required"`
+	Avatar      string
+	FileName    string
+}
+
 type UpsertUpdateSpecName struct {
 	SpecializationID string `validate:"required"`
 	CompanyID        string `validate:"required"`

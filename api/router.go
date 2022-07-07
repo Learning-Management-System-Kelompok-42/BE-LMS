@@ -77,6 +77,7 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	companyV1.GET("/:companyID/employee", controller.UserV1Controller.GetAllUsers, m.CheckLevelAccess)
 	companyV1.GET("/:companyID/employee/:employeeID", controller.UserV1Controller.GetDetailUserDashboard, m.CheckLevelAccess) //need to add progress course, priority 6
 	companyV1.PUT("/:companyID/employee/:employeeID", controller.UserV1Controller.UpdateSpecializationName, m.CheckLevelAccess)
+	companyV1.PUT("/:companyID/employee/:employeeID/profil", controller.UserV1Controller.UpdateProfile)
 
 	// Dashboard setting
 	companyV1.PUT("/:companyID", controller.CompanyV1Controller.UpdateCompanyProfile, m.CheckLevelAccess) //add priority 9
@@ -84,4 +85,5 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	// companyV1.GET("/:companyID/setting/:employeeID", controller.CompanyV1Controller.Profile, m.CheckLevelAccess) //add priority 8
 
 	// Semua routes yang ada saat ini, sudah ditesting dan berhasil
+	// e.PUT("/v1/user/:userID", controller.UserV1Controller.UpdateProfile)
 }
