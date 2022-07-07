@@ -1,6 +1,8 @@
 package users
 
 import (
+	"fmt"
+
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users/spec"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/encrypt"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
@@ -13,7 +15,7 @@ type UserRepository interface {
 	Insert(user Domain) (id string, err error)
 
 	// Update updates an existing user
-	Update(user Domain) (err error)
+	UpdateSpecializationName(userUpdate Domain) (id string, err error)
 
 	// FindByID returns a user by ID
 	FindByID(id string) (user Domain, err error)
@@ -42,10 +44,10 @@ type UserService interface {
 	Register(upsertUserSpec spec.UpsertUsersSpec) (id string, err error)
 
 	// UpdateUser updates an existing user
-	UpdateUser(user Domain, id string) (err error)
+	UpdateSpecializationName(upsertUpdateSpecName spec.UpsertUpdateSpecName) (id string, err error)
 
 	// GetUserByID returns a user by ID
-	GetUserByID(id string) (*Domain, error)
+	GetDetailUserByID(id string) (*Domain, error)
 
 	// GetDetailUserDashboard  return a user by id
 	GetDetailUserDashboard(userID string) (user ToResponseDetailUserDashboard, err error)
@@ -56,12 +58,14 @@ type UserService interface {
 
 type userService struct {
 	userRepo UserRepository
+	// enrollmentRepo enrollments.EnrollmentRepository
 	validate *validator.Validate
 }
 
 func NewUserService(user UserRepository) UserService {
 	return &userService{
 		userRepo: user,
+		// enrollmentRepo: enrollmentRepo,
 		validate: validator.New(),
 	}
 }
@@ -104,11 +108,26 @@ func (s *userService) Register(upsertUserSpec spec.UpsertUsersSpec) (id string, 
 	return id, nil
 }
 
-func (s *userService) UpdateUser(user Domain, id string) (err error) {
-	return err
+func (s *userService) UpdateSpecializationName(upsertUpdateSpecName spec.UpsertUpdateSpecName) (id string, err error) {
+	oldUser, err := s.userRepo.FindByID(upsertUpdateSpecName.UserID)
+	if err != nil {
+		if err == exception.ErrEmployeeNotFound {
+			return "", exception.ErrEmployeeNotFound
+		}
+		return "", exception.ErrInternalServer
+	}
+
+	newUser := oldUser.ModifySpecializationName(upsertUpdateSpecName.SpecializationID)
+
+	id, err = s.userRepo.UpdateSpecializationName(newUser)
+	if err != nil {
+		return "", exception.ErrInternalServer
+	}
+
+	return id, nil
 }
 
-func (s *userService) GetUserByID(id string) (*Domain, error) {
+func (s *userService) GetDetailUserByID(id string) (*Domain, error) {
 	user, err := s.userRepo.FindByID(id)
 	if err != nil {
 		if err == exception.ErrDataNotFound {
@@ -142,6 +161,8 @@ func (s *userService) GetDetailUserDashboard(userID string) (result ToResponseDe
 
 		return result, exception.ErrInternalServer
 	}
+
+	fmt.Println("specialization name = ", user.Role)
 
 	course, err := s.userRepo.FindDetailCourseDashboardUsers(user.ID)
 	if err != nil {

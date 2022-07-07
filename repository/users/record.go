@@ -69,8 +69,8 @@ func FromDomain(domain users.Domain) User {
 		Enrollments:      nil,
 		UserModules:      nil,
 		Certificates:     nil,
-		CreatedAt:        time.Time{},
-		UpdatedAt:        time.Time{},
+		CreatedAt:        domain.CreatedAt,
+		UpdatedAt:        domain.UpdatedAt,
 		DeletedAt:        gorm.DeletedAt{},
 	}
 }

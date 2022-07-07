@@ -8,6 +8,9 @@ type EnrollmentRepository interface {
 
 	// FindAllEnrollmentsByCourseID find all enrollment by course id
 	FindAllEnrollmentsByCourseID(courseID string) (enrollments []RatingReviews, err error)
+
+	// CountRatingReviewsByCourseID count rating and reviews by course id
+	AVGRatingReviewsByCourseID(courseID string) (avg float32, err error)
 }
 
 type EnrollmentService interface {

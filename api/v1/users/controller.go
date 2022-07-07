@@ -46,10 +46,10 @@ func (ctrl *Controller) Register(c echo.Context) error {
 	return c.JSON(http.StatusCreated, r.CreateSuccessResponse(result))
 }
 
-func (ctrl *Controller) GetUserByID(c echo.Context) error {
-	id := c.Param("id")
+func (ctrl *Controller) GetDetailUsersByID(c echo.Context) error {
+	employeeID := c.Param("employeeID")
 
-	user, err := ctrl.service.GetUserByID(id)
+	user, err := ctrl.service.GetDetailUserByID(employeeID)
 	if err != nil {
 		if err == exception.ErrDataNotFound {
 			return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))
@@ -102,4 +102,36 @@ func (ctrl *Controller) GetDetailUserDashboard(c echo.Context) error {
 	resp := response.NewGetAllUserDetailDashboardResp(result.User, result.Courses)
 
 	return c.JSON(http.StatusOK, r.SuccessResponse(resp))
+}
+
+func (ctrl *Controller) UpdateSpecializationName(c echo.Context) error {
+	extract, _ := m.ExtractToken(c)
+	companyID := c.Param("companyID")
+	userID := c.Param("employeeID")
+
+	if companyID != extract.CompanyId {
+		return c.JSON(http.StatusUnauthorized, r.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
+
+	updateSpecializationNameRequest := new(request.UpdateSpecializationNameRequest)
+	if err := c.Bind(&updateSpecializationNameRequest); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	updateSpecializationNameRequest.CompanyID = companyID
+	updateSpecializationNameRequest.UserID = userID
+
+	req := *updateSpecializationNameRequest.ToSpec()
+
+	id, err := ctrl.service.UpdateSpecializationName(req)
+	if err != nil {
+		if err == exception.ErrEmployeeNotFound {
+			return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))
+		}
+		return c.JSON(http.StatusInternalServerError, r.InternalServerErrorResponse(err.Error()))
+	}
+
+	result := response.NewUpdateSpecializationNameResponse(id)
+
+	return c.JSON(http.StatusOK, r.SuccessResponse(result))
 }
