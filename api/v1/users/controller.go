@@ -209,3 +209,40 @@ func (ctrl *Controller) UpdateProfile(c echo.Context) error {
 		return c.JSON(http.StatusOK, r.SuccessResponse(result))
 	}
 }
+
+func (ctrl *Controller) ChangePassword(c echo.Context) error {
+	extract, _ := m.ExtractToken(c)
+	companyID := c.Param("companyID")
+	userID := c.Param("employeeID")
+
+	if companyID != extract.CompanyId {
+		return c.JSON(http.StatusUnauthorized, r.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
+
+	changePasswordRequest := new(request.UpdatePasswordRequestUser)
+	if err := c.Bind(&changePasswordRequest); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	changePasswordRequest.CompanyID = companyID
+	changePasswordRequest.UserID = userID
+
+	req := *changePasswordRequest.ToSpecUpdatePassowrd()
+
+	id, err := ctrl.service.UpdatePassword(req)
+	if err != nil {
+		if err == exception.ErrEmployeeNotFound {
+			return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))
+		} else if err == exception.ErrWrongPassword {
+			return c.JSON(http.StatusBadRequest, r.BadRequestResponse(err.Error()))
+		} else if err == exception.ErrInvalidRequest {
+			return c.JSON(http.StatusBadRequest, r.BadRequestResponse(err.Error()))
+		}
+
+		return c.JSON(http.StatusInternalServerError, r.InternalServerErrorResponse(err.Error()))
+	}
+
+	result := response.NewUpdatePasswordResponse(id)
+
+	return c.JSON(http.StatusOK, r.SuccessResponse(result))
+}

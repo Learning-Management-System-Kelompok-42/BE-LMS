@@ -27,3 +27,10 @@ type UpsertUpdateSpecName struct {
 	CompanyID        string `validate:"required"`
 	UserID           string `validate:"required"`
 }
+
+type UpsertUpdatePassword struct {
+	UserID      string `validate:"required"`
+	CompanyID   string `validate:"required"`
+	OldPassword string `validate:"required"`
+	NewPassword string `validate:"required"`
+}

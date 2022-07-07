@@ -93,3 +93,20 @@ func (old *Domain) ModifySpecializationName(specializationID string) Domain {
 		UpdatedAt:        old.UpdatedAt,
 	}
 }
+
+func (old *Domain) ModifyPassword(newPassword string) Domain {
+	return Domain{
+		ID:               old.ID,
+		CompanyID:        old.CompanyID,
+		SpecializationID: old.SpecializationID,
+		Role:             old.Role,
+		FullName:         old.FullName,
+		Email:            old.Email,
+		Password:         newPassword,
+		PhoneNumber:      old.PhoneNumber,
+		Address:          old.Address,
+		LevelAccess:      old.LevelAccess,
+		CreatedAt:        old.CreatedAt,
+		UpdatedAt:        old.UpdatedAt,
+	}
+}
