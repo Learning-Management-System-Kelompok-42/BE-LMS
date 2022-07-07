@@ -1,8 +1,6 @@
 package enrollments
 
 import (
-	"fmt"
-
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/enrollments"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
 	"gorm.io/gorm"
@@ -56,8 +54,6 @@ func (repo *postgreSQLRepository) AVGRatingReviewsByCourseID(courseID string) (a
 	for _, enrollment := range newEnrollments {
 		sum += enrollment.Rating
 	}
-
-	fmt.Println("sum: ", sum)
 
 	return sum, nil
 }

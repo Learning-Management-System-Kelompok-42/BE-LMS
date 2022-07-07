@@ -14,6 +14,7 @@ type Domain struct {
 	PhoneNumber      string
 	Address          string
 	Role             string
+	Avatar           string
 	LevelAccess      string
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
@@ -60,17 +61,19 @@ func NewUser(id, companyID, specializationID, role, fullName, email, password, p
 	}
 }
 
-func (old *Domain) ModifyUser(fullName, phoneNumber, address string) Domain {
+func (old *Domain) ModifyUser(fullName, email, phoneNumber, address string, avatar string) Domain {
 	return Domain{
-		ID:          old.ID,
-		CompanyID:   old.CompanyID,
-		Role:        old.Role,
-		FullName:    fullName,
-		Email:       old.Email,
-		Password:    old.Password,
-		PhoneNumber: phoneNumber,
-		Address:     address,
-		LevelAccess: old.LevelAccess,
+		ID:               old.ID,
+		CompanyID:        old.CompanyID,
+		SpecializationID: old.SpecializationID,
+		Role:             old.Role,
+		FullName:         fullName,
+		Email:            email,
+		Password:         old.Password,
+		PhoneNumber:      phoneNumber,
+		Address:          address,
+		LevelAccess:      old.LevelAccess,
+		Avatar:           avatar,
 	}
 }
 

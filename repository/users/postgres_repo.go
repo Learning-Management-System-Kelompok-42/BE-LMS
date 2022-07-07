@@ -28,7 +28,6 @@ func (repo *postgreSQLRepository) Insert(user users.Domain) (id string, err erro
 }
 
 func (repo *postgreSQLRepository) UpdateSpecializationName(userUpdate users.Domain) (id string, err error) {
-
 	updateUser := FromDomain(userUpdate)
 	err = repo.db.Save(&updateUser).Error
 
@@ -42,9 +41,10 @@ func (repo *postgreSQLRepository) UpdateSpecializationName(userUpdate users.Doma
 }
 
 func (repo *postgreSQLRepository) FindByID(id string) (user users.Domain, err error) {
-	result := FromDomain(users.Domain{ID: id})
+	// result := FromDomain(users.Domain{ID: id})
+	var users User
 
-	err = repo.db.First(&result).Error
+	err = repo.db.Where("id = ?", id).First(&users).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return user, exception.ErrEmployeeNotFound
@@ -52,7 +52,7 @@ func (repo *postgreSQLRepository) FindByID(id string) (user users.Domain, err er
 		return user, exception.ErrInternalServer
 	}
 
-	user = result.ToDomain()
+	user = users.ToDomain()
 
 	return user, nil
 }
@@ -160,4 +160,17 @@ func (repo *postgreSQLRepository) FindAllUserByCourseID(courseID string) (users 
 	users = ToDomainList(user)
 
 	return users, nil
+}
+
+func (repo *postgreSQLRepository) UpdateProfile(userUpdate users.Domain) (id string, err error) {
+	oldUser := FromDomain(userUpdate)
+
+	err = repo.db.Save(&oldUser).Error
+	if err != nil {
+		return "", exception.ErrInternalServer
+	}
+
+	id = userUpdate.ID
+
+	return id, nil
 }
