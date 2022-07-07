@@ -10,3 +10,9 @@ type UpsertUsersSpec struct {
 	Phone            string `validate:"required"`
 	Address          string `validate:"required"`
 }
+
+type UpsertUpdateSpecName struct {
+	SpecializationID string `validate:"required"`
+	CompanyID        string `validate:"required"`
+	UserID           string `validate:"required"`
+}

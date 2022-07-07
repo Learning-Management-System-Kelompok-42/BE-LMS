@@ -20,14 +20,14 @@ type Domain struct {
 }
 
 type UserDetailDashboard struct {
-	ID                 string
-	Name               string
-	Email              string
-	PhoneNumber        string
-	Address            string
-	SpecializationName string
-	CreatedAt          time.Time
-	UpdatedAt          time.Time
+	ID          string
+	Name        string
+	Email       string
+	PhoneNumber string
+	Address     string
+	Role        string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 type CourseDetailDashboardUser struct {
@@ -71,5 +71,22 @@ func (old *Domain) ModifyUser(fullName, phoneNumber, address string) Domain {
 		PhoneNumber: phoneNumber,
 		Address:     address,
 		LevelAccess: old.LevelAccess,
+	}
+}
+
+func (old *Domain) ModifySpecializationName(specializationID string) Domain {
+	return Domain{
+		ID:               old.ID,
+		CompanyID:        old.CompanyID,
+		SpecializationID: specializationID,
+		Role:             old.Role,
+		FullName:         old.FullName,
+		Email:            old.Email,
+		Password:         old.Password,
+		PhoneNumber:      old.PhoneNumber,
+		Address:          old.Address,
+		LevelAccess:      old.LevelAccess,
+		CreatedAt:        old.CreatedAt,
+		UpdatedAt:        old.UpdatedAt,
 	}
 }

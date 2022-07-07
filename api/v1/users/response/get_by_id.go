@@ -5,7 +5,7 @@ import "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users"
 type GetUserByID struct {
 	ID               string `json:"id"`
 	CompanyID        string `json:"company_id"`
-	Role             string `json:"role"`
+	Role             string `json:"specialization_name"`
 	SpecializationID string `json:"specialization_id"`
 	FullName         string `json:"full_name"`
 	Email            string `json:"email"`

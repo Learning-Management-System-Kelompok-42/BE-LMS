@@ -16,25 +16,25 @@ type GetDetailCourseDashbordResp struct {
 }
 
 type userResp struct {
-	ID               string
-	CompanyID        string
-	SpecializationID string
-	FullName         string
-	Email            string
-	PhoneNumber      string
-	Address          string
-	Role             string
-	LevelAccess      string
-	CreatedAt        time.Time
-	UpdatedAt        time.Time
+	ID               string    `json:"id"`
+	CompanyID        string    `json:"company_id"`
+	SpecializationID string    `json:"specialization_id"`
+	FullName         string    `json:"full_name"`
+	Email            string    `json:"email"`
+	PhoneNumber      string    `json:"phone_number"`
+	Address          string    `json:"address"`
+	Role             string    `json:"role"`
+	LevelAccess      string    `json:"level_access"`
+	CreatedAt        time.Time `json:"created_at"`
+	UpdatedAt        time.Time `json:"updated_at"`
 }
 
 type ratingReviewsResp struct {
-	ID      string
-	Name    string
-	Email   string
-	Rating  float32
-	Reviews string
+	ID      string  `json:"id"`
+	Name    string  `json:"name"`
+	Email   string  `json:"email"`
+	Rating  float32 `json:"rating"`
+	Reviews string  `json:"reviews"`
 }
 
 func NewGetDetailCourseDashbordResp(domain course.DetailCourseDashboard) GetDetailCourseDashbordResp {

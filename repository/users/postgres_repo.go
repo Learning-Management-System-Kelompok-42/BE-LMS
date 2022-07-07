@@ -27,15 +27,18 @@ func (repo *postgreSQLRepository) Insert(user users.Domain) (id string, err erro
 	return id, nil
 }
 
-func (repo *postgreSQLRepository) Update(user users.Domain) (err error) {
-	updateUser := FromDomain(user)
+func (repo *postgreSQLRepository) UpdateSpecializationName(userUpdate users.Domain) (id string, err error) {
+
+	updateUser := FromDomain(userUpdate)
 	err = repo.db.Save(&updateUser).Error
 
 	if err != nil {
-		return exception.ErrInternalServer
+		return "", exception.ErrInternalServer
 	}
 
-	return nil
+	id = userUpdate.ID
+
+	return id, nil
 }
 
 func (repo *postgreSQLRepository) FindByID(id string) (user users.Domain, err error) {
@@ -44,7 +47,7 @@ func (repo *postgreSQLRepository) FindByID(id string) (user users.Domain, err er
 	err = repo.db.First(&result).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return user, exception.ErrDataNotFound
+			return user, exception.ErrEmployeeNotFound
 		}
 		return user, exception.ErrInternalServer
 	}
@@ -85,9 +88,8 @@ func (repo *postgreSQLRepository) FindAllUsers(companyID string) (users []users.
 }
 
 func (repo *postgreSQLRepository) FindDetailUserDashboard(userID string) (user users.UserDetailDashboard, err error) {
-
 	userQuery := repo.db.Table("users").
-		Select("users.id, users.full_name AS name, users.email, users.phone_number AS phone_number, users.address, specializations.name AS specialization_name, users.created_at, users.updated_at").
+		Select("users.id, users.full_name AS name, users.email, users.phone_number AS phone_number, users.address, specializations.name AS role, users.created_at, users.updated_at").
 		Joins("INNER JOIN specializations ON users.specialization_id = specializations.id").
 		Where("users.id = ?", userID).
 		Scan(&user)
@@ -104,9 +106,9 @@ func (repo *postgreSQLRepository) FindDetailUserDashboard(userID string) (user u
 
 func (repo *postgreSQLRepository) FindDetailCourseDashboardUsers(userID string) (courses []users.CourseDetailDashboardUser, err error) {
 	result := repo.db.Table("courses").
-		Select("courses.id AS id, courses.title, courses.thumbnail, courses.description, AVG(user_courses.rating) as rating, courses.created_at, courses.updated_at").
-		Joins("INNER JOIN user_courses ON courses.id = user_courses.course_id").
-		Where("user_courses.user_id = ?", userID).
+		Select("courses.id AS id, courses.title as name, courses.thumbnail, courses.description, AVG(enrollments.rating) as rating, courses.created_at, courses.updated_at").
+		Joins("INNER JOIN enrollments ON courses.id = enrollments.course_id").
+		Where("enrollments.user_id = ?", userID).
 		Group("courses.id").
 		Find(&courses)
 
