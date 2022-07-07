@@ -18,6 +18,9 @@ type UserRepository interface {
 	// UpdateProfile updates an existing user
 	UpdateProfile(userUpdate Domain) (id string, err error)
 
+	// UpdatePassword updates an existing user
+	UpdatePassword(userUpdate Domain) (id string, err error)
+
 	// FindByID returns a user by ID
 	FindByID(id string) (user Domain, err error)
 
@@ -49,6 +52,9 @@ type UserService interface {
 
 	// UpdateProfile updates an existing user
 	UpdateProfile(upsertUpdateProfile spec.UpsertUpdateProfileSpec) (id string, err error)
+
+	// UpdatePassword updates an existing user
+	UpdatePassword(upsertUpdatePassowrd spec.UpsertUpdatePassword) (id string, err error)
 
 	// GetUserByID returns a user by ID
 	GetDetailUserByID(id string) (*Domain, error)
@@ -207,6 +213,36 @@ func (s *userService) UpdateProfile(upsertUpdateProfile spec.UpsertUpdateProfile
 	)
 
 	id, err = s.userRepo.UpdateProfile(newUser)
+	if err != nil {
+		return "", exception.ErrInternalServer
+	}
+
+	return id, nil
+}
+
+func (s *userService) UpdatePassword(upsertUpdatePassowrd spec.UpsertUpdatePassword) (id string, err error) {
+	err = s.validate.Struct(&upsertUpdatePassowrd)
+	if err != nil {
+		return "", exception.ErrInvalidRequest
+	}
+
+	oldUser, err := s.userRepo.FindByID(upsertUpdatePassowrd.UserID)
+	if err != nil {
+		if err == exception.ErrEmployeeNotFound {
+			return "", exception.ErrEmployeeNotFound
+		}
+		return "", exception.ErrInternalServer
+	}
+
+	if !encrypt.CheckPasswordHash(upsertUpdatePassowrd.OldPassword, oldUser.Password) {
+		return "", exception.ErrWrongPassword
+	}
+
+	passwordHash := encrypt.HashPassword(upsertUpdatePassowrd.NewPassword)
+
+	newPassword := oldUser.ModifyPassword(passwordHash)
+
+	id, err = s.userRepo.UpdatePassword(newPassword)
 	if err != nil {
 		return "", exception.ErrInternalServer
 	}

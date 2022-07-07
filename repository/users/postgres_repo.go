@@ -174,3 +174,16 @@ func (repo *postgreSQLRepository) UpdateProfile(userUpdate users.Domain) (id str
 
 	return id, nil
 }
+
+func (repo *postgreSQLRepository) UpdatePassword(userUpdate users.Domain) (id string, err error) {
+	oldUser := FromDomain(userUpdate)
+
+	err = repo.db.Save(&oldUser).Error
+	if err != nil {
+		return "", exception.ErrInternalServer
+	}
+
+	id = userUpdate.ID
+
+	return id, nil
+}

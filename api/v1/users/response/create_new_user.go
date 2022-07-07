@@ -15,3 +15,9 @@ func NewCreateUpdateUserResponse(id string) CreateUpdateUserResponse {
 		ID: id,
 	}
 }
+
+func NewUpdatePasswordResponse(id string) CreateUpdateUserResponse {
+	return CreateUpdateUserResponse{
+		ID: id,
+	}
+}

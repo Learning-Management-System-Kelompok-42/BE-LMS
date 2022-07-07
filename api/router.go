@@ -77,7 +77,8 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	companyV1.GET("/:companyID/employee", controller.UserV1Controller.GetAllUsers, m.CheckLevelAccess)
 	companyV1.GET("/:companyID/employee/:employeeID", controller.UserV1Controller.GetDetailUserDashboard, m.CheckLevelAccess) //need to add progress course, priority 6
 	companyV1.PUT("/:companyID/employee/:employeeID", controller.UserV1Controller.UpdateSpecializationName, m.CheckLevelAccess)
-	companyV1.PUT("/:companyID/employee/:employeeID/profil", controller.UserV1Controller.UpdateProfile)
+	companyV1.PUT("/:companyID/employee/:employeeID/profile", controller.UserV1Controller.UpdateProfile)
+	companyV1.PUT("/:companyID/employee/:employeeID/password", controller.UserV1Controller.ChangePassword)
 
 	// Dashboard setting
 	companyV1.PUT("/:companyID", controller.CompanyV1Controller.UpdateCompanyProfile, m.CheckLevelAccess) //add priority 9
