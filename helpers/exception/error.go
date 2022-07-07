@@ -9,6 +9,7 @@ var (
 	// NotFound
 	ErrNotFound               = errors.New("not found")
 	ErrEmployeeNotFound       = errors.New("employee not found")
+	ErrCompanyNotFound        = errors.New("company not found")
 	ErrAdminNotFound          = errors.New("admin not found")
 	ErrCourseNotFound         = errors.New("course not found")
 	ErrCommentNotFound        = errors.New("comment not found")

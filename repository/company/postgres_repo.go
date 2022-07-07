@@ -62,3 +62,33 @@ func (repo *postgreSQLRepository) FindDashboard(companyID string) (domain compan
 
 	return domain, nil
 }
+
+func (repo *postgreSQLRepository) FindCompanyByID(companyID string) (domain *company.Domain, err error) {
+	var company Company
+
+	err = repo.db.Where("id = ?", companyID).First(&company).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, exception.ErrCompanyNotFound
+		}
+
+		return nil, exception.ErrInternalServer
+	}
+
+	domain = company.ToDomain()
+
+	return domain, nil
+}
+
+func (repo *postgreSQLRepository) UpdateProfile(company company.Domain) (id string, err error) {
+	newCompany := FromDomain(company)
+
+	err = repo.db.Save(&newCompany).Error
+	if err != nil {
+		return "", exception.ErrInternalServer
+	}
+
+	id = newCompany.ID
+
+	return id, nil
+}
