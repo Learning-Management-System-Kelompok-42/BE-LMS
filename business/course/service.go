@@ -61,6 +61,9 @@ type CourseService interface {
 	// GetAllCourseDashboard get all course on dashboard admin
 	GetAllCourseDashboard(companyID string) (course []Domain, err error)
 
+	// GetDetailCourseByID get a course by id on dashboard employee
+	GetDetailCourseByID(courseID string) (courses DetailCourseDashboard, err error)
+
 	// GetAllCourse get all course by user id
 	GetAllCourse(specializationID, userID string) (resp []ProgressCourse, err error)
 }
@@ -319,4 +322,8 @@ func (s *courseService) GetAllCourse(specializationID, userID string) (resp []Pr
 	}
 
 	return resp, nil
+}
+
+func (s *courseService) GetDetailCourseByID(courseID string) (courses DetailCourseDashboard, err error) {
+	return courses, nil
 }

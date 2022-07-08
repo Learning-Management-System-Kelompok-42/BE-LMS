@@ -48,6 +48,7 @@ func (ctrl *Controller) Register(c echo.Context) error {
 }
 
 func (ctrl *Controller) GetDetailUsersByID(c echo.Context) error {
+	// next will be called exctract token for validation
 	employeeID := c.Param("employeeID")
 
 	user, err := ctrl.service.GetDetailUserByID(employeeID)
