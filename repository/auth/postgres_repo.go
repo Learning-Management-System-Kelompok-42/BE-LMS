@@ -16,7 +16,7 @@ func NewPostgreSQLRepository(db *gorm.DB) auth.AuthRepository {
 }
 
 func (repo *postgreSQLRepository) Login(email string) (user users.User, err error) {
-	err = repo.db.Select("id", "email", "password", "level_access", "company_id").Where("email = ?", email).First(&user).Error
+	err = repo.db.Select("id", "email", "password", "level_access", "company_id", "specialization_id").Where("email = ?", email).First(&user).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return user, exception.ErrNotFound
