@@ -96,4 +96,7 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 
 	// Dashboard course
 	employeeV1.GET("/:employeeID/course/:specializationID", controller.CourseV1Controller.GetAllCourse)
+	employeeV1.GET("/:employeeID/course/:courseID/details", controller.CourseV1Controller.GetDetailCourse)
+
+	// endpoint for enrollment course user
 }
