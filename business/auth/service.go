@@ -58,10 +58,10 @@ func (s *authService) LoginUser(upsertAuth spec.UpsertAuthSpec) (auth *Auth, err
 
 	expirationTime := time.Now().Add(time.Hour * 24)
 	claims := &Claims{
-		CompanyID:   user.CompanyID,
-		Email:       user.Email,
-		UserID:      user.ID,
-		LevelAccess: user.LevelAccess,
+		CompanyID:        user.CompanyID,
+		SpecializationID: user.SpecializationID,
+		UserID:           user.ID,
+		LevelAccess:      user.LevelAccess,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},
@@ -76,10 +76,11 @@ func (s *authService) LoginUser(upsertAuth spec.UpsertAuthSpec) (auth *Auth, err
 	}
 
 	auth = &Auth{
-		Token:       tokenString,
-		UserID:      user.ID,
-		CompanyID:   user.CompanyID,
-		LevelAccess: user.LevelAccess,
+		Token:            tokenString,
+		UserID:           user.ID,
+		CompanyID:        user.CompanyID,
+		LevelAccess:      user.LevelAccess,
+		SpecializationID: user.SpecializationID,
 	}
 
 	return auth, nil

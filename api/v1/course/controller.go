@@ -143,3 +143,25 @@ func (ctrl *Controller) UpdateCourse(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, f.SuccessResponse(resp))
 }
+
+func (ctrl *Controller) GetAllCourse(c echo.Context) error {
+	extract, _ := m.ExtractToken(c)
+	userID := c.Param("employeeID")
+	specializationID := c.Param("specializationID")
+	if userID != extract.UserId {
+		return c.JSON(http.StatusUnauthorized, f.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
+
+	course, err := ctrl.service.GetAllCourse(specializationID, userID)
+	if err != nil {
+		if err == exception.ErrNotFound {
+			return c.JSON(http.StatusNotFound, f.NotFoundResponse(err.Error()))
+		}
+
+		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
+	}
+
+	result := response.NewGetAllCourseResp(course)
+
+	return c.JSON(http.StatusOK, f.SuccessResponse(result))
+}

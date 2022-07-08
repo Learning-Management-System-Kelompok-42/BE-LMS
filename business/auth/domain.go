@@ -3,17 +3,18 @@ package auth
 import "github.com/dgrijalva/jwt-go"
 
 type Auth struct {
-	Token       string
-	UserID      string
-	CompanyID   string
-	LevelAccess string
+	Token            string
+	UserID           string
+	CompanyID        string
+	SpecializationID string
+	LevelAccess      string
 }
 
 type Claims struct {
-	CompanyID   string
-	Email       string
-	UserID      string
-	LevelAccess string
+	CompanyID        string
+	UserID           string
+	LevelAccess      string
+	SpecializationID string
 	jwt.StandardClaims
 }
 

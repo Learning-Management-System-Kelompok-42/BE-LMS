@@ -33,19 +33,19 @@ type CourseRepository interface {
 	FindAllCourseByUserID(userID string) (course []Domain, err error)
 
 	// FindAllCourseBySpecializationID get all course by specialization id
-	FindAllCourseBySpecializationID(specializationID string) (upsertCourseSpecializationSpec []Domain, err error)
+	FindAllCourseBySpecializationID(specializationID string) (courses []Domain, err error)
+
+	// FindAllPointModuleByModuleID get all point module by module id
+	FindAllPointModuleByModuleID(courseID, userID string) (pointModules []Module, err error)
 
 	// CountModulesByCourseID get count modules by course id
 	CountModulesByCourseID(courseID string) (count int64, err error)
 
+	// CountModulesCompletedByUserID get count modules completed by course id
+	CountModulesCompletedByUserID(courseID, userID string) (count int64, err error)
+
 	// CountEmployeeByCourseID get count employee by course id
 	CountEmployeeByCourseID(courseID string) (count int64, err error)
-
-	// FindEmployeeByCourseID get employee by course id
-	// FindEmployeeByCourseID(courseID string) (employee []users.Domain, err error)
-
-	// FindRatingReviewByCourseID get rating review by course id
-	// FindRatingReviewByCourseID(courseID string) (ratingReview []userCourse.Domain, err error)
 }
 
 type CourseService interface {
@@ -60,6 +60,9 @@ type CourseService interface {
 
 	// GetAllCourseDashboard get all course on dashboard admin
 	GetAllCourseDashboard(companyID string) (course []Domain, err error)
+
+	// GetAllCourse get all course by user id
+	GetAllCourse(specializationID, userID string) (resp []ProgressCourse, err error)
 }
 
 type courseService struct {
@@ -259,4 +262,61 @@ func (s *courseService) GetAllCourseDashboard(companyID string) (course []Domain
 	}
 
 	return course, nil
+}
+
+func (s *courseService) GetAllCourse(specializationID, userID string) (resp []ProgressCourse, err error) {
+	courses, err := s.courseRepo.FindAllCourseBySpecializationID(specializationID)
+	if err != nil {
+		if err == exception.ErrNotFound {
+			return nil, exception.ErrNotFound
+		}
+		return nil, exception.ErrInternalServer
+	}
+
+	// insert courses to progress resp
+	for _, v := range courses {
+		// Calculate percentage progress course by user
+		totalModule, _ := s.courseRepo.CountModulesByCourseID(v.ID)
+		moduleCompleted, _ := s.courseRepo.CountModulesCompletedByUserID(v.ID, userID)
+
+		// percentage total module completed from course
+		var percentageModule int64
+		percentageModule = 0
+		if totalModule != 0 {
+			percentageModule = (moduleCompleted * 100) / totalModule
+		}
+
+		// message := fmt.Sprintf("totalModule = %d, percentageModule = %d, modulesCompleted = %d", totalModule, percentageModule, moduleCompleted)
+		// fmt.Println(message)
+
+		// Calculate score from module
+		point, err := s.courseRepo.FindAllPointModuleByModuleID(v.ID, userID)
+		if err != nil {
+			return nil, exception.ErrInternalServer
+		}
+
+		// Calculate total point from module
+		var totalPoint int64
+		totalPoint = 0
+		for _, v := range point {
+			totalPoint += v.Point
+		}
+
+		totalPoint = totalPoint / totalModule
+
+		// message1 := fmt.Sprintf("totalPoint = %d untuk course = %s dengan jumlah module = %d", totalPoint, v.ID, totalModule)
+		// fmt.Println(message1)
+
+		progress := ProgressCourse{
+			ID:          v.ID,
+			Title:       v.Title,
+			Description: v.Description,
+			Thumbnail:   v.Thumbnail,
+			Proggress:   percentageModule,
+			Score:       totalPoint,
+		}
+		resp = append(resp, progress)
+	}
+
+	return resp, nil
 }

@@ -155,3 +155,56 @@ func (repo *postgreSQLRepository) FindCourseByID(id string) (course course.Domai
 
 	return course, nil
 }
+
+// func (repo *postgreSQLRepository) FindAllModuleByCourseID(courseID string) (modules []course.Module, err error) {
+// 	result := repo.db.Table("modules").
+// 		Select("modules.id, modules.course_id").
+// 		Joins("INNER JOIN courses ON modules.course_id = courses.id").
+// 		Where("modules.course_id = ?", courseID).
+// 		Find(&modules)
+
+// 	if result.Error != nil {
+// 		if result.RowsAffected == 0 {
+// 			return nil, exception.ErrModuleNotFound
+// 		}
+// 		return nil, exception.ErrInternalServer
+// 	}
+
+// 	return modules, nil
+// }
+
+func (repo *postgreSQLRepository) CountModulesCompletedByUserID(courseID, userID string) (count int64, err error) {
+	// var id struct {
+	// 	ID string
+	// }
+	result := repo.db.Table("user_modules").
+		// Select("user_modules.id").
+		Joins("INNER JOIN modules ON user_modules.module_id = modules.id").
+		Where("user_modules.user_id = ? AND modules.course_id = ?", userID, courseID).
+		Count(&count)
+
+	// count = int64(len(id.ID))
+
+	if result.Error != nil {
+		return count, exception.ErrInternalServer
+	}
+
+	return count, nil
+}
+
+func (repo *postgreSQLRepository) FindAllPointModuleByModuleID(courseID, userID string) (pointModules []course.Module, err error) {
+	result := repo.db.Table("user_modules").
+		Select("user_modules.id as id, modules.id as course_id, user_modules.point as point, user_modules.status as status").
+		Joins("INNER JOIN modules ON user_modules.module_id = modules.id").
+		Where("user_modules.user_id = ? AND modules.course_id = ?", userID, courseID).
+		Find(&pointModules)
+
+	if result.Error != nil {
+		if result.RowsAffected == 0 {
+			return nil, exception.ErrModuleNotFound
+		}
+		return nil, exception.ErrInternalServer
+	}
+
+	return pointModules, nil
+}

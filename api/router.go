@@ -86,5 +86,13 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	// companyV1.GET("/:companyID/setting/:employeeID", controller.CompanyV1Controller.Profile, m.CheckLevelAccess) //add priority 8
 
 	// Semua routes yang ada saat ini, sudah ditesting dan berhasil
-	// e.PUT("/v1/user/:userID", controller.UserV1Controller.UpdateProfile)
+
+	employeeV1 := e.Group("/v1/employee")
+	employeeV1.Use(m.JWTMiddleware(config))
+
+	// Dashboard employee
+	// employeeV1.GET("/:employeeID/dashboard", controller.UserV1Controller.GetDashboard, m.CheckLevelAccess)
+
+	// Dashboard course
+	employeeV1.GET("/:employeeID/course/:specializationID", controller.CourseV1Controller.GetAllCourse)
 }
