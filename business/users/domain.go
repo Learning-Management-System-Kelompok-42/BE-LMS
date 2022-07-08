@@ -46,12 +46,11 @@ type ToResponseDetailUserDashboard struct {
 	Courses []CourseDetailDashboardUser
 }
 
-func NewUser(id, companyID, specializationID, role, fullName, email, password, phoneNumber, address, levelAccess string) Domain {
+func NewUser(id, companyID, specializationID, fullName, email, password, phoneNumber, address, levelAccess string) Domain {
 	return Domain{
 		ID:               id,
 		CompanyID:        companyID,
 		SpecializationID: specializationID,
-		Role:             role,
 		FullName:         fullName,
 		Email:            email,
 		Password:         password,

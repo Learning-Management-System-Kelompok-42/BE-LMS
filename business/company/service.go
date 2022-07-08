@@ -107,7 +107,6 @@ func (s *companyService) Register(upsertCompanySpec spec.UpsertCompanySpec) (id 
 		idUser,
 		idCompany,
 		specializationID,
-		role,
 		upsertCompanySpec.NameAdmin,
 		upsertCompanySpec.EmailAdmin,
 		hashPassword,
