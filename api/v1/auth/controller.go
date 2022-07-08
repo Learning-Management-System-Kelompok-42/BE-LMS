@@ -42,7 +42,7 @@ func (ctrl *Controller) Login(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
 	}
 
-	result := response.CreateLoginResponse(*user)
+	result := response.NewCreateLoginResponse(user)
 
 	return c.JSON(http.StatusOK, f.SuccessResponse(result))
 }

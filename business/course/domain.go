@@ -31,6 +31,24 @@ type User struct {
 	UpdatedAt        time.Time
 }
 
+type ProgressCourse struct {
+	ID          string
+	Title       string
+	Thumbnail   string
+	Description string
+	Proggress   int64
+	Score       int64
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+type Module struct {
+	ID       string
+	CourseID string
+	Point    int64
+	Status   bool
+}
+
 type DetailCourseDashboard struct {
 	ID            string
 	CourseName    string
