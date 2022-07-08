@@ -46,6 +46,9 @@ type CourseRepository interface {
 
 	// CountEmployeeByCourseID get count employee by course id
 	CountEmployeeByCourseID(courseID string) (count int64, err error)
+
+	// FindAllModuleByCourseID get all module by course id
+	FindAllModuleByCourseID(courseID string) (modules []module.Domain, err error)
 }
 
 type CourseService interface {
@@ -62,7 +65,7 @@ type CourseService interface {
 	GetAllCourseDashboard(companyID string) (course []Domain, err error)
 
 	// GetDetailCourseByID get a course by id on dashboard employee
-	GetDetailCourseByID(courseID string) (courses DetailCourseDashboard, err error)
+	GetDetailCourseByID(courseID string) (courses DetailCourse, err error)
 
 	// GetAllCourse get all course by user id
 	GetAllCourse(specializationID, userID string) (resp []ProgressCourse, err error)
@@ -324,6 +327,49 @@ func (s *courseService) GetAllCourse(specializationID, userID string) (resp []Pr
 	return resp, nil
 }
 
-func (s *courseService) GetDetailCourseByID(courseID string) (courses DetailCourseDashboard, err error) {
+func (s *courseService) GetDetailCourseByID(courseID string) (courses DetailCourse, err error) {
+	// FindCourseByID(id string) (course Domain, err error)
+	// CountEmployeeByCourseID(courseID string) (count int64, err error)
+	// CountModulesByCourseID(courseID string) (count int64, err error)
+	// FindAllEnrollmentsByCourseID
+
+	course, err := s.courseRepo.FindCourseByID(courseID)
+	if err != nil {
+		if err == exception.ErrCourseNotFound {
+			return courses, exception.ErrCourseNotFound
+		}
+		return courses, exception.ErrInternalServer
+	}
+
+	modules, err := s.courseRepo.FindAllModuleByCourseID(courseID)
+	if err != nil {
+		if err == exception.ErrModuleNotFound {
+			return courses, exception.ErrModuleNotFound
+		}
+		return courses, exception.ErrInternalServer
+	}
+
+	employees, err := s.enrollmentRepo.FindAllEnrollmentsByCourseID(courseID)
+	if err != nil {
+		if err == exception.ErrEnrollmentNotFound {
+			return courses, exception.ErrEnrollmentNotFound
+		}
+		return courses, exception.ErrInternalServer
+	}
+
+	amountModule := int64(len(modules))
+	amountEmployee := int64(len(employees))
+
+	courses = DetailCourse{
+		ID:            course.ID,
+		Title:         course.Title,
+		Thumbnail:     course.Thumbnail,
+		Description:   course.Description,
+		CountModule:   amountModule,
+		CountEmployee: amountEmployee,
+		Modules:       modules,
+		RatingReviews: employees,
+	}
+
 	return courses, nil
 }

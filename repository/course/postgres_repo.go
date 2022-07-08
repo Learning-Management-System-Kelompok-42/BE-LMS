@@ -2,6 +2,7 @@ package course
 
 import (
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course"
+	module "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/modules"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
 	"gorm.io/gorm"
 )
@@ -207,4 +208,21 @@ func (repo *postgreSQLRepository) FindAllPointModuleByModuleID(courseID, userID 
 	}
 
 	return pointModules, nil
+}
+
+func (repo *postgreSQLRepository) FindAllModuleByCourseID(courseID string) (modules []module.Domain, err error) {
+	result := repo.db.Table("modules").
+		Select("modules.id, modules.course_id, modules.title, modules.youtube_url, modules.slide_url, modules.orders, modules.created_at, modules.updated_at").
+		Where("modules.course_id = ?", courseID).
+		Order("modules.orders ASC").
+		Find(&modules)
+
+	if result.Error != nil {
+		if result.RowsAffected == 0 {
+			return modules, exception.ErrModuleNotFound
+		}
+		return modules, exception.ErrInternalServer
+	}
+
+	return modules, nil
 }

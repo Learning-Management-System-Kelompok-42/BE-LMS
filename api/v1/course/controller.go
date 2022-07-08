@@ -165,3 +165,26 @@ func (ctrl *Controller) GetAllCourse(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, f.SuccessResponse(result))
 }
+
+func (ctrl *Controller) GetDetailCourse(c echo.Context) error {
+	extract, _ := m.ExtractToken(c)
+	userID := c.Param("employeeID")
+	courseID := c.Param("courseID")
+
+	if userID != extract.UserId {
+		return c.JSON(http.StatusUnauthorized, f.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
+
+	course, err := ctrl.service.GetDetailCourseByID(courseID)
+	if err != nil {
+		if err == exception.ErrModuleNotFound {
+			return c.JSON(http.StatusNotFound, f.NotFoundResponse(err.Error()))
+		}
+
+		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
+	}
+
+	resp := response.NewGetDetailCourseResp(course)
+
+	return c.JSON(http.StatusOK, f.SuccessResponse(resp))
+}

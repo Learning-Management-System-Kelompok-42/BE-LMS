@@ -50,6 +50,17 @@ type Module struct {
 	Status   bool
 }
 
+// type Modules struct {
+// 	ID         string
+// 	CourseID   string
+// 	YoutubeURL string
+// 	SlideURL   string
+// 	Title      string
+// 	Orders     int
+// 	CreatedAt  time.Time
+// 	UpdatedAt  time.Time
+// }
+
 type DetailCourseDashboard struct {
 	ID            string
 	CourseName    string
@@ -69,6 +80,7 @@ type DetailCourse struct {
 	CountModule   int64
 	CountEmployee int64
 	Modules       []module.Domain
+	RatingReviews []enrollments.RatingReviews
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }
