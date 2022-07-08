@@ -92,6 +92,7 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 
 	// Dashboard employee
 	// employeeV1.GET("/:employeeID/dashboard", controller.UserV1Controller.GetDashboard, m.CheckLevelAccess)
+	employeeV1.GET("/:employeeID", controller.UserV1Controller.GetDetailUsersByID)
 
 	// Dashboard course
 	employeeV1.GET("/:employeeID/course/:specializationID", controller.CourseV1Controller.GetAllCourse)

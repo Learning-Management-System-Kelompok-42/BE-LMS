@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/enrollments"
+	module "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/modules"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users"
 )
 
@@ -56,6 +57,18 @@ type DetailCourseDashboard struct {
 	CountEmployee int64
 	Users         []users.Domain
 	RatingReviews []enrollments.RatingReviews
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+}
+
+type DetailCourse struct {
+	ID            string
+	Title         string
+	Thumbnail     string
+	Description   string
+	CountModule   int64
+	CountEmployee int64
+	Modules       []module.Domain
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 }

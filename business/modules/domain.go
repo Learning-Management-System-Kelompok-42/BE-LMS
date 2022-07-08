@@ -1,6 +1,10 @@
 package module
 
-import "time"
+import (
+	"time"
+
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/quiz"
+)
 
 type Domain struct {
 	ID         string
@@ -11,6 +15,14 @@ type Domain struct {
 	Orders     int
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+}
+
+type CourseModules struct {
+	ID         string
+	CourseID   string
+	YoutubeURL string
+	SlideURL   string
+	Quiz       []quiz.Domain
 }
 
 func NewModule(id, courseID, youtubeURL, slideURL, title string, orders int) Domain {
