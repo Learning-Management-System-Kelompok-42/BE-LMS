@@ -164,8 +164,8 @@ func (s *userService) GetAllUsers(companyID string) (users []Domain, err error) 
 func (s *userService) GetDetailUserDashboard(userID string) (result ToResponseDetailUserDashboard, err error) {
 	user, err := s.userRepo.FindDetailUserDashboard(userID)
 	if err != nil {
-		if err == exception.ErrDataNotFound {
-			return result, exception.ErrDataNotFound
+		if err == exception.ErrEmployeeNotFound {
+			return result, exception.ErrEmployeeNotFound
 		}
 
 		return result, exception.ErrInternalServer
@@ -173,9 +173,9 @@ func (s *userService) GetDetailUserDashboard(userID string) (result ToResponseDe
 
 	course, err := s.userRepo.FindDetailCourseDashboardUsers(user.ID)
 	if err != nil {
-		if err == exception.ErrDataNotFound {
-			return result, exception.ErrDataNotFound
-		}
+		// if err == exception.ErrNotFound {
+		// 	return result, exception.ErrNotFound
+		// }
 
 		return result, exception.ErrInternalServer
 	}

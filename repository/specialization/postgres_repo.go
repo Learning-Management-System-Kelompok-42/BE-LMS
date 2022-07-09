@@ -1,8 +1,6 @@
 package specialization
 
 import (
-	"fmt"
-
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/specialization"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
 	"github.com/google/uuid"
@@ -141,8 +139,6 @@ func (repo *postgreSQLRepository) UpdateSpecialization(specialization specializa
 
 func (repo *postgreSQLRepository) CheckCourseSpecialization(courseID, specializationID string) (err error) {
 	var spec SpecializationCourse
-	fmt.Println("courseID = ", courseID)
-	fmt.Println("specializationID = ", specializationID)
 
 	// check if course is already in specialization return ErrCourseAlreadyExist
 	err = repo.db.Where("course_id = ? AND specialization_id = ?", courseID, specializationID).First(&spec).Error

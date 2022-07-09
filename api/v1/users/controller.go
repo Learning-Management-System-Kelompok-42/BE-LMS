@@ -95,10 +95,20 @@ func (ctrl *Controller) GetDetailUserDashboard(c echo.Context) error {
 
 	result, err := ctrl.service.GetDetailUserDashboard(userID)
 	if err != nil {
-		if err == exception.ErrDataNotFound {
+		if err == exception.ErrEmployeeNotFound {
 			return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))
 		}
+		// else if err == exception.ErrCourseNotFound {
+		// 	return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))
+		// }
+
 		return c.JSON(http.StatusInternalServerError, r.InternalServerErrorResponse(err.Error()))
+	}
+
+	if result.Courses == nil {
+		resp := response.NewGetAllUserDetailErrResp(result.User, "No courses found")
+
+		return c.JSON(http.StatusOK, r.SuccessResponse(resp))
 	}
 
 	resp := response.NewGetAllUserDetailDashboardResp(result.User, result.Courses)

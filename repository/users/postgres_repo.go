@@ -92,11 +92,11 @@ func (repo *postgreSQLRepository) FindDetailUserDashboard(userID string) (user u
 		Select("users.id, users.full_name AS name, users.email, users.phone_number AS phone_number, users.address, specializations.name AS role, users.created_at, users.updated_at").
 		Joins("INNER JOIN specializations ON users.specialization_id = specializations.id").
 		Where("users.id = ?", userID).
-		Scan(&user)
+		First(&user).Error
 
-	if userQuery.Error != nil {
-		if userQuery.RowsAffected == 0 {
-			return user, exception.ErrNotFound
+	if userQuery != nil {
+		if userQuery == gorm.ErrRecordNotFound {
+			return user, exception.ErrEmployeeNotFound
 		}
 		return user, exception.ErrInternalServer
 	}
@@ -110,11 +110,11 @@ func (repo *postgreSQLRepository) FindDetailCourseDashboardUsers(userID string) 
 		Joins("INNER JOIN enrollments ON courses.id = enrollments.course_id").
 		Where("enrollments.user_id = ?", userID).
 		Group("courses.id").
-		Find(&courses)
+		Scan(&courses)
 
 	if result.Error != nil {
 		if result.RowsAffected == 0 {
-			return nil, exception.ErrEmployeeNotFound
+			return nil, exception.ErrCourseNotFound
 		}
 		return nil, exception.ErrInternalServer
 	}
