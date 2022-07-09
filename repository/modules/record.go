@@ -49,3 +49,11 @@ func FromDomain(module module.Domain) Module {
 		DeletedAt:  gorm.DeletedAt{},
 	}
 }
+
+func ToDomainBatchList(modules []Module) []module.Domain {
+	var domains []module.Domain
+	for _, module := range modules {
+		domains = append(domains, module.ToDomain())
+	}
+	return domains
+}

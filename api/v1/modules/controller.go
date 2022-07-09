@@ -83,3 +83,20 @@ func (ctrl *Controller) Update(c echo.Context) error {
 
 	return c.JSON(http.StatusCreated, f.CreateSuccessResponse(result))
 }
+
+func (ctrl *Controller) GetAllModules(c echo.Context) error {
+	courseID := c.Param("courseID")
+
+	modules, err := ctrl.service.GetAllModuleByCourseID(courseID)
+	if err != nil {
+		if err == exception.ErrNotFound {
+			return c.JSON(http.StatusNotFound, f.NotFoundResponse(err.Error()))
+		}
+
+		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
+	}
+
+	// result := response.GetAllModulesResponse(modules)
+
+	return c.JSON(http.StatusOK, f.SuccessResponse(modules))
+}

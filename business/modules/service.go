@@ -14,6 +14,9 @@ type ModuleRepository interface {
 	// GetByID get a module by id
 	FindByID(id string) (domain Domain, err error)
 
+	// FindAllModuleByCourseID find all module by course id
+	FindAllModuleByCourseID(courseID string) (modules []Domain, err error)
+
 	// Update update a module
 	Update(domain Domain) (id string, err error)
 }
@@ -24,6 +27,9 @@ type ModuleService interface {
 
 	// GetByID get a module by id
 	GetByID(id string) (domain Domain, err error)
+
+	// GetAllModuleByCourseID find all module by course id
+	GetAllModuleByCourseID(courseID string) (modules []Domain, err error)
 
 	// Update update a module
 	Update(UpsertModuleSpec spec.UpsertModuleSpec) (id string, err error)
@@ -115,4 +121,17 @@ func (s *moduleService) GetByID(id string) (domain Domain, err error) {
 	}
 
 	return domain, nil
+}
+
+func (s *moduleService) GetAllModuleByCourseID(courseID string) (modules []Domain, err error) {
+	modules, err = s.repo.FindAllModuleByCourseID(courseID)
+	if err != nil {
+		if err == exception.ErrModuleNotFound {
+			return modules, exception.ErrModuleNotFound
+		}
+
+		return modules, exception.ErrInternalServer
+	}
+
+	return modules, nil
 }

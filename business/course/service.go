@@ -328,11 +328,6 @@ func (s *courseService) GetAllCourse(specializationID, userID string) (resp []Pr
 }
 
 func (s *courseService) GetDetailCourseByID(courseID string) (courses DetailCourse, err error) {
-	// FindCourseByID(id string) (course Domain, err error)
-	// CountEmployeeByCourseID(courseID string) (count int64, err error)
-	// CountModulesByCourseID(courseID string) (count int64, err error)
-	// FindAllEnrollmentsByCourseID
-
 	course, err := s.courseRepo.FindCourseByID(courseID)
 	if err != nil {
 		if err == exception.ErrCourseNotFound {
