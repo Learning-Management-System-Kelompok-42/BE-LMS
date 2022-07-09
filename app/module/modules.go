@@ -9,6 +9,7 @@ import (
 	moduleController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/modules"
 	quizController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/quiz"
 	specializationController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/specialization"
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/upload"
 	userController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/users"
 	authService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/auth"
 	companyService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/company"
@@ -77,6 +78,9 @@ func RegisterModules(dbCon *util.DatabaseConnection, config *config.AppConfig) a
 	authPermitService := authService.NewAuthService(authPermitRepo, config)
 	authPermitControllerV1 := authController.NewController(authPermitService)
 
+	// Initiate dependency injection for upload
+	uploadPermitControllerV1 := upload.NewController()
+
 	controllers := api.Controller{
 		UserV1Controller:           userPermitControllerV1,
 		EnrollmentV1Controller:     enrollmentPermitControllerV1,
@@ -86,6 +90,7 @@ func RegisterModules(dbCon *util.DatabaseConnection, config *config.AppConfig) a
 		ModuleV1Controller:         modulePermitControllerV1,
 		CourseV1Controller:         coursePermitControllerV1,
 		AuthV1Controller:           authPermitControllerV1,
+		UploadV1Controller:         uploadPermitControllerV1,
 	}
 
 	return controllers

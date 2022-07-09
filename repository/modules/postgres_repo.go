@@ -60,3 +60,23 @@ func (repo *postgreSQLRepository) FindByID(id string) (domain module.Domain, err
 
 	return domain, nil
 }
+
+func (repo *postgreSQLRepository) FindAllModuleByCourseID(courseID string) (modules []module.Domain, err error) {
+	var modulesDB []Module
+
+	err = repo.db.Where("course_id = ?", courseID).
+		Order("orders ASC").
+		Find(&modulesDB).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return modules, exception.ErrModuleNotFound
+		}
+
+		return modules, exception.ErrInternalServer
+	}
+
+	modules = ToDomainBatchList(modulesDB)
+
+	return modules, nil
+}

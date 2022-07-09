@@ -9,7 +9,6 @@ import (
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
 	f "github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/formatter"
-	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/s3"
 	"github.com/labstack/echo/v4"
 )
 
@@ -92,25 +91,6 @@ func (ctrl *Controller) GetAllCourseDashboard(c echo.Context) error {
 	result := response.NewGetAllCourseDashboard(course)
 
 	return c.JSON(http.StatusOK, f.SuccessResponse(result))
-}
-
-func (ctrl *Controller) UploadFile(c echo.Context) error {
-	file, err := c.FormFile("file")
-	if err != nil {
-		return err
-	}
-	src, err := file.Open()
-	if err != nil {
-		return err
-	}
-	defer src.Close()
-
-	result, err := s3.UploadFileHelper(src, file.Filename)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
-	}
-
-	return c.JSON(http.StatusOK, result)
 }
 
 func (ctrl *Controller) UpdateCourse(c echo.Context) error {

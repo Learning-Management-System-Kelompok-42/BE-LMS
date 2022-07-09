@@ -11,6 +11,7 @@ import (
 	module "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/modules"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/quiz"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/specialization"
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/upload"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/users"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/config"
 	"github.com/labstack/echo/v4"
@@ -26,6 +27,7 @@ type Controller struct {
 	ModuleV1Controller         *module.Controller
 	CourseV1Controller         *course.Controller
 	AuthV1Controller           *auth.Controller
+	UploadV1Controller         *upload.Controller
 }
 
 func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppConfig) {
@@ -47,7 +49,7 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	// Get invitation link
 	e.GET("/v1/invitation", controller.SpecializationV1Controller.GetInvitation)
 
-	e.POST("/image", controller.CourseV1Controller.UploadFile)
+	e.POST("/v1/image", controller.UploadV1Controller.UploadFile)
 
 	// userV1 := e.Group("/v1/dashboard")
 	// userV1.Use(m.JWTMiddleware(config))
@@ -98,5 +100,6 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	employeeV1.GET("/:employeeID/course/:specializationID", controller.CourseV1Controller.GetAllCourse)
 	employeeV1.GET("/:employeeID/course/:courseID/details", controller.CourseV1Controller.GetDetailCourse)
 
-	// endpoint for enrollment course user
+	// endpoint for modules course user
+	employeeV1.GET("/:employeeID/course/:courseID/modules", controller.ModuleV1Controller.GetAllModules)
 }
