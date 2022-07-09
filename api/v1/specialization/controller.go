@@ -150,6 +150,12 @@ func (ctrl *Controller) RegisterCourseSpecialization(c echo.Context) error {
 
 	id, err := ctrl.service.AddCourseSpecialization(req)
 	if err != nil {
+		if err == exception.ErrInvalidRequest {
+			return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))
+		} else if err == exception.ErrCourseAlreadyExist {
+			return c.JSON(http.StatusConflict, f.ConflictResponse(err.Error()))
+		}
+
 		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
 	}
 

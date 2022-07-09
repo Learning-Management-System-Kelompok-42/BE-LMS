@@ -36,6 +36,9 @@ type SpecializationRepository interface {
 	// CheckLinkInviation returns boolean
 	CheckLinkInviation(link string) (err error)
 
+	// CheckCourseSpecialization returns boolean
+	CheckCourseSpecialization(courseID, specializationID string) (err error)
+
 	// UpdateSpecialization updates a specialization
 	UpdateSpecialization(specialization Domain) (id string, err error)
 }
@@ -222,7 +225,16 @@ func (s *specializationService) AddCourseSpecialization(upsertCourseSpecializati
 		return "", exception.ErrInvalidRequest
 	}
 
-	id, err = s.specializationRepo.InsertCourseSpecialization(upsertCourseSpecializationSpec.CourseID, upsertCourseSpecializationSpec.SpecializationID)
+	courseID := upsertCourseSpecializationSpec.CourseID
+	specializationID := upsertCourseSpecializationSpec.SpecializationID
+
+	// Check if course exist on specialization
+	err = s.specializationRepo.CheckCourseSpecialization(courseID, specializationID)
+	if err != nil {
+		return "", exception.ErrCourseAlreadyExist
+	}
+
+	id, err = s.specializationRepo.InsertCourseSpecialization(courseID, specializationID)
 	if err != nil {
 		return "", exception.ErrInternalServer
 	}

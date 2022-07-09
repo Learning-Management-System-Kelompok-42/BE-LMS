@@ -19,6 +19,7 @@ var (
 	ErrQuizNotFound           = errors.New("quiz not found")
 	ErrSpecializationNotFound = errors.New("specialization not found")
 	ErrEnrollmentNotFound     = errors.New("enrollment not found")
+	ErrCourseAlreadyExist     = errors.New("course already exist")
 
 	// NotAuthorized
 	ErrNotAuthorized = errors.New("not authorized")
