@@ -21,13 +21,11 @@ type RatingReviews struct {
 	Reviews string
 }
 
-func NewEnrollment(id, courseID, userID, reviews string, rating float32, enrolledAt time.Time) Domain {
+func NewEnrollment(id, courseID, userID string, enrolledAt time.Time) Domain {
 	return Domain{
 		ID:         id,
 		CourseID:   courseID,
 		UserID:     userID,
-		Rating:     float32(rating),
-		Reviews:    reviews,
 		EnrolledAt: enrolledAt,
 		CreatedAt:  time.Time{},
 		UpdatedAt:  time.Time{},
