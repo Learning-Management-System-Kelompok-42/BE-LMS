@@ -34,7 +34,7 @@ import (
 func RegisterModules(dbCon *util.DatabaseConnection, config *config.AppConfig) api.Controller {
 	// initiate dependency injection for enrollment
 	enrollmentPermitRepo := enrollmentRepo.RepositoryFactory(dbCon)
-	enrollmentPermitSerivce := enrollmentService.EnrollmentService(enrollmentPermitRepo)
+	enrollmentPermitSerivce := enrollmentService.NewEnrollmentService(enrollmentPermitRepo)
 	enrollmentPermitControllerV1 := enrollmentController.NewController(enrollmentPermitSerivce)
 
 	// initiate dependency injection for quiz

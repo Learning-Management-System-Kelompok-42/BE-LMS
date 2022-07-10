@@ -57,3 +57,30 @@ func (repo *postgreSQLRepository) AVGRatingReviewsByCourseID(courseID string) (a
 
 	return sum, nil
 }
+
+func (repo *postgreSQLRepository) InsertEnrollments(domain enrollments.Domain) (id string, err error) {
+	newEnrollments := FromDomain(domain)
+
+	err = repo.db.Create(&newEnrollments).Error
+	if err != nil {
+		return id, exception.ErrInternalServer
+	}
+
+	id = newEnrollments.ID
+
+	return id, nil
+}
+
+func (repo *postgreSQLRepository) CheckEnrollmentExist(courseID string, userID string) (err error) {
+	var enrollments Enrollments
+	err = repo.db.Table("enrollments").Where("course_id = ? AND user_id = ?", courseID, userID).First(&enrollments).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil
+		}
+		return exception.ErrInternalServer
+	}
+
+	return exception.ErrEnrollmentAlreadyExist
+}

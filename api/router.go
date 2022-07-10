@@ -102,4 +102,7 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 
 	// endpoint for modules course user
 	employeeV1.GET("/:employeeID/course/:courseID/modules", controller.ModuleV1Controller.GetAllModules)
+
+	// Enroll course
+	employeeV1.POST("/:employeeID/course/:courseID/enroll", controller.EnrollmentV1Controller.CreateEnrollments)
 }

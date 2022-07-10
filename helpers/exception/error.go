@@ -34,4 +34,7 @@ var (
 	ErrInvalidRequest       = errors.New("invalid request body")
 	ErrInvalidGenerateToken = errors.New("invalid generate token")
 	ErrCantUploadImage      = errors.New("cant upload image")
+
+	// AlreadyExist
+	ErrEnrollmentAlreadyExist = errors.New("user already enrolled")
 )
