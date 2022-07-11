@@ -1,7 +1,6 @@
 package enrollments
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/enrollments/spec"
@@ -13,6 +12,12 @@ import (
 type EnrollmentRepository interface {
 	// Insert insert a new enrollment
 	InsertEnrollments(domain Domain) (id string, err error)
+
+	// InsertRatingReviews insert a new rating and reviews
+	InsertRatingReviews(domain Domain) (id string, err error)
+
+	// FindEnrollmentByCourseIDUserID find enrollment by courseID and userID
+	FindEnrollmentByCourseIDUserID(courseID string, userID string) (domain Domain, err error)
 
 	// FindAllEnrollmentsByCourseID find all enrollment by course id
 	FindAllEnrollmentsByCourseID(courseID string) (enrollments []RatingReviews, err error)
@@ -28,24 +33,27 @@ type EnrollmentService interface {
 	// Create insert a new enrollment
 	CreateEnrollments(upsertEnrollSpec spec.UpsertEnrollSpec) (id string, err error)
 
+	// CreateRatingReviews insert a new rating and reviews
+	CreateRatingReviews(upsertRatingReviewSpec spec.UpsertRatingReviewSpec) (id string, err error)
+
 	// GetAllEnrollmentsByCourseID find all enrollment by course id
 	// GetAllEnrollmentsByCourseID(courseID string) (enrollments []Domain, err error)
 }
 
 type enrollmentService struct {
 	enrollmentRepo EnrollmentRepository
-	validator      *validator.Validate
+	validate       *validator.Validate
 }
 
 func NewEnrollmentService(enrollmentRepo EnrollmentRepository) EnrollmentService {
 	return &enrollmentService{
 		enrollmentRepo: enrollmentRepo,
-		validator:      validator.New(),
+		validate:       validator.New(),
 	}
 }
 
 func (s *enrollmentService) CreateEnrollments(upsertEnrollSpec spec.UpsertEnrollSpec) (id string, err error) {
-	err = s.validator.Struct(&upsertEnrollSpec)
+	err = s.validate.Struct(&upsertEnrollSpec)
 	if err != nil {
 		return "", exception.ErrInvalidRequest
 	}
@@ -57,7 +65,6 @@ func (s *enrollmentService) CreateEnrollments(upsertEnrollSpec spec.UpsertEnroll
 
 	newID := uuid.New().String()
 	enrollAt := time.Now()
-	fmt.Println("enrollAt: ", enrollAt)
 
 	NewEnrollment := NewEnrollment(
 		newID,
@@ -67,6 +74,36 @@ func (s *enrollmentService) CreateEnrollments(upsertEnrollSpec spec.UpsertEnroll
 	)
 
 	id, err = s.enrollmentRepo.InsertEnrollments(NewEnrollment)
+	if err != nil {
+		return "", exception.ErrInternalServer
+	}
+
+	return id, nil
+}
+
+func (s *enrollmentService) CreateRatingReviews(upsertRatingReviewSpec spec.UpsertRatingReviewSpec) (id string, err error) {
+	err = s.validate.Struct(&upsertRatingReviewSpec)
+	if err != nil {
+		return "", err
+	}
+
+	courseID := upsertRatingReviewSpec.CourseID
+	userID := upsertRatingReviewSpec.UserID
+
+	oldEnroll, err := s.enrollmentRepo.FindEnrollmentByCourseIDUserID(courseID, userID)
+	if err != nil {
+		if err == exception.ErrEnrollmentNotFound {
+			return "", exception.ErrEnrollmentNotFound
+		}
+		return "", exception.ErrInternalServer
+	}
+
+	newRatingReview := oldEnroll.NewRatingReviews(
+		upsertRatingReviewSpec.Rating,
+		upsertRatingReviewSpec.Reviews,
+	)
+
+	id, err = s.enrollmentRepo.InsertRatingReviews(newRatingReview)
 	if err != nil {
 		return "", exception.ErrInternalServer
 	}

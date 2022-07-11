@@ -84,3 +84,29 @@ func (repo *postgreSQLRepository) CheckEnrollmentExist(courseID string, userID s
 
 	return exception.ErrEnrollmentAlreadyExist
 }
+
+func (repo *postgreSQLRepository) InsertRatingReviews(domain enrollments.Domain) (id string, err error) {
+	newRatingReview := FromDomain(domain)
+
+	err = repo.db.Save(&newRatingReview).Error
+	if err != nil {
+		return id, exception.ErrInternalServer
+	}
+
+	id = newRatingReview.ID
+
+	return id, nil
+}
+
+func (repo *postgreSQLRepository) FindEnrollmentByCourseIDUserID(courseID string, userID string) (domain enrollments.Domain, err error) {
+	err = repo.db.Table("enrollments").Where("course_id = ? AND user_id = ?", courseID, userID).First(&domain).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return domain, exception.ErrEnrollmentNotFound
+		}
+		return domain, exception.ErrInternalServer
+	}
+
+	return domain, nil
+}
