@@ -51,3 +51,36 @@ func (ctrl *Controller) CreateEnrollments(c echo.Context) error {
 
 	return c.JSON(http.StatusCreated, f.CreateSuccessResponse(id))
 }
+
+func (ctrl *Controller) CreateRatingReviews(c echo.Context) error {
+	extract, _ := m.ExtractToken(c)
+	employeeID := c.Param("employeeID")
+	courseID := c.Param("courseID")
+
+	if employeeID != extract.UserId {
+		return c.JSON(http.StatusUnauthorized, f.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
+
+	createRatingReviews := new(request.RatingReviewsRequest)
+	if err := c.Bind(createRatingReviews); err != nil {
+		return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))
+	}
+
+	createRatingReviews.CourseID = courseID
+	createRatingReviews.UserID = employeeID
+
+	req := *createRatingReviews.ToSpecRatingReviews()
+
+	id, err := ctrl.service.CreateRatingReviews(req)
+	if err != nil {
+		if err == exception.ErrInvalidRequest {
+			return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))
+		} else if err == exception.ErrEnrollmentNotFound {
+			return c.JSON(http.StatusNotFound, f.NotFoundResponse(err.Error()))
+		}
+
+		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
+	}
+
+	return c.JSON(http.StatusCreated, f.CreateSuccessResponse(id))
+}

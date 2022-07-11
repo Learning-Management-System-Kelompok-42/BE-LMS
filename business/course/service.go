@@ -1,8 +1,6 @@
 package course
 
 import (
-	"fmt"
-
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course/spec"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/enrollments"
 	module "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/modules"
@@ -286,8 +284,6 @@ func (s *courseService) GetAllCourse(specializationID, userID string) (resp []Pr
 		// Calculate percentage progress course by user
 		totalModule, _ := s.courseRepo.CountModulesByCourseID(v.ID)
 		moduleCompleted, _ := s.courseRepo.CountModulesCompletedByUserID(v.ID, userID)
-		percentage := float64(moduleCompleted) / float64(totalModule) * 100
-		fmt.Println("percentage =", percentage)
 		// percentage total module completed from course
 		var percentageModule int64
 		percentageModule = 0
@@ -303,8 +299,6 @@ func (s *courseService) GetAllCourse(specializationID, userID string) (resp []Pr
 		if err != nil {
 			return nil, exception.ErrInternalServer
 		}
-
-		fmt.Println("point = ", point)
 
 		// Calculate total point from module
 		var totalPoint int64

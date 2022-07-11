@@ -11,7 +11,7 @@ type Enrollments struct {
 	ID         string  `gorm:"primaryKey;size:200;autoIncrement"`
 	CourseID   string  `gorm:"size:200"`
 	UserID     string  `gorm:"size:200"`
-	Rating     float32 `gorm:"type:numeric"`
+	Rating     float32 `gorm:"type:numeric(2,1)"`
 	Reviews    string
 	EnrolledAt time.Time
 	CreatedAt  time.Time
