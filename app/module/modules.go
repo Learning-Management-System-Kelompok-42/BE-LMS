@@ -8,6 +8,7 @@ import (
 	enrollmentController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/enrollments"
 	moduleController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/modules"
 	quizController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/quiz"
+	requestFeatController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/requestFeat"
 	specializationController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/specialization"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/upload"
 	userModuleController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/userModules"
@@ -18,6 +19,7 @@ import (
 	enrollmentService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/enrollments"
 	moduleService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/modules"
 	quizService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/quiz"
+	requestFeatService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/requestFeat"
 	specializationService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/specialization"
 	userModuleService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/userModules"
 	userService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users"
@@ -28,6 +30,7 @@ import (
 	enrollmentRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/enrollments"
 	moduleRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/modules"
 	quizRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/quiz"
+	requestFeatRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/requestFeat"
 	specializationRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/specialization"
 	userModuleRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/userModules"
 	userRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/users"
@@ -89,6 +92,11 @@ func RegisterModules(dbCon *util.DatabaseConnection, config *config.AppConfig) a
 	userModulePermitService := userModuleService.NewUserModulesService(userModulePermitRepo)
 	userModulePermitControllerV1 := userModuleController.NewController(userModulePermitService)
 
+	// Initiate dependency injection for RequestFeat
+	requestFeatPermitRepo := requestFeatRepo.RepositoryFactory(dbCon)
+	requestFeatPermitService := requestFeatService.NewRequestFeatService(requestFeatPermitRepo)
+	requestFeatPermitControllerV1 := requestFeatController.NewController(requestFeatPermitService)
+
 	controllers := api.Controller{
 		UserV1Controller:           userPermitControllerV1,
 		EnrollmentV1Controller:     enrollmentPermitControllerV1,
@@ -98,6 +106,7 @@ func RegisterModules(dbCon *util.DatabaseConnection, config *config.AppConfig) a
 		ModuleV1Controller:         modulePermitControllerV1,
 		CourseV1Controller:         coursePermitControllerV1,
 		UserModuleV1Controller:     userModulePermitControllerV1,
+		RequestFeatV1Controller:    requestFeatPermitControllerV1,
 		AuthV1Controller:           authPermitControllerV1,
 		UploadV1Controller:         uploadPermitControllerV1,
 	}

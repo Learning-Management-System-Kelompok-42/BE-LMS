@@ -10,6 +10,7 @@ import (
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/enrollments"
 	module "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/modules"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/quiz"
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/requestFeat"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/specialization"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/upload"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/userModules"
@@ -28,6 +29,7 @@ type Controller struct {
 	ModuleV1Controller         *module.Controller
 	CourseV1Controller         *course.Controller
 	UserModuleV1Controller     *userModules.Controller
+	RequestFeatV1Controller    *requestFeat.Controller
 	AuthV1Controller           *auth.Controller
 	UploadV1Controller         *upload.Controller
 }
@@ -89,8 +91,6 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	companyV1.GET("/:companyID", controller.CompanyV1Controller.GetCompanyProfile, m.CheckLevelAccess)
 	// companyV1.GET("/:companyID/setting/:employeeID", controller.CompanyV1Controller.Profile, m.CheckLevelAccess) //add priority 8
 
-	// Semua routes yang ada saat ini, sudah ditesting dan berhasil
-
 	employeeV1 := e.Group("/v1/employee")
 	employeeV1.Use(m.JWTMiddleware(config))
 
@@ -111,4 +111,7 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 
 	// Proggress course
 	employeeV1.POST("/:employeeID/course/:courseID/progress", controller.UserModuleV1Controller.CreateProggress)
+
+	// Request Conseling And Course
+	employeeV1.POST("/:employeeID/request", controller.RequestFeatV1Controller.CreateRequestFeat)
 }
