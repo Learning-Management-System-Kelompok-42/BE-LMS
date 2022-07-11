@@ -10,6 +10,7 @@ import (
 	quizController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/quiz"
 	specializationController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/specialization"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/upload"
+	userModuleController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/userModules"
 	userController "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/users"
 	authService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/auth"
 	companyService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/company"
@@ -18,6 +19,7 @@ import (
 	moduleService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/modules"
 	quizService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/quiz"
 	specializationService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/specialization"
+	userModuleService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/userModules"
 	userService "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/config"
 	authRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/auth"
@@ -27,6 +29,7 @@ import (
 	moduleRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/modules"
 	quizRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/quiz"
 	specializationRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/specialization"
+	userModuleRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/userModules"
 	userRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/users"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/util"
 )
@@ -81,6 +84,11 @@ func RegisterModules(dbCon *util.DatabaseConnection, config *config.AppConfig) a
 	// Initiate dependency injection for upload
 	uploadPermitControllerV1 := upload.NewController()
 
+	// Initiate dependency injection for userModule
+	userModulePermitRepo := userModuleRepo.RepositoryFactory(dbCon)
+	userModulePermitService := userModuleService.NewUserModulesService(userModulePermitRepo)
+	userModulePermitControllerV1 := userModuleController.NewController(userModulePermitService)
+
 	controllers := api.Controller{
 		UserV1Controller:           userPermitControllerV1,
 		EnrollmentV1Controller:     enrollmentPermitControllerV1,
@@ -89,6 +97,7 @@ func RegisterModules(dbCon *util.DatabaseConnection, config *config.AppConfig) a
 		QuizV1Controller:           quizPermitControllerV1,
 		ModuleV1Controller:         modulePermitControllerV1,
 		CourseV1Controller:         coursePermitControllerV1,
+		UserModuleV1Controller:     userModulePermitControllerV1,
 		AuthV1Controller:           authPermitControllerV1,
 		UploadV1Controller:         uploadPermitControllerV1,
 	}
