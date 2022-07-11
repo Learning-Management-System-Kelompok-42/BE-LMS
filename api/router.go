@@ -12,6 +12,7 @@ import (
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/quiz"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/specialization"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/upload"
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/userModules"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/v1/users"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/config"
 	"github.com/labstack/echo/v4"
@@ -26,6 +27,7 @@ type Controller struct {
 	QuizV1Controller           *quiz.Controller
 	ModuleV1Controller         *module.Controller
 	CourseV1Controller         *course.Controller
+	UserModuleV1Controller     *userModules.Controller
 	AuthV1Controller           *auth.Controller
 	UploadV1Controller         *upload.Controller
 }
@@ -106,4 +108,7 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	// Enroll course
 	employeeV1.POST("/:employeeID/course/:courseID/enroll", controller.EnrollmentV1Controller.CreateEnrollments)
 	employeeV1.POST("/:employeeID/course/:courseID/feedback", controller.EnrollmentV1Controller.CreateRatingReviews)
+
+	// Proggress course
+	employeeV1.POST("/:employeeID/course/:courseID/progress", controller.UserModuleV1Controller.CreateProggress)
 }
