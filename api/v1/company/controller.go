@@ -81,9 +81,9 @@ func (ctrl *Controller) GetDashboard(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, r.InternalServerErrorResponse(err.Error()))
 	}
 
-	result := response.NewGetDashboardResponse(company)
+	// result := response.NewGetDashboardResponse(company)
 
-	return c.JSON(http.StatusOK, r.SuccessResponse(result))
+	return c.JSON(http.StatusOK, r.SuccessResponse(company))
 }
 
 func (ctrl *Controller) UpdateCompanyProfile(c echo.Context) error {

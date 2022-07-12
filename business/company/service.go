@@ -15,8 +15,25 @@ type CompanyRepository interface {
 	// Insert creates a new company into database
 	Insert(company Domain) (id string, err error)
 
-	// Dashboard return amount of specialization and amount of employee
-	FindDashboard(companyID string) (domain DashboardDomain, err error)
+	// CountSpecializationByCompanyID return amount of specialization
+	CountSpecializationByCompanyID(companyID string) (count int64, err error)
+
+	// CountEmployeeByCompanyID return amount of employee
+	CountEmployeeByCompanyID(companyID string) (count int64, err error)
+
+	// CountCourseByCompanyID return amount of course
+	CountCourseByCompanyID(companyID string) (count int64, err error)
+
+	// FindSpecializationEmployee count total specialization with the highest amount of employee
+	FindSpecializationEmployee(companyID string) (domain []DashboardCompanySpecialization, err error)
+
+	// FindCourseEmployee count total course with highest amount of employee
+	FindCourseEmployee(companyID string) (domain []DashboardCompanyCourse, err error)
+
+	// FindCompanyByCompanyID return company by companyID
+	FindCompanyByCompanyID(companyID string) (domain DashboardCompanyAdmin, err error)
+
+	// NewRequest return new request
 
 	// FindCompanyByID return company by id
 	FindCompanyByID(companyID string) (domain *Domain, err error)
@@ -124,13 +141,46 @@ func (s *companyService) Register(upsertCompanySpec spec.UpsertCompanySpec) (id 
 }
 
 func (s *companyService) Dashboard(companyID string) (domain DashboardDomain, err error) {
-	domain, err = s.companyRepo.FindDashboard(companyID)
+	company, err := s.companyRepo.FindCompanyByCompanyID(companyID)
 	if err != nil {
-		if err == exception.ErrNotFound {
-			return domain, exception.ErrNotFound
-		}
-
 		return domain, exception.ErrInternalServer
+	}
+
+	amountSpecialization, err := s.companyRepo.CountSpecializationByCompanyID(companyID)
+	if err != nil {
+		return domain, exception.ErrInternalServer
+	}
+
+	amountEmployee, err := s.companyRepo.CountEmployeeByCompanyID(companyID)
+	if err != nil {
+		return domain, exception.ErrInternalServer
+	}
+
+	amountCourse, err := s.companyRepo.CountCourseByCompanyID(companyID)
+	if err != nil {
+		return domain, exception.ErrInternalServer
+	}
+
+	specialization, err := s.companyRepo.FindSpecializationEmployee(companyID)
+	if err != nil {
+		return domain, exception.ErrInternalServer
+	}
+
+	course, err := s.companyRepo.FindCourseEmployee(companyID)
+	if err != nil {
+		return domain, exception.ErrInternalServer
+	}
+
+	domain = DashboardDomain{
+		UserID:               company.UserID,
+		CompanyID:            company.CompanyID,
+		NameAdmin:            company.NameAdmin,
+		NameCompany:          company.NameCompany,
+		AmountSpecialization: amountSpecialization,
+		AmountEmployee:       amountEmployee,
+		AmountCourse:         amountCourse,
+		Specialization:       specialization,
+		Course:               course,
 	}
 
 	return domain, nil
