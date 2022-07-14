@@ -3,7 +3,7 @@ package response
 import "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/specialization"
 
 type GetInvitationResponse struct {
-	ID         string `json:"id"`
+	ID         string `json:"specialization_id"`
 	CompanyID  string `json:"company_id"`
 	Name       string `json:"name"`
 	Invitation string `json:"invitation"`
