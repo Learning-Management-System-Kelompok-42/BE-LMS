@@ -48,7 +48,7 @@ type CourseRepository interface {
 	CountEmployeeByCourseID(courseID string) (count int64, err error)
 
 	// FindAllModuleByCourseID get all module by course id
-	FindAllModuleByCourseID(courseID string) (modules []module.Domain, err error)
+	FindAllModuleByCourseID(courseID string) (modules []module.DetailCourseModules, err error)
 }
 
 type CourseService interface {
