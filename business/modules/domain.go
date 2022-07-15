@@ -17,6 +17,15 @@ type Domain struct {
 	UpdatedAt  time.Time
 }
 
+type DetailCourseModules struct {
+	ID        string
+	Title     string
+	Orders    int
+	Status    bool
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
 type CourseModules struct {
 	ID         string
 	CourseID   string

@@ -210,10 +210,11 @@ func (repo *postgreSQLRepository) FindAllPointModuleByModuleID(courseID, userID 
 	return pointModules, nil
 }
 
-func (repo *postgreSQLRepository) FindAllModuleByCourseID(courseID string) (modules []module.Domain, err error) {
+func (repo *postgreSQLRepository) FindAllModuleByCourseID(courseID string) (modules []module.DetailCourseModules, err error) {
 	result := repo.db.Table("modules").
-		Select("modules.id, modules.course_id, modules.title, modules.youtube_url, modules.slide_url, modules.orders, modules.created_at, modules.updated_at").
-		Where("modules.course_id = ?", courseID).
+		Select("modules.id, modules.course_id, modules.title, modules.youtube_url, modules.slide_url, modules.orders, user_modules.status as status, modules.created_at, modules.updated_at").
+		Joins("INNER JOIN user_modules ON modules.id = user_modules.module_id").
+		Where("user_modules.course_id = ?", courseID).
 		Order("modules.orders ASC").
 		Find(&modules)
 

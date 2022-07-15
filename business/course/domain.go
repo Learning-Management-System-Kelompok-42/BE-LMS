@@ -79,7 +79,7 @@ type DetailCourse struct {
 	Description   string
 	CountModule   int64
 	CountEmployee int64
-	Modules       []module.Domain
+	Modules       []module.DetailCourseModules
 	RatingReviews []enrollments.RatingReviews
 	CreatedAt     time.Time
 	UpdatedAt     time.Time

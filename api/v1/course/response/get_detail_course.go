@@ -19,6 +19,7 @@ type moduleResp struct {
 	ID        string
 	Title     string
 	Orders    int
+	Status bool
 	CreatedAt string
 	UpdatedAt string
 }
@@ -41,7 +42,7 @@ func NewGetDetailCourseResp(domain course.DetailCourse) GetDetailCourseResp {
 			ID:     module.ID,
 			Title:  module.Title,
 			Orders: module.Orders,
-			// CreatedAt: module.CreatedAt.Local().Format("2006-01-02 15:04:05"),
+			Status: module.Status,
 			CreatedAt: module.CreatedAt.Format("2006-01-02 15:04:05"),
 			UpdatedAt: module.UpdatedAt.Format("2006-01-02 15:04:05"),
 		})
