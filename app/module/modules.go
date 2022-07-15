@@ -38,10 +38,15 @@ import (
 )
 
 func RegisterModules(dbCon *util.DatabaseConnection, config *config.AppConfig) api.Controller {
+	// Initiate dependency injection for userModule
+	userModulePermitRepo := userModuleRepo.RepositoryFactory(dbCon)
+	userModulePermitService := userModuleService.NewUserModulesService(userModulePermitRepo)
+	userModulePermitControllerV1 := userModuleController.NewController(userModulePermitService)
+
 	// initiate dependency injection for enrollment
 	enrollmentPermitRepo := enrollmentRepo.RepositoryFactory(dbCon)
-	enrollmentPermitSerivce := enrollmentService.NewEnrollmentService(enrollmentPermitRepo)
-	enrollmentPermitControllerV1 := enrollmentController.NewController(enrollmentPermitSerivce)
+	enrollmentPermitService := enrollmentService.NewEnrollmentService(enrollmentPermitRepo, userModulePermitRepo)
+	enrollmentPermitControllerV1 := enrollmentController.NewController(enrollmentPermitService)
 
 	// initiate dependency injection for quiz
 	quizPermitRepo := quizRepo.RepositoryFactory(dbCon)
@@ -86,11 +91,6 @@ func RegisterModules(dbCon *util.DatabaseConnection, config *config.AppConfig) a
 
 	// Initiate dependency injection for upload
 	uploadPermitControllerV1 := upload.NewController()
-
-	// Initiate dependency injection for userModule
-	userModulePermitRepo := userModuleRepo.RepositoryFactory(dbCon)
-	userModulePermitService := userModuleService.NewUserModulesService(userModulePermitRepo)
-	userModulePermitControllerV1 := userModuleController.NewController(userModulePermitService)
 
 	// Initiate dependency injection for RequestFeat
 	requestFeatPermitRepo := requestFeatRepo.RepositoryFactory(dbCon)

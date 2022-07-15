@@ -3,6 +3,9 @@ package enrollments
 import (
 	"time"
 
+	module "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/modules"
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/userModules"
+
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/enrollments/spec"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
 	"github.com/go-playground/validator/v10"
@@ -10,11 +13,14 @@ import (
 )
 
 type EnrollmentRepository interface {
-	// Insert insert a new enrollment
+	// InsertEnrollments insert a new enrollment
 	InsertEnrollments(domain Domain) (id string, err error)
 
 	// InsertRatingReviews insert a new rating and reviews
 	InsertRatingReviews(domain Domain) (id string, err error)
+
+	// FindAllModuleByCourseID find all modules by courseID
+	FindAllModuleByCourseID(courseID string) (modules []module.Domain, err error)
 
 	// FindEnrollmentByCourseIDUserID find enrollment by courseID and userID
 	FindEnrollmentByCourseIDUserID(courseID string, userID string) (domain Domain, err error)
@@ -22,7 +28,7 @@ type EnrollmentRepository interface {
 	// FindAllEnrollmentsByCourseID find all enrollment by course id
 	FindAllEnrollmentsByCourseID(courseID string) (enrollments []RatingReviews, err error)
 
-	// CountRatingReviewsByCourseID count rating and reviews by course id
+	// AVGRatingReviewsByCourseID count rating and reviews by course id
 	AVGRatingReviewsByCourseID(courseID string) (avg float32, err error)
 
 	// CheckEnrollmentExist check if enrollment exist
@@ -30,24 +36,23 @@ type EnrollmentRepository interface {
 }
 
 type EnrollmentService interface {
-	// Create insert a new enrollment
+	// CreateEnrollments Create insert a new enrollment
 	CreateEnrollments(upsertEnrollSpec spec.UpsertEnrollSpec) (id string, err error)
 
 	// CreateRatingReviews insert a new rating and reviews
 	CreateRatingReviews(upsertRatingReviewSpec spec.UpsertRatingReviewSpec) (id string, err error)
-
-	// GetAllEnrollmentsByCourseID find all enrollment by course id
-	// GetAllEnrollmentsByCourseID(courseID string) (enrollments []Domain, err error)
 }
 
 type enrollmentService struct {
 	enrollmentRepo EnrollmentRepository
+	userModuleRepo userModules.UserModulesRepository
 	validate       *validator.Validate
 }
 
-func NewEnrollmentService(enrollmentRepo EnrollmentRepository) EnrollmentService {
+func NewEnrollmentService(enrollmentRepo EnrollmentRepository, userModuleRepo userModules.UserModulesRepository) EnrollmentService {
 	return &enrollmentService{
 		enrollmentRepo: enrollmentRepo,
+		userModuleRepo: userModuleRepo,
 		validate:       validator.New(),
 	}
 }
@@ -78,35 +83,34 @@ func (s *enrollmentService) CreateEnrollments(upsertEnrollSpec spec.UpsertEnroll
 		return "", exception.ErrInternalServer
 	}
 
+	modules, err := s.enrollmentRepo.FindAllModuleByCourseID(upsertEnrollSpec.CourseID)
+	if err != nil {
+		return "", exception.ErrInternalServer
+	}
+
+	for _, v := range modules {
+		newID := uuid.New().String()
+		status := false
+		var point int32 = 0
+
+		newProgress := userModules.NewProggresCourse(
+			newID,
+			upsertEnrollSpec.UserID,
+			upsertEnrollSpec.CourseID,
+			v.ID,
+			point,
+			status,
+		)
+
+		_, err := s.userModuleRepo.InsertProgress(newProgress)
+		if err != nil {
+			return "", exception.ErrInternalServer
+		}
+	}
+
 	return id, nil
 }
 
 func (s *enrollmentService) CreateRatingReviews(upsertRatingReviewSpec spec.UpsertRatingReviewSpec) (id string, err error) {
-	err = s.validate.Struct(&upsertRatingReviewSpec)
-	if err != nil {
-		return "", err
-	}
-
-	courseID := upsertRatingReviewSpec.CourseID
-	userID := upsertRatingReviewSpec.UserID
-
-	oldEnroll, err := s.enrollmentRepo.FindEnrollmentByCourseIDUserID(courseID, userID)
-	if err != nil {
-		if err == exception.ErrEnrollmentNotFound {
-			return "", exception.ErrEnrollmentNotFound
-		}
-		return "", exception.ErrInternalServer
-	}
-
-	newRatingReview := oldEnroll.NewRatingReviews(
-		upsertRatingReviewSpec.Rating,
-		upsertRatingReviewSpec.Reviews,
-	)
-
-	id, err = s.enrollmentRepo.InsertRatingReviews(newRatingReview)
-	if err != nil {
-		return "", exception.ErrInternalServer
-	}
-
-	return id, nil
+	return "", nil
 }

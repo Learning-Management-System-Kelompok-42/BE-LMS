@@ -2,7 +2,9 @@ package enrollments
 
 import (
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/enrollments"
+	module "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/modules"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
+	moduleRepo "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/modules"
 	"gorm.io/gorm"
 )
 
@@ -109,4 +111,17 @@ func (repo *postgreSQLRepository) FindEnrollmentByCourseIDUserID(courseID string
 	}
 
 	return domain, nil
+}
+
+func (repo *postgreSQLRepository) FindAllModuleByCourseID(courseID string) (modules []module.Domain, err error) {
+	var modulesDB []moduleRepo.Module
+
+	err = repo.db.Where("course_id = ?", courseID).Find(&modulesDB).Error
+	if err != nil {
+		return nil, exception.ErrInternalServer
+	}
+
+	modules = moduleRepo.ToDomainBatchList(modulesDB)
+
+	return modules, nil
 }
