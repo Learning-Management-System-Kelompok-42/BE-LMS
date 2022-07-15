@@ -37,4 +37,5 @@ var (
 
 	// AlreadyExist
 	ErrEnrollmentAlreadyExist = errors.New("user already enrolled")
+	ErrProgressAlreadyExist   = errors.New("progress already submitted")
 )

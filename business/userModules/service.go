@@ -13,13 +13,10 @@ type UserModulesRepository interface {
 
 	// CheckProgressExist check if progress exist
 	CheckProgressExist(userID, courseID, moduleID string) (err error)
-
-	// UpdateProgress change status progress into true
-	UpdateProgress(progress Domain) (id string, err error)
 }
 
 type UserModulesService interface {
-	// CreateProgress Create insert a new progress
+	// Create insert a new progress
 	CreateProgress(upsertProgressSpec spec.UpsertProgressSpec) (id string, err error)
 }
 

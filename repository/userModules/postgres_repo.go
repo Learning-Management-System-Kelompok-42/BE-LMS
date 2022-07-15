@@ -41,17 +41,3 @@ func (repo *postgreSQLRepository) CheckProgressExist(userID, courseID, moduleID 
 
 	return exception.ErrProgressAlreadyExist
 }
-
-func (repo *postgreSQLRepository) UpdateProgress(progress userModules.Domain) (id string, err error) {
-	newProgress := FromDomain(progress)
-
-	err = repo.db.Save(&newProgress).Error
-
-	if err != nil {
-		return "", exception.ErrInternalServer
-	}
-
-	id = newProgress.ID
-
-	return id, nil
-}

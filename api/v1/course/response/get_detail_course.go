@@ -38,9 +38,10 @@ func NewGetDetailCourseResp(domain course.DetailCourse) GetDetailCourseResp {
 
 	for _, module := range domain.Modules {
 		modules = append(modules, moduleResp{
-			ID:        module.ID,
-			Title:     module.Title,
-			Orders:    module.Orders,
+			ID:     module.ID,
+			Title:  module.Title,
+			Orders: module.Orders,
+			// CreatedAt: module.CreatedAt.Local().Format("2006-01-02 15:04:05"),
 			CreatedAt: module.CreatedAt.Format("2006-01-02 15:04:05"),
 			UpdatedAt: module.UpdatedAt.Format("2006-01-02 15:04:05"),
 		})

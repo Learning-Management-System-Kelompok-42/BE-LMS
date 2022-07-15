@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/enrollments"
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/requestFeat"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/specialization"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/userModules"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/users"
@@ -21,7 +22,6 @@ import (
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/faq"
 	module "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/modules"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/quiz"
-	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/requestCourse"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/config"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/util"
@@ -91,7 +91,7 @@ func init() {
 		&faq.Faq{},
 		&quiz.Quiz{},
 		&module.Module{},
-		&requestCourse.RequestCourse{},
+		&requestFeat.RequestCourse{},
 		&specialization.SpecializationCourse{},
 		&enrollments.Enrollments{},
 		&userModules.UserModule{},

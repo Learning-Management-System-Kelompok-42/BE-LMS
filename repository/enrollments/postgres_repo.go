@@ -2,9 +2,7 @@ package enrollments
 
 import (
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/enrollments"
-	module "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/modules"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
-	repoModule "github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/modules"
 	"gorm.io/gorm"
 )
 
@@ -86,8 +84,6 @@ func (repo *postgreSQLRepository) CheckEnrollmentExist(courseID string, userID s
 
 	return exception.ErrEnrollmentAlreadyExist
 }
-<<<<<<< Updated upstream
-=======
 
 func (repo *postgreSQLRepository) InsertRatingReviews(domain enrollments.Domain) (id string, err error) {
 	newRatingReview := FromDomain(domain)
@@ -114,20 +110,3 @@ func (repo *postgreSQLRepository) FindEnrollmentByCourseIDUserID(courseID string
 
 	return domain, nil
 }
-
-func (repo *postgreSQLRepository) FindAllModuleByCourseID(courseID string) (modules []module.Domain, err error) {
-	var modulesDB []repoModule.Module
-
-	err = repo.db.Where("course_id = ?", courseID).
-		Order("orders asc").
-		Find(&modulesDB).Error
-
-	if err != nil {
-		return nil, exception.ErrInternalServer
-	}
-
-	modules = repoModule.ToDomainBatchList(modulesDB)
-
-	return modules, nil
-}
->>>>>>> Stashed changes

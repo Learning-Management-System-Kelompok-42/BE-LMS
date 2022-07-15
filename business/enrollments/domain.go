@@ -31,3 +31,23 @@ func NewEnrollment(id, courseID, userID string, enrolledAt time.Time) Domain {
 		UpdatedAt:  time.Time{},
 	}
 }
+
+// func NewRatingReviews(rating float32, reviews string) Domain {
+// 	return Domain{
+// 		Rating:  rating,
+// 		Reviews: reviews,
+// 	}
+// }
+
+func (old *Domain) NewRatingReviews(rating float32, reviews string) Domain {
+	return Domain{
+		ID:         old.ID,
+		UserID:     old.UserID,
+		CourseID:   old.CourseID,
+		Rating:     rating,
+		Reviews:    reviews,
+		EnrolledAt: old.EnrolledAt,
+		CreatedAt:  old.CreatedAt,
+		UpdatedAt:  old.UpdatedAt,
+	}
+}
