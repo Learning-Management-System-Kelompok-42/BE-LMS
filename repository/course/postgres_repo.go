@@ -181,7 +181,7 @@ func (repo *postgreSQLRepository) CountModulesCompletedByUserID(courseID, userID
 	result := repo.db.Table("user_modules").
 		// Select("user_modules.id").
 		Joins("INNER JOIN modules ON user_modules.module_id = modules.id").
-		Where("user_modules.user_id = ? AND modules.course_id = ?", userID, courseID).
+		Where("user_modules.user_id = ? AND modules.course_id = ? AND status = true", userID, courseID).
 		Count(&count)
 
 	// count = int64(len(id.ID))

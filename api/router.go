@@ -104,5 +104,19 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	employeeV1.GET("/:employeeID/course/:courseID/modules", controller.ModuleV1Controller.GetAllModules)
 
 	// Enroll course
+	/*
+		Change business logic for CreateEnrollments
+		when user enroll course, post progress into modules table with status false
+	**/
 	employeeV1.POST("/:employeeID/course/:courseID/enroll", controller.EnrollmentV1Controller.CreateEnrollments)
+<<<<<<< Updated upstream
+=======
+	employeeV1.POST("/:employeeID/course/:courseID/feedback", controller.EnrollmentV1Controller.CreateRatingReviews)
+
+	// Progress course
+	employeeV1.POST("/:employeeID/course/:courseID/progress", controller.UserModuleV1Controller.CreateProggress)
+
+	// Request Counseling And Course
+	employeeV1.POST("/:employeeID/request", controller.RequestFeatV1Controller.CreateRequestFeat)
+>>>>>>> Stashed changes
 }

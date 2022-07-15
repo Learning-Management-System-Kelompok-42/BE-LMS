@@ -32,10 +32,15 @@ import (
 )
 
 func RegisterModules(dbCon *util.DatabaseConnection, config *config.AppConfig) api.Controller {
+	// Initiate dependency injection for userModule
+	userModulePermitRepo := userModuleRepo.RepositoryFactory(dbCon)
+	userModulePermitService := userModuleService.NewUserModulesService(userModulePermitRepo)
+	userModulePermitControllerV1 := userModuleController.NewController(userModulePermitService)
+
 	// initiate dependency injection for enrollment
 	enrollmentPermitRepo := enrollmentRepo.RepositoryFactory(dbCon)
-	enrollmentPermitSerivce := enrollmentService.NewEnrollmentService(enrollmentPermitRepo)
-	enrollmentPermitControllerV1 := enrollmentController.NewController(enrollmentPermitSerivce)
+	enrollmentPermitService := enrollmentService.NewEnrollmentService(enrollmentPermitRepo, userModulePermitRepo)
+	enrollmentPermitControllerV1 := enrollmentController.NewController(enrollmentPermitService)
 
 	// initiate dependency injection for quiz
 	quizPermitRepo := quizRepo.RepositoryFactory(dbCon)
@@ -44,8 +49,8 @@ func RegisterModules(dbCon *util.DatabaseConnection, config *config.AppConfig) a
 
 	// initiate dependency injection for modules
 	modulePermitRepo := moduleRepo.RepositoryFactory(dbCon)
-	modulePermiService := moduleService.NewModuleService(modulePermitRepo)
-	modulePermitControllerV1 := moduleController.NewController(modulePermiService)
+	modulePermitService := moduleService.NewModuleService(modulePermitRepo)
+	modulePermitControllerV1 := moduleController.NewController(modulePermitService)
 
 	//initiate dependency injection for user
 	userPermitRepo := userRepo.RepositoryFactory(dbCon)
@@ -58,7 +63,7 @@ func RegisterModules(dbCon *util.DatabaseConnection, config *config.AppConfig) a
 		coursePermitRepo,
 		userPermitRepo,
 		enrollmentPermitRepo,
-		modulePermiService,
+		modulePermitService,
 		quizPermitService,
 	)
 	coursePermitControllerV1 := courseController.NewController(coursePermitService)
@@ -81,6 +86,14 @@ func RegisterModules(dbCon *util.DatabaseConnection, config *config.AppConfig) a
 	// Initiate dependency injection for upload
 	uploadPermitControllerV1 := upload.NewController()
 
+<<<<<<< Updated upstream
+=======
+	// Initiate dependency injection for RequestFeat
+	requestFeatPermitRepo := requestFeatRepo.RepositoryFactory(dbCon)
+	requestFeatPermitService := requestFeatService.NewRequestFeatService(requestFeatPermitRepo)
+	requestFeatPermitControllerV1 := requestFeatController.NewController(requestFeatPermitService)
+
+>>>>>>> Stashed changes
 	controllers := api.Controller{
 		UserV1Controller:           userPermitControllerV1,
 		EnrollmentV1Controller:     enrollmentPermitControllerV1,
