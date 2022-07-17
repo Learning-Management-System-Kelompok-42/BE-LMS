@@ -8,6 +8,7 @@ type Domain struct {
 	UserID     string
 	Rating     float32
 	Reviews    string
+	Status     bool
 	EnrolledAt time.Time
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
@@ -21,11 +22,12 @@ type RatingReviews struct {
 	Reviews string
 }
 
-func NewEnrollment(id, courseID, userID string, enrolledAt time.Time) Domain {
+func NewEnrollment(id, courseID, userID string, status bool, enrolledAt time.Time) Domain {
 	return Domain{
 		ID:         id,
 		CourseID:   courseID,
 		UserID:     userID,
+		Status: status,
 		EnrolledAt: enrolledAt,
 		CreatedAt:  time.Time{},
 		UpdatedAt:  time.Time{},

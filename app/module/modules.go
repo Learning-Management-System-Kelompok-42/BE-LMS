@@ -55,8 +55,8 @@ func RegisterModules(dbCon *util.DatabaseConnection, config *config.AppConfig) a
 
 	// initiate dependency injection for modules
 	modulePermitRepo := moduleRepo.RepositoryFactory(dbCon)
-	modulePermiService := moduleService.NewModuleService(modulePermitRepo)
-	modulePermitControllerV1 := moduleController.NewController(modulePermiService)
+	modulePermitService := moduleService.NewModuleService(modulePermitRepo)
+	modulePermitControllerV1 := moduleController.NewController(modulePermitService)
 
 	//initiate dependency injection for user
 	userPermitRepo := userRepo.RepositoryFactory(dbCon)
@@ -69,7 +69,7 @@ func RegisterModules(dbCon *util.DatabaseConnection, config *config.AppConfig) a
 		coursePermitRepo,
 		userPermitRepo,
 		enrollmentPermitRepo,
-		modulePermiService,
+		modulePermitService,
 		quizPermitService,
 	)
 	coursePermitControllerV1 := courseController.NewController(coursePermitService)
