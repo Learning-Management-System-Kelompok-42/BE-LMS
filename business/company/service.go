@@ -130,6 +130,7 @@ func (s *companyService) Register(upsertCompanySpec spec.UpsertCompanySpec) (id 
 		upsertCompanySpec.PhoneNumber,
 		upsertCompanySpec.AddressAdmin,
 		role,
+		role,
 	)
 
 	_, err = s.userRepo.Insert(newUser)

@@ -48,8 +48,12 @@ func (ctrl *Controller) Register(c echo.Context) error {
 }
 
 func (ctrl *Controller) GetDetailUsersByID(c echo.Context) error {
-	// next will be called exctract token for validation
+	extract, _ := m.ExtractToken(c)
 	employeeID := c.Param("employeeID")
+
+	if employeeID != extract.UserId {
+		return c.JSON(http.StatusUnauthorized, r.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
 
 	user, err := ctrl.service.GetDetailUserByID(employeeID)
 	if err != nil {

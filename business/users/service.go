@@ -67,6 +67,9 @@ type UserRepository interface {
 
 	// CheckEmail checks if an email is already registered
 	CheckEmail(email string) error
+
+	// CheckSpecializationID checks if an specialization ID is already registered and return specialization name
+	CheckSpecializationID(specializationID string) (specializationName string, err error)
 }
 
 type UserService interface {
@@ -122,6 +125,14 @@ func (s *userService) Register(upsertUserSpec spec.UpsertUsersSpec) (id string, 
 		}
 	}
 
+	specializationName, err := s.userRepo.CheckSpecializationID(upsertUserSpec.SpecializationID)
+	if err != nil {
+		if err == exception.ErrSpecializationNotFound {
+			return "", exception.ErrSpecializationNotFound
+		}
+		return "", exception.ErrInternalServer
+	}
+
 	newId := uuid.New().String()
 	passwordHash := encrypt.HashPassword(upsertUserSpec.Password)
 	levelAccess := "employee"
@@ -135,6 +146,7 @@ func (s *userService) Register(upsertUserSpec spec.UpsertUsersSpec) (id string, 
 		passwordHash,
 		upsertUserSpec.Phone,
 		upsertUserSpec.Address,
+		specializationName,
 		levelAccess,
 	)
 

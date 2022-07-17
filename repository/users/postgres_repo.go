@@ -307,3 +307,19 @@ func (repo *postgreSQLRepository) FindLastOpenCourseByEmployeeID(employeeID stri
 
 	return domain, nil
 }
+
+func (repo *postgreSQLRepository) CheckSpecializationID(specializationID string) (specializationName string, err error) {
+	result := repo.db.Table("specializations").
+		Select("specializations.name as specialization_name").
+		Where("specializations.id = ?", specializationID).
+		Scan(&specializationName)
+
+	if result.Error != nil {
+		if result.RowsAffected == 0 {
+			return specializationName, exception.ErrSpecializationNotFound
+		}
+		return specializationName, exception.ErrInternalServer
+	}
+
+	return specializationName, nil
+}
