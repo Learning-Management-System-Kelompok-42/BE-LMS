@@ -95,7 +95,7 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	employeeV1.Use(m.JWTMiddleware(config))
 
 	// Dashboard employee
-	// employeeV1.GET("/:employeeID/dashboard", controller.UserV1Controller.GetDashboard, m.CheckLevelAccess)
+	employeeV1.GET("/:employeeID/dashboard/:specializationID", controller.UserV1Controller.GetDashboard)
 	employeeV1.GET("/:employeeID", controller.UserV1Controller.GetDetailUsersByID)
 
 	// Dashboard course

@@ -70,11 +70,13 @@ func (s *enrollmentService) CreateEnrollments(upsertEnrollSpec spec.UpsertEnroll
 
 	newID := uuid.New().String()
 	enrollAt := time.Now()
+	status := false
 
 	NewEnrollment := NewEnrollment(
 		newID,
 		upsertEnrollSpec.CourseID,
 		upsertEnrollSpec.UserID,
+		status,
 		enrollAt,
 	)
 

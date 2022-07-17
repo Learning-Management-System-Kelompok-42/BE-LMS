@@ -13,6 +13,7 @@ type Enrollments struct {
 	UserID     string  `gorm:"size:200"`
 	Rating     float32 `gorm:"type:numeric(2,1)"`
 	Reviews    string
+	Status bool
 	EnrolledAt time.Time
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
@@ -34,6 +35,7 @@ func (enrollments *Enrollments) ToDomain() enrollment.Domain {
 		UserID:     enrollments.UserID,
 		Rating:     enrollments.Rating,
 		Reviews:    enrollments.Reviews,
+		Status: enrollments.Status,
 		EnrolledAt: enrollments.EnrolledAt,
 		CreatedAt:  enrollments.CreatedAt,
 		UpdatedAt:  enrollments.UpdatedAt,
@@ -58,6 +60,7 @@ func FromDomain(enrollment enrollment.Domain) Enrollments {
 		Rating:     enrollment.Rating,
 		Reviews:    enrollment.Reviews,
 		EnrolledAt: enrollment.EnrolledAt,
+		Status: enrollment.Status,
 		CreatedAt:  time.Time{},
 		UpdatedAt:  time.Time{},
 		DeletedAt:  gorm.DeletedAt{},

@@ -1,6 +1,8 @@
 package users
 
 import (
+	"fmt"
+
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users/spec"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/encrypt"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
@@ -12,7 +14,7 @@ type UserRepository interface {
 	// Insert creates a new user
 	Insert(user Domain) (id string, err error)
 
-	// Update updates an existing user
+	// UpdateSpecializationName Update updates an existing user
 	UpdateSpecializationName(userUpdate Domain) (id string, err error)
 
 	// UpdateProfile updates an existing user
@@ -24,7 +26,7 @@ type UserRepository interface {
 	// FindByID returns a user by ID
 	FindByID(id string) (user Domain, err error)
 
-	// GetAllUsers returns all users
+	// FindAllUsers GetAllUsers returns all users
 	FindAllUsers(companyID string) (users []Domain, err error)
 
 	// FindAllUserByCourseID returns all users by course ID
@@ -39,6 +41,30 @@ type UserRepository interface {
 	// FindAllUserBySpecializationID returns all users by specialization ID
 	FindAllUserBySpecializationID(specializationID string) (users []Domain, err error)
 
+	// FindUserDashboard return detail employee for dashboard
+	FindUserDashboard(employeeID string) (user DetailEmployeeDashboard, err error)
+
+	// FindAllCourseByEmployeeID return top progress course
+	FindAllCourseByEmployeeID(employeeID string) (domain []TopCourseProgress, err error)
+
+	// FindLastOpenCourseByEmployeeID return last open course
+	FindLastOpenCourseByEmployeeID(employeeID string) (domain []LastCourseOpen, err error)
+
+	// CountAllCourseByUserID return amount of all course by employee id
+	CountAllCourseByUserID(employeeID string) (count int64, err error)
+
+	// CountCourseCompleted return amount of course completed
+	CountCourseCompleted(employeeID string) (count int64, err error)
+
+	// CountCourseIncomplete return amount of course incomplete
+	CountCourseIncomplete(employeeID string) (count int64, err error)
+
+	// CountModulesByCourseID return amount of modules
+	CountModulesByCourseID(courseID string) (count int64, err error)
+
+	// CountModulesCompletedByEmployeeID return amount of modules completed
+	CountModulesCompletedByEmployeeID(courseID, employeeID string) (count int64, err error)
+
 	// CheckEmail checks if an email is already registered
 	CheckEmail(email string) error
 }
@@ -47,7 +73,7 @@ type UserService interface {
 	// Register creates a new user
 	Register(upsertUserSpec spec.UpsertUsersSpec) (id string, err error)
 
-	// UpdateUser updates an existing user
+	// UpdateSpecializationName UpdateUser updates an existing user
 	UpdateSpecializationName(upsertUpdateSpecName spec.UpsertUpdateSpecName) (id string, err error)
 
 	// UpdateProfile updates an existing user
@@ -56,11 +82,14 @@ type UserService interface {
 	// UpdatePassword updates an existing user
 	UpdatePassword(upsertUpdatePassowrd spec.UpsertUpdatePassword) (id string, err error)
 
-	// GetUserByID returns a user by ID
+	// GetDetailUserByID returns a user by ID
 	GetDetailUserByID(id string) (*Domain, error)
 
 	// GetDetailUserDashboard  return a user by id
 	GetDetailUserDashboard(userID string) (user ToResponseDetailUserDashboard, err error)
+
+	//GetDashboardEmployee return data for dashboard employee
+	GetDashboardEmployee(employeeID, specializationID string) (domain DashboardEmployee, err error)
 
 	// GetAllUsers returns all users
 	GetAllUsers(companyID string) (users []Domain, err error)
@@ -72,9 +101,9 @@ type userService struct {
 	validate *validator.Validate
 }
 
-func NewUserService(user UserRepository) UserService {
+func NewUserService(userRepo UserRepository) UserService {
 	return &userService{
-		userRepo: user,
+		userRepo: userRepo,
 		// enrollmentRepo: enrollmentRepo,
 		validate: validator.New(),
 	}
@@ -247,4 +276,86 @@ func (s *userService) UpdatePassword(upsertUpdatePassowrd spec.UpsertUpdatePassw
 	}
 
 	return id, nil
+}
+
+func (s *userService) GetDashboardEmployee(employeeID, specializationID string) (domain DashboardEmployee, err error) {
+	// Get user detail
+	user, err := s.userRepo.FindUserDashboard(employeeID)
+	if err != nil {
+		if err == exception.ErrEmployeeNotFound {
+			return domain, exception.ErrEmployeeNotFound
+		}
+
+		return domain, exception.ErrInternalServer
+	}
+
+	// Amount of Course
+	amountCourse, err := s.userRepo.CountAllCourseByUserID(employeeID)
+	if err != nil {
+		return domain, exception.ErrInternalServer
+	}
+
+	// kursus selesai
+	amountCourseCompleted, err := s.userRepo.CountCourseCompleted(employeeID)
+	if err != nil {
+		return domain, exception.ErrInternalServer
+	}
+
+	// kursus belum selesai
+	// Don't forget to change business logic when user give feedback
+	// Change if he give feedback, then update status into true
+	amountCourseIncomplete, err := s.userRepo.CountCourseIncomplete(employeeID)
+	if err != nil {
+		return domain, exception.ErrInternalServer
+	}
+
+	domain = DashboardEmployee{
+		DetailEmployee:         user,
+		AmountCourse:           amountCourse,
+		AmountCourseCompleted:  amountCourseCompleted,
+		AmountCourseIncomplete: amountCourseIncomplete,
+	}
+
+	// Get all course
+	courses, err := s.userRepo.FindAllCourseByEmployeeID(employeeID)
+	if err != nil {
+		return domain, exception.ErrInternalServer
+	}
+
+	// Get top 4 highest progress course
+	for _, v := range courses {
+		// Calculate percentage progress course by user
+		totalModule, _ := s.userRepo.CountModulesByCourseID(v.CourseID)
+		moduleCompleted, _ := s.userRepo.CountModulesCompletedByEmployeeID(v.CourseID, employeeID)
+		// percentage total module completed from course
+		var percentageModule int64
+		if totalModule != 0 {
+			percentageModule = (moduleCompleted * 100) / totalModule
+		}
+
+		fmt.Println("percentageModule ", percentageModule)
+
+		progress := TopCourseProgress{
+			CourseID:  v.CourseID,
+			Title:     v.Title,
+			Thumbnail: v.Thumbnail,
+			Progress:  percentageModule,
+		}
+
+		domain.TopCourseProgress = append(domain.TopCourseProgress, progress)
+	}
+
+	// kursus sering di buka 7 hari
+	coursesLatestEnroll, err := s.userRepo.FindLastOpenCourseByEmployeeID(employeeID)
+	if err != nil {
+		if err == exception.ErrCourseNotFound {
+			return domain, exception.ErrCourseNotFound
+		}
+
+		return domain, exception.ErrInternalServer
+	}
+
+	domain.TopCourseOften7Days = coursesLatestEnroll
+
+	return domain, nil
 }

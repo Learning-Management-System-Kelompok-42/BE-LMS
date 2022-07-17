@@ -257,3 +257,30 @@ func (ctrl *Controller) ChangePassword(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, r.SuccessResponse(result))
 }
+
+func (ctrl *Controller) GetDashboard(c echo.Context) error {
+	extract, _ := m.ExtractToken(c)
+	userID := c.Param("employeeID")
+	specializationID := c.Param("specializationID")
+
+	if userID != extract.UserId {
+		return c.JSON(http.StatusUnauthorized, r.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
+
+	domain, err := ctrl.service.GetDashboardEmployee(userID, specializationID)
+	if err != nil {
+		if err == exception.ErrEmployeeNotFound {
+			return c.JSON(http.StatusNotFound, r.NotFoundResponse(err.Error()))
+		} else if err == exception.ErrWrongPassword {
+			return c.JSON(http.StatusBadRequest, r.BadRequestResponse(err.Error()))
+		} else if err == exception.ErrInvalidRequest {
+			return c.JSON(http.StatusBadRequest, r.BadRequestResponse(err.Error()))
+		}
+
+		return c.JSON(http.StatusInternalServerError, r.InternalServerErrorResponse(err.Error()))
+	}
+
+	resp := response.DashboardUserResponse(domain)
+
+	return c.JSON(http.StatusOK, r.SuccessResponse(resp))
+}

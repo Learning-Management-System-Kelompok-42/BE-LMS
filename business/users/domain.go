@@ -20,6 +20,33 @@ type Domain struct {
 	UpdatedAt        time.Time
 }
 
+type DashboardEmployee struct {
+	DetailEmployee         DetailEmployeeDashboard
+	AmountCourse           int64
+	AmountCourseCompleted  int64
+	AmountCourseIncomplete int64
+	TopCourseProgress      []TopCourseProgress
+	TopCourseOften7Days    []LastCourseOpen
+}
+
+type TopCourseProgress struct {
+	CourseID  string
+	Thumbnail string
+	Title     string
+	Progress  int64
+}
+
+type LastCourseOpen struct {
+	CourseID string
+	Title    string
+}
+
+type DetailEmployeeDashboard struct {
+	UserID             string
+	FullName           string
+	SpecializationName string
+}
+
 type UserDetailDashboard struct {
 	ID          string
 	Name        string

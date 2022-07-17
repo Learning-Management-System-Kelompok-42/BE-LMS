@@ -1,6 +1,8 @@
 package users
 
 import (
+	"fmt"
+
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/users"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
 	"gorm.io/gorm"
@@ -186,4 +188,122 @@ func (repo *postgreSQLRepository) UpdatePassword(userUpdate users.Domain) (id st
 	id = userUpdate.ID
 
 	return id, nil
+}
+
+func (repo *postgreSQLRepository) FindUserDashboard(employeeID string) (user users.DetailEmployeeDashboard, err error) {
+	query := repo.db.Table("users").
+		Select("users.id as user_id, users.full_name, specializations.name as specialization_name").
+		Joins("INNER JOIN specializations ON users.specialization_id = specializations.id").
+		Where("users.id = ?", employeeID).
+		Scan(&user)
+
+	fmt.Println("user = ", user)
+
+	if query.Error != nil {
+		return user, exception.ErrInternalServer
+	}
+
+	return user, nil
+}
+
+func (repo *postgreSQLRepository) CountAllCourseByUserID(employeeID string) (count int64, err error) {
+	result := repo.db.Table("enrollments").
+		Select("count(id)").
+		Where("user_id = ?", employeeID).
+		Count(&count)
+
+	if result.Error != nil {
+		return 0, exception.ErrInternalServer
+	}
+
+	return count, nil
+}
+
+func (repo *postgreSQLRepository) CountCourseCompleted(employeeID string) (count int64, err error) {
+	result := repo.db.Table("enrollments").
+		Select("count(id)").
+		Where("user_id = ? AND status = true", employeeID).
+		Count(&count)
+
+	if result.Error != nil {
+		return 0, exception.ErrInternalServer
+	}
+
+	return count, nil
+}
+
+func (repo *postgreSQLRepository) CountCourseIncomplete(employeeID string) (count int64, err error) {
+	result := repo.db.Table("enrollments").
+		Select("count(id)").
+		Where("user_id = ? AND status = false", employeeID).
+		Count(&count)
+
+	if result.Error != nil {
+		return 0, exception.ErrInternalServer
+	}
+
+	return count, nil
+}
+
+func (repo *postgreSQLRepository) FindAllCourseByEmployeeID(employeeID string) (domain []users.TopCourseProgress, err error) {
+	result := repo.db.Table("enrollments").
+		Select("enrollments.course_id, courses.thumbnail, courses.title").
+		Joins("INNER JOIN courses ON enrollments.course_id = courses.id").
+		Where("enrollments.user_id = ? AND enrollments.status = false", employeeID).
+		Find(&domain)
+
+	if result.Error != nil {
+		if result.RowsAffected == 0 {
+			return domain, exception.ErrCourseNotFound
+		}
+		return domain, exception.ErrInternalServer
+	}
+
+	return domain, nil
+}
+
+func (repo *postgreSQLRepository) CountModulesByCourseID(courseID string) (count int64, err error) {
+	var countModule int64
+	result := repo.db.Table("modules").Where("course_id = ?", courseID).Count(&countModule)
+
+	if result.Error != nil {
+		return count, exception.ErrInternalServer
+	}
+
+	return countModule, nil
+}
+
+func (repo *postgreSQLRepository) CountModulesCompletedByEmployeeID(courseID, employeeID string) (count int64, err error) {
+	result := repo.db.Table("user_modules").
+		// Select("user_modules.id").
+		Joins("INNER JOIN modules ON user_modules.module_id = modules.id").
+		Where("user_modules.user_id = ? AND modules.course_id = ? AND status = true", employeeID, courseID).
+		Count(&count)
+
+	// count = int64(len(id.ID))
+
+	if result.Error != nil {
+		return count, exception.ErrInternalServer
+	}
+
+	return count, nil
+}
+
+func (repo *postgreSQLRepository) FindLastOpenCourseByEmployeeID(employeeID string) (domain []users.LastCourseOpen, err error) {
+	result := repo.db.Table("enrollments").
+		Select("enrollments.course_id, courses.title").
+		Joins("INNER JOIN courses ON enrollments.course_id = courses.id").
+		Where("enrollments.user_id = ? AND enrollments.status = false", employeeID).
+		Order("enrollments.created_at DESC").
+		Limit(5).
+		Find(&domain)
+
+	if result.Error != nil {
+		if result.RowsAffected == 0 {
+			return domain, exception.ErrCourseNotFound
+		}
+		return domain, exception.ErrInternalServer
+	}
+
+	return domain, nil
 }

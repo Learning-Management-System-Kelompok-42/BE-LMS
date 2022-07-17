@@ -41,7 +41,7 @@ type CompanyRepository interface {
 	// UpdateProfile update profile company
 	UpdateProfile(company Domain) (id string, err error)
 
-	// CheckEmail checks if an email is already registered
+	// CheckWeb checks if an email is already registered
 	CheckWeb(web string) error
 }
 
