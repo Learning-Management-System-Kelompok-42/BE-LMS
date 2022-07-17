@@ -107,7 +107,7 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 
 	// Enroll course
 	employeeV1.POST("/:employeeID/course/:courseID/enroll", controller.EnrollmentV1Controller.CreateEnrollments)
-	employeeV1.POST("/:employeeID/course/:courseID/feedback", controller.EnrollmentV1Controller.CreateRatingReviews)
+	employeeV1.PUT("/:employeeID/course/:courseID/feedback", controller.EnrollmentV1Controller.CreateRatingReviews)
 
 	// Proggress course
 	employeeV1.PUT("/:employeeID/course/:courseID/progress", controller.UserModuleV1Controller.UpdateProgress)
