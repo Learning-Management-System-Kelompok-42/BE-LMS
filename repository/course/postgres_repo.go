@@ -77,15 +77,15 @@ func (repo *postgreSQLRepository) FindAllCourseDashboard(companyID string) (cour
 
 func (repo *postgreSQLRepository) FindAllCourseByUserID(userID string) (course []course.Domain, err error) {
 	/**
-	Next change structure DB on table user_courses and courses
+	Next change structure DB on table enrollments and courses
 	Add column rating on table courses
 	calculate automatically rating when user give rating on course
 	*/
-	// subQuery := repo.db.Table("user_courses").Select("avg(rating)").Where("user_id = ? ", userID)
+	// subQuery := repo.db.Table("enrollments").Select("avg(rating)").Where("user_id = ? ", userID)
 
 	result := repo.db.Table("courses").
 		Select("courses.id, courses.title, courses.thumbnail, courses.description, courses.created_at, courses.updated_at").
-		Joins("INNER JOIN user_courses ON courses.id = user_courses.course_id").
+		Joins("INNER JOIN enrollments ON courses.id = enrollments.course_id").
 		Find(&course)
 
 	if result.Error != nil {
@@ -132,7 +132,7 @@ func (repo *postgreSQLRepository) CountModulesByCourseID(courseID string) (count
 
 func (repo *postgreSQLRepository) CountEmployeeByCourseID(courseID string) (count int64, err error) {
 	var countEmployee int64
-	result := repo.db.Table("user_courses").Where("course_id = ?", courseID).Count(&countEmployee)
+	result := repo.db.Table("enrollments").Where("course_id = ?", courseID).Count(&countEmployee)
 
 	if result.Error != nil {
 		return count, exception.ErrInternalServer

@@ -121,7 +121,7 @@ func (repo *postgreSQLRepository) CountSpecializationByCompanyID(companyID strin
 func (repo *postgreSQLRepository) CountEmployeeByCompanyID(companyID string) (count int64, err error) {
 	result := repo.db.Table("users").
 		Select("count(company_id)").
-		Where("company_id = ?", companyID).
+		Where("company_id = ? AND level_access = 'employee'", companyID).
 		Count(&count)
 
 	if result.Error != nil {

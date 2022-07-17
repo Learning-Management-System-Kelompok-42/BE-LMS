@@ -110,7 +110,7 @@ func (ctrl *Controller) GetDetailUserDashboard(c echo.Context) error {
 	}
 
 	if result.Courses == nil {
-		resp := response.NewGetAllUserDetailErrResp(result.User, "No courses found")
+		resp := response.NewGetAllUserDetailErrResp(result.User, "Course not Found")
 
 		return c.JSON(http.StatusOK, r.SuccessResponse(resp))
 	}
