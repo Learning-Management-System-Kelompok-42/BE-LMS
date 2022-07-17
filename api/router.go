@@ -110,7 +110,7 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	employeeV1.POST("/:employeeID/course/:courseID/feedback", controller.EnrollmentV1Controller.CreateRatingReviews)
 
 	// Proggress course
-	employeeV1.POST("/:employeeID/course/:courseID/progress", controller.UserModuleV1Controller.CreateProggress)
+	employeeV1.PUT("/:employeeID/course/:courseID/progress", controller.UserModuleV1Controller.UpdateProgress)
 
 	// Request Conseling And Course
 	employeeV1.POST("/:employeeID/request", controller.RequestFeatV1Controller.CreateRequestFeat)

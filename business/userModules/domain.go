@@ -27,3 +27,16 @@ func NewProggresCourse(id, userID, courseID, moduleID string, point int32, statu
 		UpdatedAt: time.Now(),
 	}
 }
+
+func (old *Domain) UpdateProgress(point int32, status bool) Domain {
+	return Domain{
+		ID:        old.ID,
+		UserID:    old.UserID,
+		ModuleID:  old.ModuleID,
+		CourseID:  old.CourseID,
+		Point:     point,
+		Status:    status,
+		CreatedAt: old.CreatedAt,
+		UpdatedAt: time.Now(),
+	}
+}
