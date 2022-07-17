@@ -20,7 +20,7 @@ func NewController(service userModules.UserModulesService) *Controller {
 	return &Controller{service: service}
 }
 
-func (ctrl *Controller) CreateProggress(c echo.Context) error {
+func (ctrl *Controller) UpdateProgress(c echo.Context) error {
 	extract, _ := m.ExtractToken(c)
 	courseID := c.Param("courseID")
 	employeeID := c.Param("employeeID")
@@ -39,7 +39,7 @@ func (ctrl *Controller) CreateProggress(c echo.Context) error {
 
 	req := *requestProggress.ToSpec()
 
-	id, err := ctrl.service.CreateProgress(req)
+	id, err := ctrl.service.UpdateProgress(req)
 	if err != nil {
 		if err == exception.ErrInvalidRequest {
 			return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))
@@ -51,5 +51,5 @@ func (ctrl *Controller) CreateProggress(c echo.Context) error {
 
 	resp := response.NewProgressCourseResponse(id)
 
-	return c.JSON(http.StatusCreated, f.CreateSuccessResponse(resp))
+	return c.JSON(http.StatusOK, f.SuccessResponse(resp))
 }

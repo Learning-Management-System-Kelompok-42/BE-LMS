@@ -32,8 +32,8 @@ func FromDomain(domain userModules.Domain) UserModule {
 	}
 }
 
-func (userModule *UserModule) ToDomain() userModules.Domain {
-	return userModules.Domain{
+func (userModule *UserModule) ToDomain() *userModules.Domain {
+	return &userModules.Domain{
 		ID:        userModule.ID,
 		UserID:    userModule.UserID,
 		ModuleID:  userModule.ModuleID,
