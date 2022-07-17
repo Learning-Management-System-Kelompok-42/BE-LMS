@@ -125,3 +125,16 @@ func (repo *postgreSQLRepository) FindAllModuleByCourseID(courseID string) (modu
 
 	return modules, nil
 }
+
+func (repo *postgreSQLRepository) UpdateRatingReviews(domain enrollments.Domain) (id string, err error) {
+	oldEnrollment := FromDomain(domain)
+
+	err = repo.db.Save(&oldEnrollment).Error
+	if err != nil {
+		return "", exception.ErrInternalServer
+	}
+
+	id = oldEnrollment.ID
+
+	return id, nil
+}

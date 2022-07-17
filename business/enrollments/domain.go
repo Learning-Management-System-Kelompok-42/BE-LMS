@@ -27,7 +27,7 @@ func NewEnrollment(id, courseID, userID string, status bool, enrolledAt time.Tim
 		ID:         id,
 		CourseID:   courseID,
 		UserID:     userID,
-		Status: status,
+		Status:     status,
 		EnrolledAt: enrolledAt,
 		CreatedAt:  time.Time{},
 		UpdatedAt:  time.Time{},
@@ -41,13 +41,14 @@ func NewEnrollment(id, courseID, userID string, status bool, enrolledAt time.Tim
 // 	}
 // }
 
-func (old *Domain) NewRatingReviews(rating float32, reviews string) Domain {
+func (old *Domain) NewRatingReviews(rating float32, reviews string, status bool) Domain {
 	return Domain{
 		ID:         old.ID,
 		UserID:     old.UserID,
 		CourseID:   old.CourseID,
 		Rating:     rating,
 		Reviews:    reviews,
+		Status:     status,
 		EnrolledAt: old.EnrolledAt,
 		CreatedAt:  old.CreatedAt,
 		UpdatedAt:  old.UpdatedAt,

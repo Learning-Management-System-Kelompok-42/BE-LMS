@@ -31,6 +31,9 @@ type EnrollmentRepository interface {
 	// AVGRatingReviewsByCourseID count rating and reviews by course id
 	AVGRatingReviewsByCourseID(courseID string) (avg float32, err error)
 
+	// UpdateRatingReviews return id enrollments
+	UpdateRatingReviews(domain Domain) (id string, err error)
+
 	// CheckEnrollmentExist check if enrollment exist
 	CheckEnrollmentExist(courseID, userID string) (err error)
 }
@@ -114,5 +117,34 @@ func (s *enrollmentService) CreateEnrollments(upsertEnrollSpec spec.UpsertEnroll
 }
 
 func (s *enrollmentService) CreateRatingReviews(upsertRatingReviewSpec spec.UpsertRatingReviewSpec) (id string, err error) {
-	return "", nil
+	err = s.validate.Struct(&upsertRatingReviewSpec)
+	if err != nil {
+		return "", exception.ErrInvalidRequest
+	}
+
+	oldEnrollment, err := s.enrollmentRepo.FindEnrollmentByCourseIDUserID(
+		upsertRatingReviewSpec.CourseID,
+		upsertRatingReviewSpec.UserID,
+	)
+
+	if err != nil {
+		if err == exception.ErrEnrollmentNotFound {
+			return "", exception.ErrEnrollmentNotFound
+		}
+
+		return "", exception.ErrInternalServer
+	}
+
+	newRatingReviews := oldEnrollment.NewRatingReviews(
+		upsertRatingReviewSpec.Rating,
+		upsertRatingReviewSpec.Reviews,
+		true,
+	)
+
+	id, err = s.enrollmentRepo.UpdateRatingReviews(newRatingReviews)
+	if err != nil {
+		return "", exception.ErrInternalServer
+	}
+
+	return id, nil
 }

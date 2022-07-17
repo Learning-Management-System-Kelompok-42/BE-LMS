@@ -24,7 +24,6 @@ type userResp struct {
 	PhoneNumber      string    `json:"phone_number"`
 	Address          string    `json:"address"`
 	Role             string    `json:"role"`
-	LevelAccess      string    `json:"level_access"`
 	CreatedAt        time.Time `json:"created_at"`
 	UpdatedAt        time.Time `json:"updated_at"`
 }
@@ -52,7 +51,6 @@ func NewGetDetailCourseDashbordResp(domain course.DetailCourseDashboard) GetDeta
 			PhoneNumber:      user.PhoneNumber,
 			Address:          user.Address,
 			Role:             user.Role,
-			LevelAccess:      user.LevelAccess,
 			CreatedAt:        user.CreatedAt,
 			UpdatedAt:        user.UpdatedAt,
 		})
