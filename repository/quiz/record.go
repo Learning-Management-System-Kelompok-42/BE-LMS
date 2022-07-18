@@ -3,6 +3,7 @@ package quiz
 import (
 	"time"
 
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/quiz"
 	"github.com/lib/pq"
 	"gorm.io/gorm"
@@ -33,6 +34,16 @@ func (quizs *Quiz) ToDomain() quiz.Domain {
 	}
 }
 
+func (quizs *Quiz) ToDomainInBatch() course.QuizResp {
+	return course.QuizResp{
+		QuizID:         quizs.ID,
+		ModuleID:       quizs.ModuleID,
+		Question:       quizs.Question,
+		MultipleChoice: quizs.Options,
+		Answer:         quizs.Answer,
+	}
+}
+
 func FromDomain(quiz quiz.Domain) Quiz {
 	return Quiz{
 		ID:        quiz.ID,
@@ -45,4 +56,12 @@ func FromDomain(quiz quiz.Domain) Quiz {
 		UpdatedAt: time.Time{},
 		DeletedAt: gorm.DeletedAt{},
 	}
+}
+
+func ToDomainInBatch(quizs []Quiz) []course.QuizResp {
+	var domains []course.QuizResp
+	for _, quiz := range quizs {
+		domains = append(domains, quiz.ToDomainInBatch())
+	}
+	return domains
 }

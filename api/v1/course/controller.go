@@ -1,6 +1,7 @@
 package course
 
 import (
+	"fmt"
 	"net/http"
 
 	m "github.com/Learning-Management-System-Kelompok-42/BE-LMS/api/middleware"
@@ -167,4 +168,25 @@ func (ctrl *Controller) GetDetailCourse(c echo.Context) error {
 	resp := response.NewGetDetailCourseResp(course)
 
 	return c.JSON(http.StatusOK, f.SuccessResponse(resp))
+}
+
+func (ctrl *Controller) GetCourseModules(c echo.Context) error {
+	extract, _ := m.ExtractToken(c)
+	companyID := c.Param("companyID")
+	courseID := c.Param("courseID")
+
+	fmt.Println("masuk")
+
+	if companyID != extract.CompanyId {
+		fmt.Println("userID = ", companyID)
+		fmt.Println("extract.UserId = ", extract.CompanyId)
+		return c.JSON(http.StatusUnauthorized, f.UnauthorizedResponse("You are not authorized to access this resource"))
+	}
+
+	course, err := ctrl.service.GetCourseModuleQuiz(courseID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, f.InternalServerErrorResponse(err.Error()))
+	}
+
+	return c.JSON(http.StatusOK, f.SuccessResponse(course))
 }

@@ -1,6 +1,8 @@
 package course
 
 import (
+	"fmt"
+
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course"
 	module "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/modules"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/helpers/exception"
@@ -226,4 +228,20 @@ func (repo *postgreSQLRepository) FindAllModuleByCourseID(courseID string) (modu
 	}
 
 	return modules, nil
+}
+
+func (repo *postgreSQLRepository) FindCourseModuleQuiz(courseID string) (courses course.DomainCourseResp, err error) {
+	var course Course
+	// preload modules and quiz
+	err = repo.db.Preload("Modules").Preload("Modules.Quizs").Find(&course, "courses.id = ?", courseID).Error
+	// err = repo.db.Preload("Modules", "modules.course_id = ?", courseID).Preload("Quizzes", "Modules.Quiz.module_id = Modules.id").Find(&course, "courses.id = ?", courseID).Error
+
+	if err != nil {
+		fmt.Println("error = ", err)
+		return courses, exception.ErrInternalServer
+	}
+
+	courses = course.ToDomainInBatch()
+
+	return courses, nil
 }

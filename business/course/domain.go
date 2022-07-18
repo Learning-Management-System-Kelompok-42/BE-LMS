@@ -85,6 +85,34 @@ type DetailCourse struct {
 	UpdatedAt     time.Time
 }
 
+type DomainCourseResp struct {
+	ID          string
+	CompanyID   string
+	Title       string
+	Description string
+	Thumbnail   string
+	Modules     []ModulesResp
+}
+
+// buat 1 1 struct
+type ModulesResp struct {
+	CourseID   string
+	ModuleID   string
+	Title      string
+	YoutubeURL string
+	SlideURL   string
+	Orders     int
+	Quizzes    []QuizResp
+}
+
+type QuizResp struct {
+	QuizID         string
+	ModuleID       string
+	Question       string
+	Answer         string
+	MultipleChoice []string
+}
+
 func NewCourse(id, companyID, title, thumbnail, description string) Domain {
 	return Domain{
 		ID:          id,

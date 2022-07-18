@@ -3,6 +3,7 @@ package module
 import (
 	"time"
 
+	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course"
 	module "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/modules"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/quiz"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/repository/userModules"
@@ -36,6 +37,18 @@ func (modules *Module) ToDomain() module.Domain {
 	}
 }
 
+func (modules *Module) ToDomainList() course.ModulesResp {
+	return course.ModulesResp{
+		ModuleID:   modules.ID,
+		CourseID:   modules.CourseID,
+		YoutubeURL: modules.YoutubeURL,
+		SlideURL:   modules.SlideURL,
+		Title:      modules.Title,
+		Orders:     modules.Orders,
+		Quizzes:    quiz.ToDomainInBatch(modules.Quizs),
+	}
+}
+
 func FromDomain(module module.Domain) Module {
 	return Module{
 		ID:         module.ID,
@@ -54,6 +67,14 @@ func ToDomainBatchList(modules []Module) []module.Domain {
 	var domains []module.Domain
 	for _, module := range modules {
 		domains = append(domains, module.ToDomain())
+	}
+	return domains
+}
+
+func ToDomainInBatch(modules []Module) []course.ModulesResp {
+	var domains []course.ModulesResp
+	for _, module := range modules {
+		domains = append(domains, module.ToDomainList())
 	}
 	return domains
 }

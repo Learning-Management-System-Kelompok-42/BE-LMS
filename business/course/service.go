@@ -1,6 +1,8 @@
 package course
 
 import (
+	"sort"
+
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course/spec"
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/enrollments"
 	module "github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/modules"
@@ -38,6 +40,9 @@ type CourseRepository interface {
 	// FindAllPointModuleByModuleID get all point module by module id
 	FindAllPointModuleByModuleID(courseID, userID string) (pointModules []Module, err error)
 
+	// FindCourseModuleQuiz get all module and quiz by course id
+	FindCourseModuleQuiz(courseID string) (courses DomainCourseResp, err error)
+
 	// CountModulesByCourseID get count modules by course id
 	CountModulesByCourseID(courseID string) (count int64, err error)
 
@@ -69,6 +74,9 @@ type CourseService interface {
 
 	// GetAllCourse get all course by user id
 	GetAllCourse(specializationID, userID string) (resp []ProgressCourse, err error)
+
+	// GetCourseModuleQuiz get all module and quiz by course id
+	GetCourseModuleQuiz(courseID string) (courses DomainCourseResp, err error)
 }
 
 type courseService struct {
@@ -365,6 +373,29 @@ func (s *courseService) GetDetailCourseByID(courseID string) (courses DetailCour
 		CountEmployee: amountEmployee,
 		Modules:       modules,
 		RatingReviews: employees,
+	}
+
+	return courses, nil
+}
+
+func (s *courseService) GetCourseModuleQuiz(courseID string) (courses DomainCourseResp, err error) {
+	course, err := s.courseRepo.FindCourseModuleQuiz(courseID)
+	if err != nil {
+		return courses, exception.ErrInternalServer
+	}
+
+	// sorting module by orders
+	sort.Slice(course.Modules, func(i, j int) bool {
+		return course.Modules[i].Orders < course.Modules[j].Orders
+	})
+
+	courses = DomainCourseResp{
+		ID:          course.ID,
+		CompanyID:   course.CompanyID,
+		Title:       course.Title,
+		Description: course.Description,
+		Thumbnail:   course.Thumbnail,
+		Modules:     course.Modules,
 	}
 
 	return courses, nil
