@@ -44,6 +44,11 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
 	}))
 
+	// Redirect docs to stoplight.io
+	e.GET("/docs", func(c echo.Context) error {
+		return c.Redirect(http.StatusMovedPermanently, "https://capstone-lms.stoplight.io/docs/docs-api-lms/qw1jjvklit1ja-api-lms-capstone-project")
+	})
+
 	// Register User
 	e.POST("/v1/user/register", controller.UserV1Controller.Register)
 	// Register Company
