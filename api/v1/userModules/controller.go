@@ -41,8 +41,8 @@ func (ctrl *Controller) UpdateProgress(c echo.Context) error {
 
 	id, err := ctrl.service.UpdateProgress(req)
 	if err != nil {
-		if err == exception.ErrInvalidRequest {
-			return c.JSON(http.StatusBadRequest, f.BadRequestResponse(err.Error()))
+		if err == exception.ErrModuleNotFound {
+			return c.JSON(http.StatusNotFound, f.NotFoundResponse(err.Error()))
 		} else if err == exception.ErrProgressAlreadyExist {
 			return c.JSON(http.StatusConflict, f.ConflictResponse(err.Error()))
 		}
