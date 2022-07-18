@@ -78,6 +78,7 @@ func RegistrationPath(e *echo.Echo, controller Controller, config *config.AppCon
 	companyV1.POST("/:companyID/course", controller.CourseV1Controller.RegisterCourse, m.CheckLevelAccess)
 	companyV1.GET("/:companyID/course/:courseID", controller.CourseV1Controller.GetDetailCourseDashboard, m.CheckLevelAccess)
 	companyV1.PUT("/:companyID/course/:courseID", controller.CourseV1Controller.UpdateCourse, m.CheckLevelAccess)
+	companyV1.GET("/:companyID/course/:courseID/detail", controller.CourseV1Controller.GetCourseModules, m.CheckLevelAccess)
 
 	// Dashboard employee
 	companyV1.GET("/:companyID/employee", controller.UserV1Controller.GetAllUsers, m.CheckLevelAccess)

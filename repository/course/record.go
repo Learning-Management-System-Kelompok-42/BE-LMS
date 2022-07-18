@@ -1,6 +1,7 @@
 package course
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/Learning-Management-System-Kelompok-42/BE-LMS/business/course"
@@ -50,6 +51,26 @@ func FromDomain(course course.Domain) Course {
 		UpdatedAt:   course.UpdatedAt,
 		DeletedAt:   gorm.DeletedAt{},
 	}
+}
+
+func (courses *Course) ToDomainInBatch() course.DomainCourseResp {
+	return course.DomainCourseResp{
+		ID:          courses.ID,
+		CompanyID:   courses.CompanyID,
+		Title:       courses.Title,
+		Thumbnail:   courses.Thumbnail,
+		Description: courses.Description,
+		Modules:     module.ToDomainInBatch(courses.Modules),
+	}
+}
+
+func ToBatchCourses(courses []Course) []course.DomainCourseResp {
+	var coursesDomain []course.DomainCourseResp
+	for _, course := range courses {
+		fmt.Println("courses bathc = ", course)
+		coursesDomain = append(coursesDomain, course.ToDomainInBatch())
+	}
+	return coursesDomain
 }
 
 func ToBatchList(courses []Course) []course.Domain {
