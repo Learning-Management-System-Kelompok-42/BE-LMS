@@ -69,7 +69,6 @@ Copyright © 2022 [Muchlis Harly Winata](https://github.com/w33h).<br />
 This project is [MIT](https://github.com/Learning-Management-System-Kelompok-42/BE-LMS/blob/development/LICENSE) licensed.
 
 ### Contributors
-
 ___
 
 Thank you for being a good mentor and for guiding us. We appreciate you and the time you spend helping us on many occasions and we will never forget 
