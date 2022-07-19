@@ -7,15 +7,19 @@ var (
 	ErrInternalServer = errors.New("internal server error")
 
 	// NotFound
-	ErrNotFound         = errors.New("not found")
-	ErrEmployeeNotFound = errors.New("employee not found")
-	ErrAdminNotFound    = errors.New("admin not found")
-	ErrCourseNotFound   = errors.New("course not found")
-	ErrCommentNotFound  = errors.New("comment not found")
-	ErrModuleNotFound   = errors.New("module not found")
-	ErrVideoNotFound    = errors.New("video not found")
-	ErrSlideNotFound    = errors.New("slide not found")
-	ErrQuizNotFound     = errors.New("quiz not found")
+	ErrNotFound               = errors.New("not found")
+	ErrEmployeeNotFound       = errors.New("employee not found")
+	ErrCompanyNotFound        = errors.New("company not found")
+	ErrAdminNotFound          = errors.New("admin not found")
+	ErrCourseNotFound         = errors.New("course not found")
+	ErrCommentNotFound        = errors.New("comment not found")
+	ErrModuleNotFound         = errors.New("module not found")
+	ErrVideoNotFound          = errors.New("video not found")
+	ErrSlideNotFound          = errors.New("slide not found")
+	ErrQuizNotFound           = errors.New("quiz not found")
+	ErrSpecializationNotFound = errors.New("specialization not found")
+	ErrEnrollmentNotFound     = errors.New("enrollment not found")
+	ErrCourseAlreadyExist     = errors.New("course already exist")
 
 	// NotAuthorized
 	ErrNotAuthorized = errors.New("not authorized")
@@ -30,4 +34,8 @@ var (
 	ErrInvalidRequest       = errors.New("invalid request body")
 	ErrInvalidGenerateToken = errors.New("invalid generate token")
 	ErrCantUploadImage      = errors.New("cant upload image")
+
+	// AlreadyExist
+	ErrEnrollmentAlreadyExist = errors.New("user already enrolled")
+	ErrProgressAlreadyExist   = errors.New("progress already submitted")
 )

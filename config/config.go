@@ -9,10 +9,13 @@ import (
 
 type AppConfig struct {
 	App struct {
-		Name    string `toml:"name"`
-		Port    int    `toml:"port"`
-		Env     string `toml:"env"`
-		Timeout int    `toml:"timeout"`
+		Name      string `toml:"name"`
+		Port      int    `toml:"port"`
+		Env       string `toml:"env"`
+		Timeout   int    `toml:"timeout"`
+		SecretKey string `toml:"secretkey"`
+		Crt       string `toml:"crt"`
+		Key       string `toml:"key"`
 	} `toml:"app"`
 	Database struct {
 		Driver   string `toml:"driver"`
@@ -22,6 +25,19 @@ type AppConfig struct {
 		Username string `toml:"username"`
 		Password string `toml:"password"`
 	} `toml:"database"`
+	Storage struct {
+		CloudName     string `toml:"cloudname"`
+		APIKey        string `toml:"apikey"`
+		APISecret     string `toml:"apisecret"`
+		UploadStorage string `toml:"uploadfolder"`
+		AwsKey        string `toml:"awsKey"`
+	} `toml:"storage"`
+	AwsS3 struct {
+		AwsId  string `toml:"awsId"`
+		AwsKey string `toml:"awsKey"`
+		Region string `toml:"region"`
+		Bucket string `toml:"bucket"`
+	} `toml:"awss3"`
 }
 
 var lock = &sync.Mutex{}
