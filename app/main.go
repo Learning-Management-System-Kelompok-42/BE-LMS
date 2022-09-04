@@ -46,10 +46,10 @@ func main() {
 
 	api.RegistrationPath(e, controllers, cfg)
 
-	// port := os.Getenv("PORT")
+	port := os.Getenv("PORT")
 
 	go func() {
-		address := fmt.Sprintf(":%d", cfg.App.Port)
+		address := fmt.Sprintf(":%d", port)
 		if err := e.Start(address); err != nil {
 			log.Info("Shutting down the server")
 		}
